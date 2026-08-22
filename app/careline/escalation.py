@@ -222,15 +222,52 @@ async def _deliver_persisted_alert(alert_id: str, alert: dict) -> dict:
     return delivery
 
 
+# Speech recognition emits expanded forms -- "do not", "cannot", "was not" --
+# while a term list written by hand naturally uses contractions. 13 of the 51
+# CRISIS_TERMS could never match Whisper output for that reason alone, among
+# them "wish i wasn't here", "don't want to wake up" and "can't keep myself
+# safe". Both sides are folded to one canonical spelling before matching.
+_CONTRACTION_FOLD = [
+    (re.compile(r"\bcan\s?not\b"), "cannot"),
+    (re.compile(r"\bcan'?t\b"), "cannot"),
+    (re.compile(r"\bdon'?t\b"), "do not"),
+    (re.compile(r"\bdoesn'?t\b"), "does not"),
+    (re.compile(r"\bdidn'?t\b"), "did not"),
+    (re.compile(r"\bwasn'?t\b"), "was not"),
+    (re.compile(r"\bisn'?t\b"), "is not"),
+    (re.compile(r"\bhaven'?t\b"), "have not"),
+    (re.compile(r"\bhasn'?t\b"), "has not"),
+    (re.compile(r"\bwon'?t\b"), "will not"),
+    (re.compile(r"\bcouldn'?t\b"), "could not"),
+    (re.compile(r"\bshouldn'?t\b"), "should not"),
+    (re.compile(r"\bi'?m\b"), "i am"),
+    (re.compile(r"\bi'?ve\b"), "i have"),
+    (re.compile(r"\bit'?s\b"), "it is"),
+]
+
+
+def fold_contractions(text: str) -> str:
+    """Canonical spelling so a term list matches whatever the ASR emitted."""
+    folded = text.lower().replace("’", "'").replace("‘", "'")
+    for pattern, replacement in _CONTRACTION_FOLD:
+        folded = pattern.sub(replacement, folded)
+    return re.sub(r"\s+", " ", folded)
+
+
+_CRISIS_FOLDED = tuple((fold_contractions(t), t) for t in CRISIS_TERMS)
+_TIER_2_FOLDED = tuple((fold_contractions(t), t) for t in TIER_2_TERMS)
+_FALSE_POSITIVE_FOLDED = tuple((fold_contractions(t), t) for t in TIER_1_FALSE_POSITIVES)
+
+
 def classify_utterance(text: str) -> dict:
-    lowered = text.lower().replace("’", "'").replace("‘", "'")
-    crisis_hits = [term for term in CRISIS_TERMS if term in lowered]
+    lowered = fold_contractions(text)
+    crisis_hits = [orig for folded, orig in _CRISIS_FOLDED if folded in lowered]
     if crisis_hits:
         return {"triage_tier": 3, "score": 10, "hits": crisis_hits, "reason": "direct safety language", "false_positive_trap": False}
-    tier_2_hits = [term for term in TIER_2_TERMS if term in lowered]
+    tier_2_hits = [orig for folded, orig in _TIER_2_FOLDED if folded in lowered]
     if tier_2_hits:
         return {"triage_tier": 2, "score": 2, "hits": tier_2_hits, "reason": "support or preoccupation pattern", "false_positive_trap": False}
-    false_positive_hits = [term for term in TIER_1_FALSE_POSITIVES if term in lowered]
+    false_positive_hits = [orig for folded, orig in _FALSE_POSITIVE_FOLDED if folded in lowered]
     if false_positive_hits:
         return {"triage_tier": 1, "score": 0, "hits": false_positive_hits, "reason": "explicit low-risk context", "false_positive_trap": True}
     hits: list[str] = []

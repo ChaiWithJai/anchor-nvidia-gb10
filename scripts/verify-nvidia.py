@@ -82,8 +82,8 @@ def main() -> int:
     _, admin_page = request("/")
     _, patient_page = request("/patient")
     _, goal_page = request("/goal")
-    assert b"Care operations" in admin_page
-    assert b"Answer check-in" in patient_page
+    assert b"Needs attention now" in admin_page
+    assert b"Anchor is calling" in patient_page
     assert b"GB10 live operations" in goal_page
     print("PASS interfaces: clinician console + patient phone call + live GB10 view")
 

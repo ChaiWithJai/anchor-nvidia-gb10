@@ -150,9 +150,18 @@ def initialize(force_reseed: bool = False) -> None:
             {"$set": {"visible_in_clinic": False, "updated_at": timestamp}},
         )
     for patient in patients:
-        update = {"$setOnInsert": {**patient, "created_at": timestamp}, "$set": {"updated_at": timestamp}}
+        insert_fields = {
+            key: value for key, value in patient.items() if key != "patient_id"
+        }
+        update = {
+            "$setOnInsert": {**insert_fields, "created_at": timestamp},
+            "$set": {"updated_at": timestamp},
+        }
         if reseed:
-            update["$set"] = {**patient, "updated_at": timestamp}
+            update = {
+                "$setOnInsert": {"created_at": timestamp},
+                "$set": {**patient, "updated_at": timestamp},
+            }
         db.patients.update_one(
             {"patient_id": patient["patient_id"]},
             update,

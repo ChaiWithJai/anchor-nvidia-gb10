@@ -1,0 +1,136 @@
+[
+  {
+    "_id": "tier-1-mild",
+    "rank": 1,
+    "label": "Mild",
+    "disposition": "resolve_in_conversation",
+    "triggerSummary": "A single situational and clearly described response with no recurring pattern or current safety concern.",
+    "action": {
+      "name": "acknowledge_or_surface_reference",
+      "gated": false,
+      "gate": null
+    },
+    "eligibleReferenceCategories": [
+      "coping_technique",
+      "psychoeducation"
+    ],
+    "eligiblePatientFacingReferenceIds": [
+      "ref-coping-box-breathing",
+      "ref-coping-urge-surfing",
+      "ref-psychoed-craving-curve"
+    ],
+    "clinicianOnlyReferenceIds": [],
+    "reactivelyExcludedCategories": [
+      "program_resource",
+      "crisis_resource"
+    ],
+    "escalationRule": {
+      "nextTierId": "tier-2-moderate",
+      "consecutiveSameTriggerCount": 3,
+      "missedGoalTargetThreshold": 2,
+      "description": "Escalate when the same trigger or craving appears in three consecutive check-ins, or a goal target is missed more than once in the current tracking window."
+    },
+    "terminal": false,
+    "keywordSignals": [
+      "fine",
+      "okay",
+      "stuck to it",
+      "tempted",
+      "wanted a drink",
+      "stressful day",
+      "tired",
+      "craving",
+      "urge",
+      "manageable"
+    ],
+    "keywordPolicy": "Human-review sense-check only; never classify from keyword matching alone."
+  },
+  {
+    "_id": "tier-2-moderate",
+    "rank": 2,
+    "label": "Moderate",
+    "disposition": "flag_pattern",
+    "triggerSummary": "A recurring pattern across check-ins that merits clinician review, with nothing urgent in the current call.",
+    "action": {
+      "name": "flag_pattern_for_clinician",
+      "gated": true,
+      "gate": "OpenShell"
+    },
+    "eligibleReferenceCategories": [
+      "coping_technique",
+      "psychoeducation"
+    ],
+    "eligiblePatientFacingReferenceIds": [
+      "ref-coping-box-breathing",
+      "ref-coping-urge-surfing",
+      "ref-psychoed-craving-curve"
+    ],
+    "clinicianOnlyReferenceIds": [],
+    "reactivelyExcludedCategories": [
+      "program_resource",
+      "crisis_resource"
+    ],
+    "escalationRule": {
+      "nextTierId": "tier-3-at-risk",
+      "immediateOnAmbiguityOrSafetySignal": true,
+      "description": "Escalate immediately when the current response is ambiguous, concerning, non-logical, or safety-relevant, regardless of pattern history."
+    },
+    "terminal": false,
+    "keywordSignals": [
+      "again",
+      "every time",
+      "keeps happening",
+      "missed",
+      "haven't been",
+      "not working",
+      "third time",
+      "slipping",
+      "hard to keep up",
+      "frustrated"
+    ],
+    "keywordPolicy": "Human-review sense-check only; repetition across check-ins, not these words alone, qualifies the tier."
+  },
+  {
+    "_id": "tier-3-at-risk",
+    "rank": 3,
+    "label": "At Risk",
+    "disposition": "escalate",
+    "triggerSummary": "An ambiguous or concerning response, or any explicit safety-relevant disclosure.",
+    "action": {
+      "name": "escalate_to_clinician",
+      "gated": false,
+      "gate": null,
+      "alwaysOpen": true
+    },
+    "eligibleReferenceCategories": [
+      "crisis_resource"
+    ],
+    "eligiblePatientFacingReferenceIds": [],
+    "clinicianOnlyReferenceIds": [
+      "ref-crisis-988",
+      "ref-crisis-ndvh"
+    ],
+    "reactivelyExcludedCategories": [
+      "program_resource"
+    ],
+    "escalationRule": {
+      "nextTierId": null,
+      "clinicianResolutionRequired": true,
+      "description": "Terminal tier. It never self-resolves downward; only a clinician may close the escalation."
+    },
+    "terminal": true,
+    "keywordSignals": [
+      "hopeless",
+      "no point",
+      "can't do this anymore",
+      "scared of myself",
+      "not safe",
+      "give up",
+      "doesn't matter",
+      "can't stop thinking about it",
+      "hurt someone",
+      "don't want to be here"
+    ],
+    "keywordPolicy": "Human-review sense-check only. Any specific or explicit safety disclosure escalates regardless of keyword matching."
+  }
+]

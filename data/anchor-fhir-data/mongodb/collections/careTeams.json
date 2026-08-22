@@ -1,0 +1,212 @@
+[
+  {
+    "_id": "careteam-01",
+    "resourceType": "CareTeam",
+    "sourceGroupId": "patient-group-01",
+    "patientCareTeamIds": [
+      "careteam-patient-01",
+      "careteam-patient-02"
+    ],
+    "name": "Harbor Recovery Team",
+    "status": "active",
+    "identifiers": [
+      {
+        "system": "urn:anchor:operational-care-team",
+        "value": "ACT-01"
+      }
+    ],
+    "categories": [
+      {
+        "text": "Behavioral health recovery management"
+      }
+    ],
+    "period": {
+      "start": "2026-01-01"
+    },
+    "telecom": [
+      {
+        "system": "phone",
+        "value": "+1-212-555-0201",
+        "use": "work"
+      }
+    ],
+    "patientIds": [
+      "patient-01",
+      "patient-02"
+    ],
+    "clinicianId": "clinician-01",
+    "clinicianRole": "Addiction medicine physician",
+    "notes": [
+      "Coverage hours: Mon-Fri 08:00-18:00.",
+      "Anchor (voice check-in agent) is NOT a CareTeam member and is not represented here. It is a patient-facing adherence/check-in tool that reads this record's CarePlan and Goal resources — it never makes a clinical judgment, diagnosis, or care decision on this team's behalf."
+    ]
+  },
+  {
+    "_id": "careteam-02",
+    "resourceType": "CareTeam",
+    "sourceGroupId": "patient-group-02",
+    "patientCareTeamIds": [
+      "careteam-patient-03",
+      "careteam-patient-04"
+    ],
+    "name": "Northstar Recovery Team",
+    "status": "active",
+    "identifiers": [
+      {
+        "system": "urn:anchor:operational-care-team",
+        "value": "ACT-02"
+      }
+    ],
+    "categories": [
+      {
+        "text": "Behavioral health recovery management"
+      }
+    ],
+    "period": {
+      "start": "2026-01-01"
+    },
+    "telecom": [
+      {
+        "system": "phone",
+        "value": "+1-212-555-0202",
+        "use": "work"
+      }
+    ],
+    "patientIds": [
+      "patient-03",
+      "patient-04"
+    ],
+    "clinicianId": "clinician-01",
+    "clinicianRole": "Addiction medicine physician",
+    "notes": [
+      "Coverage hours: Mon-Fri 09:00-19:00.",
+      "Anchor (voice check-in agent) is NOT a CareTeam member and is not represented here. It is a patient-facing adherence/check-in tool that reads this record's CarePlan and Goal resources — it never makes a clinical judgment, diagnosis, or care decision on this team's behalf."
+    ]
+  },
+  {
+    "_id": "careteam-03",
+    "resourceType": "CareTeam",
+    "sourceGroupId": "patient-group-03",
+    "patientCareTeamIds": [
+      "careteam-patient-05",
+      "careteam-patient-06"
+    ],
+    "name": "Bridgeway Recovery Team",
+    "status": "active",
+    "identifiers": [
+      {
+        "system": "urn:anchor:operational-care-team",
+        "value": "ACT-03"
+      }
+    ],
+    "categories": [
+      {
+        "text": "Behavioral health recovery management"
+      }
+    ],
+    "period": {
+      "start": "2026-02-01"
+    },
+    "telecom": [
+      {
+        "system": "phone",
+        "value": "+1-212-555-0203",
+        "use": "work"
+      }
+    ],
+    "patientIds": [
+      "patient-05",
+      "patient-06"
+    ],
+    "clinicianId": "clinician-01",
+    "clinicianRole": "Addiction medicine physician",
+    "notes": [
+      "Coverage hours: Mon-Sat 08:00-17:00.",
+      "Anchor (voice check-in agent) is NOT a CareTeam member and is not represented here. It is a patient-facing adherence/check-in tool that reads this record's CarePlan and Goal resources — it never makes a clinical judgment, diagnosis, or care decision on this team's behalf."
+    ]
+  },
+  {
+    "_id": "careteam-04",
+    "resourceType": "CareTeam",
+    "sourceGroupId": "patient-group-04",
+    "patientCareTeamIds": [
+      "careteam-patient-07",
+      "careteam-patient-08"
+    ],
+    "name": "Horizon Recovery Team",
+    "status": "active",
+    "identifiers": [
+      {
+        "system": "urn:anchor:operational-care-team",
+        "value": "ACT-04"
+      }
+    ],
+    "categories": [
+      {
+        "text": "Behavioral health recovery management"
+      }
+    ],
+    "period": {
+      "start": "2026-02-01"
+    },
+    "telecom": [
+      {
+        "system": "phone",
+        "value": "+1-212-555-0204",
+        "use": "work"
+      }
+    ],
+    "patientIds": [
+      "patient-07",
+      "patient-08"
+    ],
+    "clinicianId": "clinician-02",
+    "clinicianRole": "Addiction medicine physician",
+    "notes": [
+      "Coverage hours: Mon-Fri 08:00-20:00.",
+      "Anchor (voice check-in agent) is NOT a CareTeam member and is not represented here. It is a patient-facing adherence/check-in tool that reads this record's CarePlan and Goal resources — it never makes a clinical judgment, diagnosis, or care decision on this team's behalf."
+    ]
+  },
+  {
+    "_id": "careteam-05",
+    "resourceType": "CareTeam",
+    "sourceGroupId": "patient-group-05",
+    "patientCareTeamIds": [
+      "careteam-patient-09",
+      "careteam-patient-10"
+    ],
+    "name": "Pathfinder Recovery Team",
+    "status": "active",
+    "identifiers": [
+      {
+        "system": "urn:anchor:operational-care-team",
+        "value": "ACT-05"
+      }
+    ],
+    "categories": [
+      {
+        "text": "Behavioral health recovery management"
+      }
+    ],
+    "period": {
+      "start": "2026-03-01"
+    },
+    "telecom": [
+      {
+        "system": "phone",
+        "value": "+1-212-555-0205",
+        "use": "work"
+      }
+    ],
+    "patientIds": [
+      "patient-09",
+      "patient-10"
+    ],
+    "clinicianId": "clinician-02",
+    "clinicianRole": "Addiction medicine physician",
+    "notes": [
+      "Coverage hours: Mon-Sat 09:00-18:00.",
+      "Anchor (voice check-in agent) is NOT a CareTeam member and is not represented here. It is a patient-facing adherence/check-in tool that reads this record's CarePlan and Goal resources — it never makes a clinical judgment, diagnosis, or care decision on this team's behalf."
+    ]
+  }
+]

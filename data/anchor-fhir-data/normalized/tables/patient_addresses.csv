@@ -1,0 +1,11 @@
+address_id,patient_id,city,state,country
+1,patient-01,Brooklyn,NY,US
+2,patient-02,Queens,NY,US
+3,patient-03,Jersey City,NJ,US
+4,patient-04,Newark,NJ,US
+5,patient-05,Yonkers,NY,US
+6,patient-06,Paterson,NJ,US
+7,patient-07,New Haven,CT,US
+8,patient-08,Stamford,CT,US
+9,patient-09,Bronx,NY,US
+10,patient-10,White Plains,NY,US

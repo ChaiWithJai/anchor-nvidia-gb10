@@ -1,0 +1,132 @@
+[
+  {
+    "_id": "goal-01",
+    "resourceType": "Goal",
+    "patientId": "patient-01",
+    "lifecycleStatus": "active",
+    "description": "Reduce drinking days to zero across a 30-day window",
+    "targets": [
+      {
+        "measure": "self-reported drinking days/week",
+        "dueDate": "2026-09-20"
+      }
+    ]
+  },
+  {
+    "_id": "goal-02",
+    "resourceType": "Goal",
+    "patientId": "patient-02",
+    "lifecycleStatus": "active",
+    "description": "Complete intensive outpatient (IOP) program without unplanned discharge",
+    "targets": [
+      {
+        "measure": "IOP session attendance rate",
+        "dueDate": "2026-10-01"
+      }
+    ]
+  },
+  {
+    "_id": "goal-03",
+    "resourceType": "Goal",
+    "patientId": "patient-03",
+    "lifecycleStatus": "active",
+    "description": "Identify and log craving triggers for 4 consecutive weeks",
+    "targets": [
+      {
+        "measure": "trigger log entries/week",
+        "dueDate": "2026-09-05"
+      }
+    ]
+  },
+  {
+    "_id": "goal-04",
+    "resourceType": "Goal",
+    "patientId": "patient-04",
+    "lifecycleStatus": "active",
+    "description": "Complete IOP program with no positive screens",
+    "targets": [
+      {
+        "measure": "screening result per session",
+        "dueDate": "2026-11-01"
+      }
+    ]
+  },
+  {
+    "_id": "goal-05",
+    "resourceType": "Goal",
+    "patientId": "patient-05",
+    "lifecycleStatus": "active",
+    "description": "Maintain abstinence through court review date",
+    "targets": [
+      {
+        "measure": "self-reported drinking days + screening result",
+        "dueDate": "2026-12-15"
+      }
+    ]
+  },
+  {
+    "_id": "goal-06",
+    "resourceType": "Goal",
+    "patientId": "patient-06",
+    "lifecycleStatus": "active",
+    "description": "Attend every scheduled outpatient session for 8 weeks",
+    "targets": [
+      {
+        "measure": "session attendance rate",
+        "dueDate": "2026-09-30"
+      }
+    ]
+  },
+  {
+    "_id": "goal-07",
+    "resourceType": "Goal",
+    "patientId": "patient-07",
+    "lifecycleStatus": "active",
+    "description": "Reduce use frequency to zero across a 4-week window",
+    "targets": [
+      {
+        "measure": "self-reported use days/week",
+        "dueDate": "2026-08-30"
+      }
+    ]
+  },
+  {
+    "_id": "goal-08",
+    "resourceType": "Goal",
+    "patientId": "patient-08",
+    "lifecycleStatus": "active",
+    "description": "Sustain abstinence with negative screens for 60 days",
+    "targets": [
+      {
+        "measure": "screening result per session",
+        "dueDate": "2026-11-14"
+      }
+    ]
+  },
+  {
+    "_id": "goal-09",
+    "resourceType": "Goal",
+    "patientId": "patient-09",
+    "lifecycleStatus": "active",
+    "description": "Limit drinking to zero on weeknights for 6 weeks",
+    "targets": [
+      {
+        "measure": "self-reported drinking days/week",
+        "dueDate": "2026-09-01"
+      }
+    ]
+  },
+  {
+    "_id": "goal-10",
+    "resourceType": "Goal",
+    "patientId": "patient-10",
+    "lifecycleStatus": "active",
+    "description": "Maintain abstinence through the wait for program intake",
+    "targets": [
+      {
+        "measure": "self-reported drinking days + daily check-in engagement",
+        "dueDate": "2026-09-02"
+      }
+    ]
+  }
+]

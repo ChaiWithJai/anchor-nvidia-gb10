@@ -1,0 +1,11 @@
+category_id,care_plan_id,system,code,display,category_text
+1,careplan-01,http://hl7.org/fhir/us/core/CodeSystem/careplan-category,assess-plan,,Substance use disorder treatment plan
+2,careplan-02,http://hl7.org/fhir/us/core/CodeSystem/careplan-category,assess-plan,,Substance use disorder treatment plan
+3,careplan-03,http://hl7.org/fhir/us/core/CodeSystem/careplan-category,assess-plan,,Substance use disorder treatment plan
+4,careplan-04,http://hl7.org/fhir/us/core/CodeSystem/careplan-category,assess-plan,,Substance use disorder treatment plan (court-referred)
+5,careplan-05,http://hl7.org/fhir/us/core/CodeSystem/careplan-category,assess-plan,,Substance use disorder treatment plan (court-referred)
+6,careplan-06,http://hl7.org/fhir/us/core/CodeSystem/careplan-category,assess-plan,,Substance use disorder treatment plan
+7,careplan-07,http://hl7.org/fhir/us/core/CodeSystem/careplan-category,assess-plan,,Substance use disorder treatment plan
+8,careplan-08,http://hl7.org/fhir/us/core/CodeSystem/careplan-category,assess-plan,,Substance use disorder treatment plan
+9,careplan-09,http://hl7.org/fhir/us/core/CodeSystem/careplan-category,assess-plan,,Substance use disorder treatment plan
+10,careplan-10,http://hl7.org/fhir/us/core/CodeSystem/careplan-category,assess-plan,,Substance use disorder treatment plan — post-disclosure bridge to accountability program

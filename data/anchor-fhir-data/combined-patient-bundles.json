@@ -1,0 +1,3300 @@
+{
+  "resourceType": "Bundle",
+  "type": "collection",
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "patient-01",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-mrn",
+            "value": "demo-patient-01"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "given": [
+              "Jordan"
+            ],
+            "family": "Mercer",
+            "text": "Jordan Mercer"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+1-917-555-0101",
+            "use": "mobile"
+          },
+          {
+            "system": "email",
+            "value": "jordan.mercer@example.com",
+            "use": "home"
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1988-03-14",
+        "address": [
+          {
+            "use": "home",
+            "type": "physical",
+            "text": "214 Cedar Walk, Brooklyn, NY 11215",
+            "line": [
+              "214 Cedar Walk"
+            ],
+            "city": "Brooklyn",
+            "state": "NY",
+            "postalCode": "11215",
+            "country": "US"
+          }
+        ],
+        "maritalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+              "code": "S",
+              "display": "Never Married"
+            }
+          ],
+          "text": "Never Married"
+        },
+        "communication": [
+          {
+            "language": {
+              "coding": [
+                {
+                  "system": "urn:ietf:bcp:47",
+                  "code": "en",
+                  "display": "English"
+                }
+              ],
+              "text": "English"
+            },
+            "preferred": true
+          }
+        ],
+        "extension": [
+          {
+            "url": "urn:anchor:employment-status",
+            "valueCode": "employed_full_time"
+          }
+        ],
+        "meta": {
+          "tag": [
+            {
+              "system": "urn:anchor:demo-data",
+              "code": "synthetic"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "condition-01",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "F10.20",
+              "display": "Alcohol dependence, uncomplicated"
+            }
+          ],
+          "text": "Alcohol dependence, uncomplicated"
+        },
+        "subject": {
+          "reference": "Patient/patient-01"
+        },
+        "onsetDateTime": "2026-05-01",
+        "note": [
+          {
+            "text": "DSM-5 moderate alcohol use disorder"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Goal",
+        "id": "goal-01",
+        "lifecycleStatus": "active",
+        "description": {
+          "text": "Reduce drinking days to zero across a 30-day window"
+        },
+        "subject": {
+          "reference": "Patient/patient-01"
+        },
+        "target": [
+          {
+            "measure": {
+              "text": "self-reported drinking days/week"
+            },
+            "dueDate": "2026-09-20"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "CarePlan",
+        "id": "careplan-01",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-care-plan",
+            "value": "ACP-01-2026"
+          }
+        ],
+        "title": "Personalized recovery plan for Jordan Mercer",
+        "description": "Synthetic longitudinal behavioral-health recovery plan used for the Anchor demonstration.",
+        "status": "active",
+        "intent": "plan",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/us/core/CodeSystem/careplan-category",
+                "code": "assess-plan"
+              }
+            ],
+            "text": "Substance use disorder treatment plan"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/patient-01"
+        },
+        "created": "2026-05-01",
+        "author": {
+          "reference": "Practitioner/clinician-01",
+          "display": "Dr. Maya Chen (seeded/fictional)"
+        },
+        "careTeam": [
+          {
+            "reference": "CareTeam/careteam-patient-01"
+          }
+        ],
+        "addresses": [
+          {
+            "reference": "Condition/condition-01"
+          }
+        ],
+        "period": {
+          "start": "2026-05-01",
+          "end": "2026-09-20"
+        },
+        "goal": [
+          {
+            "reference": "Goal/goal-01"
+          }
+        ],
+        "activity": [
+          {
+            "detail": {
+              "status": "scheduled",
+              "description": "Daily sobriety check-in via Anchor voice agent",
+              "scheduledString": "Per individualized recovery schedule"
+            }
+          },
+          {
+            "detail": {
+              "status": "scheduled",
+              "description": "Weekly outpatient counseling session",
+              "scheduledString": "Per individualized recovery schedule"
+            }
+          }
+        ],
+        "note": [
+          {
+            "text": "Plan is clinician-authored synthetic demo data. Anchor may surface plan content but cannot diagnose, prescribe, or alter the plan."
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "CareTeam",
+        "id": "careteam-patient-01",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-patient-care-team",
+            "value": "PCT-01"
+          },
+          {
+            "system": "urn:anchor:operational-care-team",
+            "value": "ACT-01"
+          }
+        ],
+        "status": "active",
+        "name": "Harbor Recovery Team \u2014 patient-01",
+        "category": [
+          {
+            "text": "Behavioral health recovery management"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/patient-01"
+        },
+        "period": {
+          "start": "2026-01-01"
+        },
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+1-212-555-0201",
+            "use": "work"
+          }
+        ],
+        "participant": [
+          {
+            "role": [
+              {
+                "text": "Addiction medicine physician"
+              }
+            ],
+            "member": {
+              "reference": "Practitioner/clinician-01",
+              "display": "Dr. Maya Chen (seeded/fictional)"
+            },
+            "period": {
+              "start": "2026-01-01"
+            }
+          }
+        ],
+        "note": [
+          {
+            "text": "Coverage hours: Mon-Fri 08:00-18:00."
+          },
+          {
+            "text": "Anchor (voice check-in agent) is NOT a CareTeam member and is not represented here. It is a patient-facing adherence/check-in tool that reads this record's CarePlan and Goal resources \u2014 it never makes a clinical judgment, diagnosis, or care decision on this team's behalf."
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "patient-02",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-mrn",
+            "value": "demo-patient-02"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "given": [
+              "Casey"
+            ],
+            "family": "Bennett",
+            "text": "Casey Bennett"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+1-917-555-0102",
+            "use": "mobile"
+          },
+          {
+            "system": "email",
+            "value": "casey.bennett@example.com",
+            "use": "home"
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1992-07-22",
+        "address": [
+          {
+            "use": "home",
+            "type": "physical",
+            "text": "88 Juniper Avenue, Queens, NY 11373",
+            "line": [
+              "88 Juniper Avenue"
+            ],
+            "city": "Queens",
+            "state": "NY",
+            "postalCode": "11373",
+            "country": "US"
+          }
+        ],
+        "maritalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+              "code": "S",
+              "display": "Never Married"
+            }
+          ],
+          "text": "Never Married"
+        },
+        "communication": [
+          {
+            "language": {
+              "coding": [
+                {
+                  "system": "urn:ietf:bcp:47",
+                  "code": "en",
+                  "display": "English"
+                }
+              ],
+              "text": "English"
+            },
+            "preferred": true
+          }
+        ],
+        "extension": [
+          {
+            "url": "urn:anchor:employment-status",
+            "valueCode": "employed_part_time"
+          }
+        ],
+        "meta": {
+          "tag": [
+            {
+              "system": "urn:anchor:demo-data",
+              "code": "synthetic"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "condition-02",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "F11.20",
+              "display": "Opioid dependence, uncomplicated"
+            }
+          ],
+          "text": "Opioid dependence, uncomplicated"
+        },
+        "subject": {
+          "reference": "Patient/patient-02"
+        },
+        "onsetDateTime": "2026-04-10",
+        "note": [
+          {
+            "text": "DSM-5 severe opioid use disorder"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Goal",
+        "id": "goal-02",
+        "lifecycleStatus": "active",
+        "description": {
+          "text": "Complete intensive outpatient (IOP) program without unplanned discharge"
+        },
+        "subject": {
+          "reference": "Patient/patient-02"
+        },
+        "target": [
+          {
+            "measure": {
+              "text": "IOP session attendance rate"
+            },
+            "dueDate": "2026-10-01"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "CarePlan",
+        "id": "careplan-02",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-care-plan",
+            "value": "ACP-02-2026"
+          }
+        ],
+        "title": "Personalized recovery plan for Casey Bennett",
+        "description": "Synthetic longitudinal behavioral-health recovery plan used for the Anchor demonstration.",
+        "status": "active",
+        "intent": "plan",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/us/core/CodeSystem/careplan-category",
+                "code": "assess-plan"
+              }
+            ],
+            "text": "Substance use disorder treatment plan"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/patient-02"
+        },
+        "created": "2026-04-10",
+        "author": {
+          "reference": "Practitioner/clinician-01",
+          "display": "Dr. Maya Chen (seeded/fictional)"
+        },
+        "careTeam": [
+          {
+            "reference": "CareTeam/careteam-patient-02"
+          }
+        ],
+        "addresses": [
+          {
+            "reference": "Condition/condition-02"
+          }
+        ],
+        "period": {
+          "start": "2026-04-10",
+          "end": "2026-10-01"
+        },
+        "goal": [
+          {
+            "reference": "Goal/goal-02"
+          }
+        ],
+        "activity": [
+          {
+            "detail": {
+              "status": "scheduled",
+              "description": "Daily sobriety check-in via Anchor voice agent",
+              "scheduledString": "Per individualized recovery schedule"
+            }
+          },
+          {
+            "detail": {
+              "status": "scheduled",
+              "description": "IOP attendance 3x/week",
+              "scheduledString": "Per individualized recovery schedule"
+            }
+          },
+          {
+            "detail": {
+              "status": "scheduled",
+              "description": "Medication-assisted treatment follow-up with prescribing clinician",
+              "scheduledString": "Per individualized recovery schedule"
+            }
+          }
+        ],
+        "note": [
+          {
+            "text": "Plan is clinician-authored synthetic demo data. Anchor may surface plan content but cannot diagnose, prescribe, or alter the plan."
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "CareTeam",
+        "id": "careteam-patient-02",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-patient-care-team",
+            "value": "PCT-02"
+          },
+          {
+            "system": "urn:anchor:operational-care-team",
+            "value": "ACT-01"
+          }
+        ],
+        "status": "active",
+        "name": "Harbor Recovery Team \u2014 patient-02",
+        "category": [
+          {
+            "text": "Behavioral health recovery management"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/patient-02"
+        },
+        "period": {
+          "start": "2026-01-01"
+        },
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+1-212-555-0201",
+            "use": "work"
+          }
+        ],
+        "participant": [
+          {
+            "role": [
+              {
+                "text": "Addiction medicine physician"
+              }
+            ],
+            "member": {
+              "reference": "Practitioner/clinician-01",
+              "display": "Dr. Maya Chen (seeded/fictional)"
+            },
+            "period": {
+              "start": "2026-01-01"
+            }
+          }
+        ],
+        "note": [
+          {
+            "text": "Coverage hours: Mon-Fri 08:00-18:00."
+          },
+          {
+            "text": "Anchor (voice check-in agent) is NOT a CareTeam member and is not represented here. It is a patient-facing adherence/check-in tool that reads this record's CarePlan and Goal resources \u2014 it never makes a clinical judgment, diagnosis, or care decision on this team's behalf."
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "patient-03",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-mrn",
+            "value": "demo-patient-03"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "given": [
+              "Riley"
+            ],
+            "family": "Carter",
+            "text": "Riley Carter"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+1-201-555-0103",
+            "use": "mobile"
+          },
+          {
+            "system": "email",
+            "value": "riley.carter@example.com",
+            "use": "home"
+          }
+        ],
+        "gender": "other",
+        "birthDate": "1995-11-02",
+        "address": [
+          {
+            "use": "home",
+            "type": "physical",
+            "text": "31 Grove Terrace, Jersey City, NJ 07302",
+            "line": [
+              "31 Grove Terrace"
+            ],
+            "city": "Jersey City",
+            "state": "NJ",
+            "postalCode": "07302",
+            "country": "US"
+          }
+        ],
+        "maritalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+              "code": "S",
+              "display": "Never Married"
+            }
+          ],
+          "text": "Never Married"
+        },
+        "communication": [
+          {
+            "language": {
+              "coding": [
+                {
+                  "system": "urn:ietf:bcp:47",
+                  "code": "en",
+                  "display": "English"
+                }
+              ],
+              "text": "English"
+            },
+            "preferred": true
+          }
+        ],
+        "extension": [
+          {
+            "url": "urn:anchor:employment-status",
+            "valueCode": "employed_full_time"
+          }
+        ],
+        "meta": {
+          "tag": [
+            {
+              "system": "urn:anchor:demo-data",
+              "code": "synthetic"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "condition-03",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "F14.10",
+              "display": "Cocaine abuse, uncomplicated"
+            }
+          ],
+          "text": "Cocaine abuse, uncomplicated"
+        },
+        "subject": {
+          "reference": "Patient/patient-03"
+        },
+        "onsetDateTime": "2026-06-05",
+        "note": [
+          {
+            "text": "DSM-5 mild stimulant (cocaine) use disorder"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Goal",
+        "id": "goal-03",
+        "lifecycleStatus": "active",
+        "description": {
+          "text": "Identify and log craving triggers for 4 consecutive weeks"
+        },
+        "subject": {
+          "reference": "Patient/patient-03"
+        },
+        "target": [
+          {
+            "measure": {
+              "text": "trigger log entries/week"
+            },
+            "dueDate": "2026-09-05"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "CarePlan",
+        "id": "careplan-03",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-care-plan",
+            "value": "ACP-03-2026"
+          }
+        ],
+        "title": "Personalized recovery plan for Riley Carter",
+        "description": "Synthetic longitudinal behavioral-health recovery plan used for the Anchor demonstration.",
+        "status": "active",
+        "intent": "plan",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/us/core/CodeSystem/careplan-category",
+                "code": "assess-plan"
+              }
+            ],
+            "text": "Substance use disorder treatment plan"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/patient-03"
+        },
+        "created": "2026-06-05",
+        "author": {
+          "reference": "Practitioner/clinician-01",
+          "display": "Dr. Maya Chen (seeded/fictional)"
+        },
+        "careTeam": [
+          {
+            "reference": "CareTeam/careteam-patient-03"
+          }
+        ],
+        "addresses": [
+          {
+            "reference": "Condition/condition-03"
+          }
+        ],
+        "period": {
+          "start": "2026-06-05",
+          "end": "2026-09-05"
+        },
+        "goal": [
+          {
+            "reference": "Goal/goal-03"
+          }
+        ],
+        "activity": [
+          {
+            "detail": {
+              "status": "scheduled",
+              "description": "Daily sobriety check-in via Anchor voice agent",
+              "scheduledString": "Per individualized recovery schedule"
+            }
+          },
+          {
+            "detail": {
+              "status": "scheduled",
+              "description": "Biweekly outpatient counseling session",
+              "scheduledString": "Per individualized recovery schedule"
+            }
+          }
+        ],
+        "note": [
+          {
+            "text": "Plan is clinician-authored synthetic demo data. Anchor may surface plan content but cannot diagnose, prescribe, or alter the plan."
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "CareTeam",
+        "id": "careteam-patient-03",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-patient-care-team",
+            "value": "PCT-03"
+          },
+          {
+            "system": "urn:anchor:operational-care-team",
+            "value": "ACT-02"
+          }
+        ],
+        "status": "active",
+        "name": "Northstar Recovery Team \u2014 patient-03",
+        "category": [
+          {
+            "text": "Behavioral health recovery management"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/patient-03"
+        },
+        "period": {
+          "start": "2026-01-01"
+        },
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+1-212-555-0202",
+            "use": "work"
+          }
+        ],
+        "participant": [
+          {
+            "role": [
+              {
+                "text": "Addiction medicine physician"
+              }
+            ],
+            "member": {
+              "reference": "Practitioner/clinician-01",
+              "display": "Dr. Maya Chen (seeded/fictional)"
+            },
+            "period": {
+              "start": "2026-01-01"
+            }
+          }
+        ],
+        "note": [
+          {
+            "text": "Coverage hours: Mon-Fri 09:00-19:00."
+          },
+          {
+            "text": "Anchor (voice check-in agent) is NOT a CareTeam member and is not represented here. It is a patient-facing adherence/check-in tool that reads this record's CarePlan and Goal resources \u2014 it never makes a clinical judgment, diagnosis, or care decision on this team's behalf."
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "patient-04",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-mrn",
+            "value": "demo-patient-04"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "given": [
+              "Morgan"
+            ],
+            "family": "Diaz",
+            "text": "Morgan Diaz"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+1-973-555-0104",
+            "use": "mobile"
+          },
+          {
+            "system": "email",
+            "value": "morgan.diaz@example.com",
+            "use": "home"
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1985-01-30",
+        "address": [
+          {
+            "use": "home",
+            "type": "physical",
+            "text": "407 Market Lane, Newark, NJ 07103",
+            "line": [
+              "407 Market Lane"
+            ],
+            "city": "Newark",
+            "state": "NJ",
+            "postalCode": "07103",
+            "country": "US"
+          }
+        ],
+        "maritalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+              "code": "D",
+              "display": "Divorced"
+            }
+          ],
+          "text": "Divorced"
+        },
+        "communication": [
+          {
+            "language": {
+              "coding": [
+                {
+                  "system": "urn:ietf:bcp:47",
+                  "code": "en",
+                  "display": "English"
+                }
+              ],
+              "text": "English"
+            },
+            "preferred": true
+          }
+        ],
+        "extension": [
+          {
+            "url": "urn:anchor:employment-status",
+            "valueCode": "unemployed"
+          }
+        ],
+        "meta": {
+          "tag": [
+            {
+              "system": "urn:anchor:demo-data",
+              "code": "synthetic"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "condition-04",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "F10.20",
+              "display": "Alcohol dependence, uncomplicated"
+            }
+          ],
+          "text": "Alcohol dependence, uncomplicated"
+        },
+        "subject": {
+          "reference": "Patient/patient-04"
+        },
+        "onsetDateTime": "2026-03-18",
+        "note": [
+          {
+            "text": "DSM-5 severe alcohol use disorder"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "condition-04b",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "F11.20",
+              "display": "Opioid dependence, uncomplicated"
+            }
+          ],
+          "text": "Opioid dependence, uncomplicated"
+        },
+        "subject": {
+          "reference": "Patient/patient-04"
+        },
+        "onsetDateTime": "2026-03-18",
+        "note": [
+          {
+            "text": "DSM-5 severe opioid use disorder \u2014 co-occurring, coded separately per current ICD-10-CM/DSM-5 guidance rather than a single 'polysubstance' code"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Goal",
+        "id": "goal-04",
+        "lifecycleStatus": "active",
+        "description": {
+          "text": "Complete IOP program with no positive screens"
+        },
+        "subject": {
+          "reference": "Patient/patient-04"
+        },
+        "target": [
+          {
+            "measure": {
+              "text": "screening result per session"
+            },
+            "dueDate": "2026-11-01"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "CarePlan",
+        "id": "careplan-04",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-care-plan",
+            "value": "ACP-04-2026"
+          }
+        ],
+        "title": "Personalized recovery plan for Morgan Diaz",
+        "description": "Synthetic longitudinal behavioral-health recovery plan used for the Anchor demonstration.",
+        "status": "active",
+        "intent": "plan",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/us/core/CodeSystem/careplan-category",
+                "code": "assess-plan"
+              }
+            ],
+            "text": "Substance use disorder treatment plan (court-referred)"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/patient-04"
+        },
+        "created": "2026-03-18",
+        "author": {
+          "reference": "Practitioner/clinician-01",
+          "display": "Dr. Maya Chen (seeded/fictional)"
+        },
+        "careTeam": [
+          {
+            "reference": "CareTeam/careteam-patient-04"
+          }
+        ],
+        "addresses": [
+          {
+            "reference": "Condition/condition-04"
+          },
+          {
+            "reference": "Condition/condition-04b"
+          }
+        ],
+        "period": {
+          "start": "2026-03-18",
+          "end": "2026-11-01"
+        },
+        "goal": [
+          {
+            "reference": "Goal/goal-04"
+          }
+        ],
+        "activity": [
+          {
+            "detail": {
+              "status": "scheduled",
+              "description": "Daily sobriety check-in via Anchor voice agent",
+              "scheduledString": "Per individualized recovery schedule"
+            }
+          },
+          {
+            "detail": {
+              "status": "scheduled",
+              "description": "IOP attendance 3x/week",
+              "scheduledString": "Per individualized recovery schedule"
+            }
+          },
+          {
+            "detail": {
+              "status": "scheduled",
+              "description": "Court-mandated progress reporting",
+              "scheduledString": "Per individualized recovery schedule"
+            }
+          }
+        ],
+        "note": [
+          {
+            "text": "Plan is clinician-authored synthetic demo data. Anchor may surface plan content but cannot diagnose, prescribe, or alter the plan."
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "CareTeam",
+        "id": "careteam-patient-04",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-patient-care-team",
+            "value": "PCT-04"
+          },
+          {
+            "system": "urn:anchor:operational-care-team",
+            "value": "ACT-02"
+          }
+        ],
+        "status": "active",
+        "name": "Northstar Recovery Team \u2014 patient-04",
+        "category": [
+          {
+            "text": "Behavioral health recovery management"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/patient-04"
+        },
+        "period": {
+          "start": "2026-01-01"
+        },
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+1-212-555-0202",
+            "use": "work"
+          }
+        ],
+        "participant": [
+          {
+            "role": [
+              {
+                "text": "Addiction medicine physician"
+              }
+            ],
+            "member": {
+              "reference": "Practitioner/clinician-01",
+              "display": "Dr. Maya Chen (seeded/fictional)"
+            },
+            "period": {
+              "start": "2026-01-01"
+            }
+          }
+        ],
+        "note": [
+          {
+            "text": "Coverage hours: Mon-Fri 09:00-19:00."
+          },
+          {
+            "text": "Anchor (voice check-in agent) is NOT a CareTeam member and is not represented here. It is a patient-facing adherence/check-in tool that reads this record's CarePlan and Goal resources \u2014 it never makes a clinical judgment, diagnosis, or care decision on this team's behalf."
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "patient-05",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-mrn",
+            "value": "demo-patient-05"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "given": [
+              "Avery"
+            ],
+            "family": "Ellis",
+            "text": "Avery Ellis"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+1-914-555-0105",
+            "use": "mobile"
+          },
+          {
+            "system": "email",
+            "value": "avery.ellis@example.com",
+            "use": "home"
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1979-09-09",
+        "address": [
+          {
+            "use": "home",
+            "type": "physical",
+            "text": "62 Parkview Road, Yonkers, NY 10701",
+            "line": [
+              "62 Parkview Road"
+            ],
+            "city": "Yonkers",
+            "state": "NY",
+            "postalCode": "10701",
+            "country": "US"
+          }
+        ],
+        "maritalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+              "code": "D",
+              "display": "Divorced"
+            }
+          ],
+          "text": "Divorced"
+        },
+        "communication": [
+          {
+            "language": {
+              "coding": [
+                {
+                  "system": "urn:ietf:bcp:47",
+                  "code": "en",
+                  "display": "English"
+                }
+              ],
+              "text": "English"
+            },
+            "preferred": true
+          }
+        ],
+        "extension": [
+          {
+            "url": "urn:anchor:employment-status",
+            "valueCode": "employed_part_time"
+          }
+        ],
+        "meta": {
+          "tag": [
+            {
+              "system": "urn:anchor:demo-data",
+              "code": "synthetic"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "condition-05",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "F10.20",
+              "display": "Alcohol dependence, uncomplicated"
+            }
+          ],
+          "text": "Alcohol dependence, uncomplicated"
+        },
+        "subject": {
+          "reference": "Patient/patient-05"
+        },
+        "onsetDateTime": "2026-02-27",
+        "note": [
+          {
+            "text": "DSM-5 severe alcohol use disorder"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Goal",
+        "id": "goal-05",
+        "lifecycleStatus": "active",
+        "description": {
+          "text": "Maintain abstinence through court review date"
+        },
+        "subject": {
+          "reference": "Patient/patient-05"
+        },
+        "target": [
+          {
+            "measure": {
+              "text": "self-reported drinking days + screening result"
+            },
+            "dueDate": "2026-12-15"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "CarePlan",
+        "id": "careplan-05",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-care-plan",
+            "value": "ACP-05-2026"
+          }
+        ],
+        "title": "Personalized recovery plan for Avery Ellis",
+        "description": "Synthetic longitudinal behavioral-health recovery plan used for the Anchor demonstration.",
+        "status": "active",
+        "intent": "plan",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/us/core/CodeSystem/careplan-category",
+                "code": "assess-plan"
+              }
+            ],
+            "text": "Substance use disorder treatment plan (court-referred)"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/patient-05"
+        },
+        "created": "2026-02-27",
+        "author": {
+          "reference": "Practitioner/clinician-01",
+          "display": "Dr. Maya Chen (seeded/fictional)"
+        },
+        "careTeam": [
+          {
+            "reference": "CareTeam/careteam-patient-05"
+          }
+        ],
+        "addresses": [
+          {
+            "reference": "Condition/condition-05"
+          }
+        ],
+        "period": {
+          "start": "2026-02-27",
+          "end": "2026-12-15"
+        },
+        "goal": [
+          {
+            "reference": "Goal/goal-05"
+          }
+        ],
+        "activity": [
+          {
+            "detail": {
+              "status": "scheduled",
+              "description": "Daily sobriety check-in via Anchor voice agent",
+              "scheduledString": "Per individualized recovery schedule"
+            }
+          },
+          {
+            "detail": {
+              "status": "scheduled",
+              "description": "IOP attendance 3x/week",
+              "scheduledString": "Per individualized recovery schedule"
+            }
+          },
+          {
+            "detail": {
+              "status": "scheduled",
+              "description": "Court-mandated progress reporting",
+              "scheduledString": "Per individualized recovery schedule"
+            }
+          }
+        ],
+        "note": [
+          {
+            "text": "Plan is clinician-authored synthetic demo data. Anchor may surface plan content but cannot diagnose, prescribe, or alter the plan."
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "CareTeam",
+        "id": "careteam-patient-05",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-patient-care-team",
+            "value": "PCT-05"
+          },
+          {
+            "system": "urn:anchor:operational-care-team",
+            "value": "ACT-03"
+          }
+        ],
+        "status": "active",
+        "name": "Bridgeway Recovery Team \u2014 patient-05",
+        "category": [
+          {
+            "text": "Behavioral health recovery management"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/patient-05"
+        },
+        "period": {
+          "start": "2026-02-01"
+        },
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+1-212-555-0203",
+            "use": "work"
+          }
+        ],
+        "participant": [
+          {
+            "role": [
+              {
+                "text": "Addiction medicine physician"
+              }
+            ],
+            "member": {
+              "reference": "Practitioner/clinician-01",
+              "display": "Dr. Maya Chen (seeded/fictional)"
+            },
+            "period": {
+              "start": "2026-02-01"
+            }
+          }
+        ],
+        "note": [
+          {
+            "text": "Coverage hours: Mon-Sat 08:00-17:00."
+          },
+          {
+            "text": "Anchor (voice check-in agent) is NOT a CareTeam member and is not represented here. It is a patient-facing adherence/check-in tool that reads this record's CarePlan and Goal resources \u2014 it never makes a clinical judgment, diagnosis, or care decision on this team's behalf."
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "patient-06",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-mrn",
+            "value": "demo-patient-06"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "given": [
+              "Quinn"
+            ],
+            "family": "Foster",
+            "text": "Quinn Foster"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+1-973-555-0106",
+            "use": "mobile"
+          },
+          {
+            "system": "email",
+            "value": "quinn.foster@example.com",
+            "use": "home"
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1990-05-17",
+        "address": [
+          {
+            "use": "home",
+            "type": "physical",
+            "text": "119 Willow Street, Paterson, NJ 07501",
+            "line": [
+              "119 Willow Street"
+            ],
+            "city": "Paterson",
+            "state": "NJ",
+            "postalCode": "07501",
+            "country": "US"
+          }
+        ],
+        "maritalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+              "code": "M",
+              "display": "Married"
+            }
+          ],
+          "text": "Married"
+        },
+        "communication": [
+          {
+            "language": {
+              "coding": [
+                {
+                  "system": "urn:ietf:bcp:47",
+                  "code": "en",
+                  "display": "English"
+                }
+              ],
+              "text": "English"
+            },
+            "preferred": true
+          }
+        ],
+        "extension": [
+          {
+            "url": "urn:anchor:employment-status",
+            "valueCode": "employed_full_time"
+          }
+        ],
+        "meta": {
+          "tag": [
+            {
+              "system": "urn:anchor:demo-data",
+              "code": "synthetic"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "condition-06",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "F11.20",
+              "display": "Opioid dependence, uncomplicated"
+            }
+          ],
+          "text": "Opioid dependence, uncomplicated"
+        },
+        "subject": {
+          "reference": "Patient/patient-06"
+        },
+        "onsetDateTime": "2026-05-22",
+        "note": [
+          {
+            "text": "DSM-5 moderate opioid use disorder"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Goal",
+        "id": "goal-06",
+        "lifecycleStatus": "active",
+        "description": {
+          "text": "Attend every scheduled outpatient session for 8 weeks"
+        },
+        "subject": {
+          "reference": "Patient/patient-06"
+        },
+        "target": [
+          {
+            "measure": {
+              "text": "session attendance rate"
+            },
+            "dueDate": "2026-09-30"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "CarePlan",
+        "id": "careplan-06",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-care-plan",
+            "value": "ACP-06-2026"
+          }
+        ],
+        "title": "Personalized recovery plan for Quinn Foster",
+        "description": "Synthetic longitudinal behavioral-health recovery plan used for the Anchor demonstration.",
+        "status": "active",
+        "intent": "plan",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/us/core/CodeSystem/careplan-category",
+                "code": "assess-plan"
+              }
+            ],
+            "text": "Substance use disorder treatment plan"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/patient-06"
+        },
+        "created": "2026-05-22",
+        "author": {
+          "reference": "Practitioner/clinician-01",
+          "display": "Dr. Maya Chen (seeded/fictional)"
+        },
+        "careTeam": [
+          {
+            "reference": "CareTeam/careteam-patient-06"
+          }
+        ],
+        "addresses": [
+          {
+            "reference": "Condition/condition-06"
+          }
+        ],
+        "period": {
+          "start": "2026-05-22",
+          "end": "2026-09-30"
+        },
+        "goal": [
+          {
+            "reference": "Goal/goal-06"
+          }
+        ],
+        "activity": [
+          {
+            "detail": {
+              "status": "scheduled",
+              "description": "Daily sobriety check-in via Anchor voice agent",
+              "scheduledString": "Per individualized recovery schedule"
+            }
+          },
+          {
+            "detail": {
+              "status": "scheduled",
+              "description": "Weekly outpatient counseling session",
+              "scheduledString": "Per individualized recovery schedule"
+            }
+          }
+        ],
+        "note": [
+          {
+            "text": "Plan is clinician-authored synthetic demo data. Anchor may surface plan content but cannot diagnose, prescribe, or alter the plan."
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "CareTeam",
+        "id": "careteam-patient-06",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-patient-care-team",
+            "value": "PCT-06"
+          },
+          {
+            "system": "urn:anchor:operational-care-team",
+            "value": "ACT-03"
+          }
+        ],
+        "status": "active",
+        "name": "Bridgeway Recovery Team \u2014 patient-06",
+        "category": [
+          {
+            "text": "Behavioral health recovery management"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/patient-06"
+        },
+        "period": {
+          "start": "2026-02-01"
+        },
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+1-212-555-0203",
+            "use": "work"
+          }
+        ],
+        "participant": [
+          {
+            "role": [
+              {
+                "text": "Addiction medicine physician"
+              }
+            ],
+            "member": {
+              "reference": "Practitioner/clinician-01",
+              "display": "Dr. Maya Chen (seeded/fictional)"
+            },
+            "period": {
+              "start": "2026-02-01"
+            }
+          }
+        ],
+        "note": [
+          {
+            "text": "Coverage hours: Mon-Sat 08:00-17:00."
+          },
+          {
+            "text": "Anchor (voice check-in agent) is NOT a CareTeam member and is not represented here. It is a patient-facing adherence/check-in tool that reads this record's CarePlan and Goal resources \u2014 it never makes a clinical judgment, diagnosis, or care decision on this team's behalf."
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "patient-07",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-mrn",
+            "value": "demo-patient-07"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "given": [
+              "Sage"
+            ],
+            "family": "Green",
+            "text": "Sage Green"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+1-203-555-0107",
+            "use": "mobile"
+          },
+          {
+            "system": "email",
+            "value": "sage.green@example.com",
+            "use": "home"
+          }
+        ],
+        "gender": "other",
+        "birthDate": "1999-12-01",
+        "address": [
+          {
+            "use": "home",
+            "type": "physical",
+            "text": "53 Chapel Court, New Haven, CT 06510",
+            "line": [
+              "53 Chapel Court"
+            ],
+            "city": "New Haven",
+            "state": "CT",
+            "postalCode": "06510",
+            "country": "US"
+          }
+        ],
+        "maritalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+              "code": "S",
+              "display": "Never Married"
+            }
+          ],
+          "text": "Never Married"
+        },
+        "communication": [
+          {
+            "language": {
+              "coding": [
+                {
+                  "system": "urn:ietf:bcp:47",
+                  "code": "en",
+                  "display": "English"
+                }
+              ],
+              "text": "English"
+            },
+            "preferred": true
+          }
+        ],
+        "extension": [
+          {
+            "url": "urn:anchor:employment-status",
+            "valueCode": "student_part_time"
+          }
+        ],
+        "meta": {
+          "tag": [
+            {
+              "system": "urn:anchor:demo-data",
+              "code": "synthetic"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "condition-07",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "F12.10",
+              "display": "Cannabis abuse, uncomplicated"
+            }
+          ],
+          "text": "Cannabis abuse, uncomplicated"
+        },
+        "subject": {
+          "reference": "Patient/patient-07"
+        },
+        "onsetDateTime": "2026-06-30",
+        "note": [
+          {
+            "text": "DSM-5 mild cannabis use disorder"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Goal",
+        "id": "goal-07",
+        "lifecycleStatus": "active",
+        "description": {
+          "text": "Reduce use frequency to zero across a 4-week window"
+        },
+        "subject": {
+          "reference": "Patient/patient-07"
+        },
+        "target": [
+          {
+            "measure": {
+              "text": "self-reported use days/week"
+            },
+            "dueDate": "2026-08-30"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "CarePlan",
+        "id": "careplan-07",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-care-plan",
+            "value": "ACP-07-2026"
+          }
+        ],
+        "title": "Personalized recovery plan for Sage Green",
+        "description": "Synthetic longitudinal behavioral-health recovery plan used for the Anchor demonstration.",
+        "status": "active",
+        "intent": "plan",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/us/core/CodeSystem/careplan-category",
+                "code": "assess-plan"
+              }
+            ],
+            "text": "Substance use disorder treatment plan"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/patient-07"
+        },
+        "created": "2026-06-30",
+        "author": {
+          "reference": "Practitioner/clinician-02",
+          "display": "Dr. Liam Patel (seeded/fictional)"
+        },
+        "careTeam": [
+          {
+            "reference": "CareTeam/careteam-patient-07"
+          }
+        ],
+        "addresses": [
+          {
+            "reference": "Condition/condition-07"
+          }
+        ],
+        "period": {
+          "start": "2026-06-30",
+          "end": "2026-08-30"
+        },
+        "goal": [
+          {
+            "reference": "Goal/goal-07"
+          }
+        ],
+        "activity": [
+          {
+            "detail": {
+              "status": "scheduled",
+              "description": "Daily sobriety check-in via Anchor voice agent",
+              "scheduledString": "Per individualized recovery schedule"
+            }
+          },
+          {
+            "detail": {
+              "status": "scheduled",
+              "description": "Biweekly outpatient counseling session",
+              "scheduledString": "Per individualized recovery schedule"
+            }
+          }
+        ],
+        "note": [
+          {
+            "text": "Plan is clinician-authored synthetic demo data. Anchor may surface plan content but cannot diagnose, prescribe, or alter the plan."
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "CareTeam",
+        "id": "careteam-patient-07",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-patient-care-team",
+            "value": "PCT-07"
+          },
+          {
+            "system": "urn:anchor:operational-care-team",
+            "value": "ACT-04"
+          }
+        ],
+        "status": "active",
+        "name": "Horizon Recovery Team \u2014 patient-07",
+        "category": [
+          {
+            "text": "Behavioral health recovery management"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/patient-07"
+        },
+        "period": {
+          "start": "2026-02-01"
+        },
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+1-212-555-0204",
+            "use": "work"
+          }
+        ],
+        "participant": [
+          {
+            "role": [
+              {
+                "text": "Addiction medicine physician"
+              }
+            ],
+            "member": {
+              "reference": "Practitioner/clinician-02",
+              "display": "Dr. Liam Patel (seeded/fictional)"
+            },
+            "period": {
+              "start": "2026-02-01"
+            }
+          }
+        ],
+        "note": [
+          {
+            "text": "Coverage hours: Mon-Fri 08:00-20:00."
+          },
+          {
+            "text": "Anchor (voice check-in agent) is NOT a CareTeam member and is not represented here. It is a patient-facing adherence/check-in tool that reads this record's CarePlan and Goal resources \u2014 it never makes a clinical judgment, diagnosis, or care decision on this team's behalf."
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "patient-08",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-mrn",
+            "value": "demo-patient-08"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "given": [
+              "Drew"
+            ],
+            "family": "Hayes",
+            "text": "Drew Hayes"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+1-203-555-0108",
+            "use": "mobile"
+          },
+          {
+            "system": "email",
+            "value": "drew.hayes@example.com",
+            "use": "home"
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1983-08-08",
+        "address": [
+          {
+            "use": "home",
+            "type": "physical",
+            "text": "275 Harbor Drive, Stamford, CT 06901",
+            "line": [
+              "275 Harbor Drive"
+            ],
+            "city": "Stamford",
+            "state": "CT",
+            "postalCode": "06901",
+            "country": "US"
+          }
+        ],
+        "maritalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+              "code": "M",
+              "display": "Married"
+            }
+          ],
+          "text": "Married"
+        },
+        "communication": [
+          {
+            "language": {
+              "coding": [
+                {
+                  "system": "urn:ietf:bcp:47",
+                  "code": "en",
+                  "display": "English"
+                }
+              ],
+              "text": "English"
+            },
+            "preferred": true
+          }
+        ],
+        "extension": [
+          {
+            "url": "urn:anchor:employment-status",
+            "valueCode": "employed_full_time"
+          }
+        ],
+        "meta": {
+          "tag": [
+            {
+              "system": "urn:anchor:demo-data",
+              "code": "synthetic"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "condition-08",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "F15.20",
+              "display": "Other stimulant dependence, uncomplicated"
+            }
+          ],
+          "text": "Other stimulant dependence, uncomplicated"
+        },
+        "subject": {
+          "reference": "Patient/patient-08"
+        },
+        "onsetDateTime": "2026-04-14",
+        "note": [
+          {
+            "text": "DSM-5 moderate stimulant use disorder"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Goal",
+        "id": "goal-08",
+        "lifecycleStatus": "active",
+        "description": {
+          "text": "Sustain abstinence with negative screens for 60 days"
+        },
+        "subject": {
+          "reference": "Patient/patient-08"
+        },
+        "target": [
+          {
+            "measure": {
+              "text": "screening result per session"
+            },
+            "dueDate": "2026-11-14"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "CarePlan",
+        "id": "careplan-08",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-care-plan",
+            "value": "ACP-08-2026"
+          }
+        ],
+        "title": "Personalized recovery plan for Drew Hayes",
+        "description": "Synthetic longitudinal behavioral-health recovery plan used for the Anchor demonstration.",
+        "status": "active",
+        "intent": "plan",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/us/core/CodeSystem/careplan-category",
+                "code": "assess-plan"
+              }
+            ],
+            "text": "Substance use disorder treatment plan"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/patient-08"
+        },
+        "created": "2026-04-14",
+        "author": {
+          "reference": "Practitioner/clinician-02",
+          "display": "Dr. Liam Patel (seeded/fictional)"
+        },
+        "careTeam": [
+          {
+            "reference": "CareTeam/careteam-patient-08"
+          }
+        ],
+        "addresses": [
+          {
+            "reference": "Condition/condition-08"
+          }
+        ],
+        "period": {
+          "start": "2026-04-14",
+          "end": "2026-11-14"
+        },
+        "goal": [
+          {
+            "reference": "Goal/goal-08"
+          }
+        ],
+        "activity": [
+          {
+            "detail": {
+              "status": "scheduled",
+              "description": "Daily sobriety check-in via Anchor voice agent",
+              "scheduledString": "Per individualized recovery schedule"
+            }
+          },
+          {
+            "detail": {
+              "status": "scheduled",
+              "description": "Weekly outpatient counseling session",
+              "scheduledString": "Per individualized recovery schedule"
+            }
+          }
+        ],
+        "note": [
+          {
+            "text": "Plan is clinician-authored synthetic demo data. Anchor may surface plan content but cannot diagnose, prescribe, or alter the plan."
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "CareTeam",
+        "id": "careteam-patient-08",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-patient-care-team",
+            "value": "PCT-08"
+          },
+          {
+            "system": "urn:anchor:operational-care-team",
+            "value": "ACT-04"
+          }
+        ],
+        "status": "active",
+        "name": "Horizon Recovery Team \u2014 patient-08",
+        "category": [
+          {
+            "text": "Behavioral health recovery management"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/patient-08"
+        },
+        "period": {
+          "start": "2026-02-01"
+        },
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+1-212-555-0204",
+            "use": "work"
+          }
+        ],
+        "participant": [
+          {
+            "role": [
+              {
+                "text": "Addiction medicine physician"
+              }
+            ],
+            "member": {
+              "reference": "Practitioner/clinician-02",
+              "display": "Dr. Liam Patel (seeded/fictional)"
+            },
+            "period": {
+              "start": "2026-02-01"
+            }
+          }
+        ],
+        "note": [
+          {
+            "text": "Coverage hours: Mon-Fri 08:00-20:00."
+          },
+          {
+            "text": "Anchor (voice check-in agent) is NOT a CareTeam member and is not represented here. It is a patient-facing adherence/check-in tool that reads this record's CarePlan and Goal resources \u2014 it never makes a clinical judgment, diagnosis, or care decision on this team's behalf."
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "patient-09",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-mrn",
+            "value": "demo-patient-09"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "given": [
+              "Reese"
+            ],
+            "family": "Irving",
+            "text": "Reese Irving"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+1-718-555-0109",
+            "use": "mobile"
+          },
+          {
+            "system": "email",
+            "value": "reese.irving@example.com",
+            "use": "home"
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1997-02-19",
+        "address": [
+          {
+            "use": "home",
+            "type": "physical",
+            "text": "146 Belmont Avenue, Bronx, NY 10458",
+            "line": [
+              "146 Belmont Avenue"
+            ],
+            "city": "Bronx",
+            "state": "NY",
+            "postalCode": "10458",
+            "country": "US"
+          }
+        ],
+        "maritalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+              "code": "S",
+              "display": "Never Married"
+            }
+          ],
+          "text": "Never Married"
+        },
+        "communication": [
+          {
+            "language": {
+              "coding": [
+                {
+                  "system": "urn:ietf:bcp:47",
+                  "code": "en",
+                  "display": "English"
+                }
+              ],
+              "text": "English"
+            },
+            "preferred": true
+          }
+        ],
+        "extension": [
+          {
+            "url": "urn:anchor:employment-status",
+            "valueCode": "employed_full_time"
+          }
+        ],
+        "meta": {
+          "tag": [
+            {
+              "system": "urn:anchor:demo-data",
+              "code": "synthetic"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "condition-09",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "F10.10",
+              "display": "Alcohol abuse, uncomplicated"
+            }
+          ],
+          "text": "Alcohol abuse, uncomplicated"
+        },
+        "subject": {
+          "reference": "Patient/patient-09"
+        },
+        "onsetDateTime": "2026-07-01",
+        "note": [
+          {
+            "text": "DSM-5 mild alcohol use disorder"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Goal",
+        "id": "goal-09",
+        "lifecycleStatus": "active",
+        "description": {
+          "text": "Limit drinking to zero on weeknights for 6 weeks"
+        },
+        "subject": {
+          "reference": "Patient/patient-09"
+        },
+        "target": [
+          {
+            "measure": {
+              "text": "self-reported drinking days/week"
+            },
+            "dueDate": "2026-09-01"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "CarePlan",
+        "id": "careplan-09",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-care-plan",
+            "value": "ACP-09-2026"
+          }
+        ],
+        "title": "Personalized recovery plan for Reese Irving",
+        "description": "Synthetic longitudinal behavioral-health recovery plan used for the Anchor demonstration.",
+        "status": "active",
+        "intent": "plan",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/us/core/CodeSystem/careplan-category",
+                "code": "assess-plan"
+              }
+            ],
+            "text": "Substance use disorder treatment plan"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/patient-09"
+        },
+        "created": "2026-07-01",
+        "author": {
+          "reference": "Practitioner/clinician-02",
+          "display": "Dr. Liam Patel (seeded/fictional)"
+        },
+        "careTeam": [
+          {
+            "reference": "CareTeam/careteam-patient-09"
+          }
+        ],
+        "addresses": [
+          {
+            "reference": "Condition/condition-09"
+          }
+        ],
+        "period": {
+          "start": "2026-07-01",
+          "end": "2026-09-01"
+        },
+        "goal": [
+          {
+            "reference": "Goal/goal-09"
+          }
+        ],
+        "activity": [
+          {
+            "detail": {
+              "status": "scheduled",
+              "description": "Daily sobriety check-in via Anchor voice agent",
+              "scheduledString": "Per individualized recovery schedule"
+            }
+          },
+          {
+            "detail": {
+              "status": "scheduled",
+              "description": "Biweekly outpatient counseling session",
+              "scheduledString": "Per individualized recovery schedule"
+            }
+          }
+        ],
+        "note": [
+          {
+            "text": "Plan is clinician-authored synthetic demo data. Anchor may surface plan content but cannot diagnose, prescribe, or alter the plan."
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "CareTeam",
+        "id": "careteam-patient-09",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-patient-care-team",
+            "value": "PCT-09"
+          },
+          {
+            "system": "urn:anchor:operational-care-team",
+            "value": "ACT-05"
+          }
+        ],
+        "status": "active",
+        "name": "Pathfinder Recovery Team \u2014 patient-09",
+        "category": [
+          {
+            "text": "Behavioral health recovery management"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/patient-09"
+        },
+        "period": {
+          "start": "2026-03-01"
+        },
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+1-212-555-0205",
+            "use": "work"
+          }
+        ],
+        "participant": [
+          {
+            "role": [
+              {
+                "text": "Addiction medicine physician"
+              }
+            ],
+            "member": {
+              "reference": "Practitioner/clinician-02",
+              "display": "Dr. Liam Patel (seeded/fictional)"
+            },
+            "period": {
+              "start": "2026-03-01"
+            }
+          }
+        ],
+        "note": [
+          {
+            "text": "Coverage hours: Mon-Sat 09:00-18:00."
+          },
+          {
+            "text": "Anchor (voice check-in agent) is NOT a CareTeam member and is not represented here. It is a patient-facing adherence/check-in tool that reads this record's CarePlan and Goal resources \u2014 it never makes a clinical judgment, diagnosis, or care decision on this team's behalf."
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "patient-10",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-mrn",
+            "value": "demo-patient-bridge"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "given": [
+              "Cameron"
+            ],
+            "family": "James",
+            "text": "Cameron James"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+1-914-555-0110",
+            "use": "mobile"
+          },
+          {
+            "system": "email",
+            "value": "cameron.james@example.com",
+            "use": "home"
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1986-10-23",
+        "address": [
+          {
+            "use": "home",
+            "type": "physical",
+            "text": "90 Maple Crescent, White Plains, NY 10601",
+            "line": [
+              "90 Maple Crescent"
+            ],
+            "city": "White Plains",
+            "state": "NY",
+            "postalCode": "10601",
+            "country": "US"
+          }
+        ],
+        "maritalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+              "code": "L",
+              "display": "Legally Separated"
+            }
+          ],
+          "text": "Legally Separated"
+        },
+        "communication": [
+          {
+            "language": {
+              "coding": [
+                {
+                  "system": "urn:ietf:bcp:47",
+                  "code": "en",
+                  "display": "English"
+                }
+              ],
+              "text": "English"
+            },
+            "preferred": true
+          }
+        ],
+        "extension": [
+          {
+            "url": "urn:anchor:employment-status",
+            "valueCode": "employed_part_time"
+          }
+        ],
+        "meta": {
+          "tag": [
+            {
+              "system": "urn:anchor:demo-data",
+              "code": "synthetic"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "condition-10",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "F10.20",
+              "display": "Alcohol dependence, uncomplicated"
+            }
+          ],
+          "text": "Alcohol dependence, uncomplicated"
+        },
+        "subject": {
+          "reference": "Patient/patient-10"
+        },
+        "onsetDateTime": "2026-08-10",
+        "note": [
+          {
+            "text": "DSM-5 moderate alcohol use disorder \u2014 co-occurring referral to combined accountability + substance-treatment program"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Goal",
+        "id": "goal-10",
+        "lifecycleStatus": "active",
+        "description": {
+          "text": "Maintain abstinence through the wait for program intake"
+        },
+        "subject": {
+          "reference": "Patient/patient-10"
+        },
+        "target": [
+          {
+            "measure": {
+              "text": "self-reported drinking days + daily check-in engagement"
+            },
+            "dueDate": "2026-09-02"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "CarePlan",
+        "id": "careplan-10",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-care-plan",
+            "value": "ACP-10-2026"
+          }
+        ],
+        "title": "Personalized recovery plan for Cameron James",
+        "description": "Synthetic longitudinal behavioral-health recovery plan used for the Anchor demonstration.",
+        "status": "active",
+        "intent": "plan",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/us/core/CodeSystem/careplan-category",
+                "code": "assess-plan"
+              }
+            ],
+            "text": "Substance use disorder treatment plan \u2014 post-disclosure bridge to accountability program"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/patient-10"
+        },
+        "created": "2026-08-10",
+        "author": {
+          "reference": "Practitioner/clinician-02",
+          "display": "Dr. Liam Patel (seeded/fictional)"
+        },
+        "careTeam": [
+          {
+            "reference": "CareTeam/careteam-patient-10"
+          }
+        ],
+        "addresses": [
+          {
+            "reference": "Condition/condition-10"
+          }
+        ],
+        "period": {
+          "start": "2026-08-10",
+          "end": "2026-09-02"
+        },
+        "goal": [
+          {
+            "reference": "Goal/goal-10"
+          }
+        ],
+        "activity": [
+          {
+            "detail": {
+              "status": "scheduled",
+              "description": "Daily sobriety check-in via Anchor voice agent (bridge period only \u2014 does not replace the program)",
+              "scheduledString": "Per individualized recovery schedule"
+            }
+          },
+          {
+            "detail": {
+              "status": "scheduled",
+              "description": "Scheduled intake at Riverside Accountability & Recovery Program (seeded/fictional) \u2014 combined BIP + substance treatment, self-referral accepted",
+              "scheduledString": "Per individualized recovery schedule"
+            }
+          },
+          {
+            "detail": {
+              "status": "scheduled",
+              "description": "Any risk-shaped disclosure during a check-in routes to escalate_to_clinician() immediately \u2014 Anchor never assesses or acts on this itself",
+              "scheduledString": "Per individualized recovery schedule"
+            }
+          }
+        ],
+        "note": [
+          {
+            "text": "Plan is clinician-authored synthetic demo data. Anchor may surface plan content but cannot diagnose, prescribe, or alter the plan."
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "CareTeam",
+        "id": "careteam-patient-10",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-patient-care-team",
+            "value": "PCT-10"
+          },
+          {
+            "system": "urn:anchor:operational-care-team",
+            "value": "ACT-05"
+          }
+        ],
+        "status": "active",
+        "name": "Pathfinder Recovery Team \u2014 patient-10",
+        "category": [
+          {
+            "text": "Behavioral health recovery management"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/patient-10"
+        },
+        "period": {
+          "start": "2026-03-01"
+        },
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+1-212-555-0205",
+            "use": "work"
+          }
+        ],
+        "participant": [
+          {
+            "role": [
+              {
+                "text": "Addiction medicine physician"
+              }
+            ],
+            "member": {
+              "reference": "Practitioner/clinician-02",
+              "display": "Dr. Liam Patel (seeded/fictional)"
+            },
+            "period": {
+              "start": "2026-03-01"
+            }
+          }
+        ],
+        "note": [
+          {
+            "text": "Coverage hours: Mon-Sat 09:00-18:00."
+          },
+          {
+            "text": "Anchor (voice check-in agent) is NOT a CareTeam member and is not represented here. It is a patient-facing adherence/check-in tool that reads this record's CarePlan and Goal resources \u2014 it never makes a clinical judgment, diagnosis, or care decision on this team's behalf."
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "clinician-01",
+        "name": [
+          {
+            "use": "official",
+            "given": [
+              "Maya"
+            ],
+            "family": "Chen",
+            "text": "Dr. Maya Chen (seeded/fictional)"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "urn:anchor:synthetic-clinician-license",
+            "value": "SYN-NY-MD-1001"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+1-212-555-0101",
+            "use": "work"
+          },
+          {
+            "system": "email",
+            "value": "maya.chen@anchor-demo.example.com",
+            "use": "work"
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "urn:anchor:synthetic-qualification",
+                  "code": "addiction-medicine",
+                  "display": "Addiction medicine physician"
+                }
+              ],
+              "text": "Addiction medicine physician"
+            }
+          }
+        ],
+        "meta": {
+          "tag": [
+            {
+              "system": "urn:anchor:demo-data",
+              "code": "synthetic"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "clinician-02",
+        "name": [
+          {
+            "use": "official",
+            "given": [
+              "Liam"
+            ],
+            "family": "Patel",
+            "text": "Dr. Liam Patel (seeded/fictional)"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "urn:anchor:synthetic-clinician-license",
+            "value": "SYN-NY-MD-1002"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+1-212-555-0102",
+            "use": "work"
+          },
+          {
+            "system": "email",
+            "value": "liam.patel@anchor-demo.example.com",
+            "use": "work"
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "urn:anchor:synthetic-qualification",
+                  "code": "addiction-medicine",
+                  "display": "Addiction medicine physician"
+                }
+              ],
+              "text": "Addiction medicine physician"
+            }
+          }
+        ],
+        "meta": {
+          "tag": [
+            {
+              "system": "urn:anchor:demo-data",
+              "code": "synthetic"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Group",
+        "id": "patient-group-01",
+        "identifier": [
+          {
+            "system": "urn:anchor:operational-care-team",
+            "value": "ACT-01"
+          }
+        ],
+        "type": "person",
+        "actual": true,
+        "name": "Harbor Recovery Team patient cohort",
+        "quantity": 2,
+        "member": [
+          {
+            "entity": {
+              "reference": "Patient/patient-01"
+            }
+          },
+          {
+            "entity": {
+              "reference": "Patient/patient-02"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Group",
+        "id": "patient-group-02",
+        "identifier": [
+          {
+            "system": "urn:anchor:operational-care-team",
+            "value": "ACT-02"
+          }
+        ],
+        "type": "person",
+        "actual": true,
+        "name": "Northstar Recovery Team patient cohort",
+        "quantity": 2,
+        "member": [
+          {
+            "entity": {
+              "reference": "Patient/patient-03"
+            }
+          },
+          {
+            "entity": {
+              "reference": "Patient/patient-04"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Group",
+        "id": "patient-group-03",
+        "identifier": [
+          {
+            "system": "urn:anchor:operational-care-team",
+            "value": "ACT-03"
+          }
+        ],
+        "type": "person",
+        "actual": true,
+        "name": "Bridgeway Recovery Team patient cohort",
+        "quantity": 2,
+        "member": [
+          {
+            "entity": {
+              "reference": "Patient/patient-05"
+            }
+          },
+          {
+            "entity": {
+              "reference": "Patient/patient-06"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Group",
+        "id": "patient-group-04",
+        "identifier": [
+          {
+            "system": "urn:anchor:operational-care-team",
+            "value": "ACT-04"
+          }
+        ],
+        "type": "person",
+        "actual": true,
+        "name": "Horizon Recovery Team patient cohort",
+        "quantity": 2,
+        "member": [
+          {
+            "entity": {
+              "reference": "Patient/patient-07"
+            }
+          },
+          {
+            "entity": {
+              "reference": "Patient/patient-08"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Group",
+        "id": "patient-group-05",
+        "identifier": [
+          {
+            "system": "urn:anchor:operational-care-team",
+            "value": "ACT-05"
+          }
+        ],
+        "type": "person",
+        "actual": true,
+        "name": "Pathfinder Recovery Team patient cohort",
+        "quantity": 2,
+        "member": [
+          {
+            "entity": {
+              "reference": "Patient/patient-09"
+            }
+          },
+          {
+            "entity": {
+              "reference": "Patient/patient-10"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

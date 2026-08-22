@@ -1,0 +1,12 @@
+note_id,condition_id,note_text
+1,condition-01,DSM-5 moderate alcohol use disorder
+2,condition-02,DSM-5 severe opioid use disorder
+3,condition-03,DSM-5 mild stimulant (cocaine) use disorder
+4,condition-04,DSM-5 severe alcohol use disorder
+5,condition-04b,"DSM-5 severe opioid use disorder — co-occurring, coded separately per current ICD-10-CM/DSM-5 guidance rather than a single 'polysubstance' code"
+6,condition-05,DSM-5 severe alcohol use disorder
+7,condition-06,DSM-5 moderate opioid use disorder
+8,condition-07,DSM-5 mild cannabis use disorder
+9,condition-08,DSM-5 moderate stimulant use disorder
+10,condition-09,DSM-5 mild alcohol use disorder
+11,condition-10,DSM-5 moderate alcohol use disorder — co-occurring referral to combined accountability + substance-treatment program

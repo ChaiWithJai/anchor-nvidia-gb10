@@ -1,0 +1,11 @@
+note_id,care_team_id,note_text
+1,careteam-01,Coverage hours: Mon-Fri 08:00-18:00.
+2,careteam-01,"Anchor (voice check-in agent) is NOT a CareTeam member and is not represented here. It is a patient-facing adherence/check-in tool that reads this record's CarePlan and Goal resources — it never makes a clinical judgment, diagnosis, or care decision on this team's behalf."
+3,careteam-02,Coverage hours: Mon-Fri 09:00-19:00.
+4,careteam-02,"Anchor (voice check-in agent) is NOT a CareTeam member and is not represented here. It is a patient-facing adherence/check-in tool that reads this record's CarePlan and Goal resources — it never makes a clinical judgment, diagnosis, or care decision on this team's behalf."
+5,careteam-03,Coverage hours: Mon-Sat 08:00-17:00.
+6,careteam-03,"Anchor (voice check-in agent) is NOT a CareTeam member and is not represented here. It is a patient-facing adherence/check-in tool that reads this record's CarePlan and Goal resources — it never makes a clinical judgment, diagnosis, or care decision on this team's behalf."
+7,careteam-04,Coverage hours: Mon-Fri 08:00-20:00.
+8,careteam-04,"Anchor (voice check-in agent) is NOT a CareTeam member and is not represented here. It is a patient-facing adherence/check-in tool that reads this record's CarePlan and Goal resources — it never makes a clinical judgment, diagnosis, or care decision on this team's behalf."
+9,careteam-05,Coverage hours: Mon-Sat 09:00-18:00.
+10,careteam-05,"Anchor (voice check-in agent) is NOT a CareTeam member and is not represented here. It is a patient-facing adherence/check-in tool that reads this record's CarePlan and Goal resources — it never makes a clinical judgment, diagnosis, or care decision on this team's behalf."

@@ -1,0 +1,11 @@
+tag_id,patient_id,system,code
+1,patient-01,urn:anchor:demo-data,synthetic
+2,patient-02,urn:anchor:demo-data,synthetic
+3,patient-03,urn:anchor:demo-data,synthetic
+4,patient-04,urn:anchor:demo-data,synthetic
+5,patient-05,urn:anchor:demo-data,synthetic
+6,patient-06,urn:anchor:demo-data,synthetic
+7,patient-07,urn:anchor:demo-data,synthetic
+8,patient-08,urn:anchor:demo-data,synthetic
+9,patient-09,urn:anchor:demo-data,synthetic
+10,patient-10,urn:anchor:demo-data,synthetic

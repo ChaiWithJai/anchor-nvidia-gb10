@@ -1,0 +1,11 @@
+care_plan_id,patient_id,status,intent,period_start,period_end
+careplan-01,patient-01,active,plan,2026-05-01,2026-09-20
+careplan-02,patient-02,active,plan,2026-04-10,2026-10-01
+careplan-03,patient-03,active,plan,2026-06-05,2026-09-05
+careplan-04,patient-04,active,plan,2026-03-18,2026-11-01
+careplan-05,patient-05,active,plan,2026-02-27,2026-12-15
+careplan-06,patient-06,active,plan,2026-05-22,2026-09-30
+careplan-07,patient-07,active,plan,2026-06-30,2026-08-30
+careplan-08,patient-08,active,plan,2026-04-14,2026-11-14
+careplan-09,patient-09,active,plan,2026-07-01,2026-09-01
+careplan-10,patient-10,active,plan,2026-08-10,2026-09-02

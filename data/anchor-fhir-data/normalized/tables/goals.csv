@@ -1,0 +1,11 @@
+goal_id,patient_id,lifecycle_status,description
+goal-01,patient-01,active,Reduce drinking days to zero across a 30-day window
+goal-02,patient-02,active,Complete intensive outpatient (IOP) program without unplanned discharge
+goal-03,patient-03,active,Identify and log craving triggers for 4 consecutive weeks
+goal-04,patient-04,active,Complete IOP program with no positive screens
+goal-05,patient-05,active,Maintain abstinence through court review date
+goal-06,patient-06,active,Attend every scheduled outpatient session for 8 weeks
+goal-07,patient-07,active,Reduce use frequency to zero across a 4-week window
+goal-08,patient-08,active,Sustain abstinence with negative screens for 60 days
+goal-09,patient-09,active,Limit drinking to zero on weeknights for 6 weeks
+goal-10,patient-10,active,Maintain abstinence through the wait for program intake

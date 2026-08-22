@@ -1,0 +1,11 @@
+target_id,goal_id,measure,due_date
+1,goal-01,self-reported drinking days/week,2026-09-20
+2,goal-02,IOP session attendance rate,2026-10-01
+3,goal-03,trigger log entries/week,2026-09-05
+4,goal-04,screening result per session,2026-11-01
+5,goal-05,self-reported drinking days + screening result,2026-12-15
+6,goal-06,session attendance rate,2026-09-30
+7,goal-07,self-reported use days/week,2026-08-30
+8,goal-08,screening result per session,2026-11-14
+9,goal-09,self-reported drinking days/week,2026-09-01
+10,goal-10,self-reported drinking days + daily check-in engagement,2026-09-02

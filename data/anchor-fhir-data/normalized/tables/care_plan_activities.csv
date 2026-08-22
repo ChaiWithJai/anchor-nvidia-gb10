@@ -1,0 +1,25 @@
+activity_id,care_plan_id,position,description
+1,careplan-01,1,Daily sobriety check-in via Anchor voice agent
+2,careplan-01,2,Weekly outpatient counseling session
+3,careplan-02,1,Daily sobriety check-in via Anchor voice agent
+4,careplan-02,2,IOP attendance 3x/week
+5,careplan-02,3,Medication-assisted treatment follow-up with prescribing clinician
+6,careplan-03,1,Daily sobriety check-in via Anchor voice agent
+7,careplan-03,2,Biweekly outpatient counseling session
+8,careplan-04,1,Daily sobriety check-in via Anchor voice agent
+9,careplan-04,2,IOP attendance 3x/week
+10,careplan-04,3,Court-mandated progress reporting
+11,careplan-05,1,Daily sobriety check-in via Anchor voice agent
+12,careplan-05,2,IOP attendance 3x/week
+13,careplan-05,3,Court-mandated progress reporting
+14,careplan-06,1,Daily sobriety check-in via Anchor voice agent
+15,careplan-06,2,Weekly outpatient counseling session
+16,careplan-07,1,Daily sobriety check-in via Anchor voice agent
+17,careplan-07,2,Biweekly outpatient counseling session
+18,careplan-08,1,Daily sobriety check-in via Anchor voice agent
+19,careplan-08,2,Weekly outpatient counseling session
+20,careplan-09,1,Daily sobriety check-in via Anchor voice agent
+21,careplan-09,2,Biweekly outpatient counseling session
+22,careplan-10,1,Daily sobriety check-in via Anchor voice agent (bridge period only — does not replace the program)
+23,careplan-10,2,"Scheduled intake at Riverside Accountability & Recovery Program (seeded/fictional) — combined BIP + substance treatment, self-referral accepted"
+24,careplan-10,3,Any risk-shaped disclosure during a check-in routes to escalate_to_clinician() immediately — Anchor never assesses or acts on this itself

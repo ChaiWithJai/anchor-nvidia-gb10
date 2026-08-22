@@ -1,0 +1,597 @@
+[
+  {
+    "_id": "careplan-01",
+    "resourceType": "CarePlan",
+    "patientId": "patient-01",
+    "identifiers": [
+      {
+        "system": "urn:anchor:demo-care-plan",
+        "value": "ACP-01-2026"
+      }
+    ],
+    "title": "Personalized recovery plan for Jordan Mercer",
+    "description": "Synthetic longitudinal behavioral-health recovery plan used for the Anchor demonstration.",
+    "status": "active",
+    "intent": "plan",
+    "created": "2026-05-01",
+    "authorClinicianId": "clinician-01",
+    "careTeamId": "careteam-01",
+    "patientCareTeamId": "careteam-patient-01",
+    "conditionIds": [
+      "condition-01"
+    ],
+    "categories": [
+      {
+        "coding": [
+          {
+            "system": "http://hl7.org/fhir/us/core/CodeSystem/careplan-category",
+            "code": "assess-plan"
+          }
+        ],
+        "text": "Substance use disorder treatment plan"
+      }
+    ],
+    "period": {
+      "start": "2026-05-01",
+      "end": "2026-09-20"
+    },
+    "goalIds": [
+      "goal-01"
+    ],
+    "activities": [
+      {
+        "position": 1,
+        "status": "scheduled",
+        "description": "Daily sobriety check-in via Anchor voice agent",
+        "schedule": "Per individualized recovery schedule"
+      },
+      {
+        "position": 2,
+        "status": "scheduled",
+        "description": "Weekly outpatient counseling session",
+        "schedule": "Per individualized recovery schedule"
+      }
+    ],
+    "notes": [
+      "Plan is clinician-authored synthetic demo data. Anchor may surface plan content but cannot diagnose, prescribe, or alter the plan."
+    ]
+  },
+  {
+    "_id": "careplan-02",
+    "resourceType": "CarePlan",
+    "patientId": "patient-02",
+    "identifiers": [
+      {
+        "system": "urn:anchor:demo-care-plan",
+        "value": "ACP-02-2026"
+      }
+    ],
+    "title": "Personalized recovery plan for Casey Bennett",
+    "description": "Synthetic longitudinal behavioral-health recovery plan used for the Anchor demonstration.",
+    "status": "active",
+    "intent": "plan",
+    "created": "2026-04-10",
+    "authorClinicianId": "clinician-01",
+    "careTeamId": "careteam-01",
+    "patientCareTeamId": "careteam-patient-02",
+    "conditionIds": [
+      "condition-02"
+    ],
+    "categories": [
+      {
+        "coding": [
+          {
+            "system": "http://hl7.org/fhir/us/core/CodeSystem/careplan-category",
+            "code": "assess-plan"
+          }
+        ],
+        "text": "Substance use disorder treatment plan"
+      }
+    ],
+    "period": {
+      "start": "2026-04-10",
+      "end": "2026-10-01"
+    },
+    "goalIds": [
+      "goal-02"
+    ],
+    "activities": [
+      {
+        "position": 1,
+        "status": "scheduled",
+        "description": "Daily sobriety check-in via Anchor voice agent",
+        "schedule": "Per individualized recovery schedule"
+      },
+      {
+        "position": 2,
+        "status": "scheduled",
+        "description": "IOP attendance 3x/week",
+        "schedule": "Per individualized recovery schedule"
+      },
+      {
+        "position": 3,
+        "status": "scheduled",
+        "description": "Medication-assisted treatment follow-up with prescribing clinician",
+        "schedule": "Per individualized recovery schedule"
+      }
+    ],
+    "notes": [
+      "Plan is clinician-authored synthetic demo data. Anchor may surface plan content but cannot diagnose, prescribe, or alter the plan."
+    ]
+  },
+  {
+    "_id": "careplan-03",
+    "resourceType": "CarePlan",
+    "patientId": "patient-03",
+    "identifiers": [
+      {
+        "system": "urn:anchor:demo-care-plan",
+        "value": "ACP-03-2026"
+      }
+    ],
+    "title": "Personalized recovery plan for Riley Carter",
+    "description": "Synthetic longitudinal behavioral-health recovery plan used for the Anchor demonstration.",
+    "status": "active",
+    "intent": "plan",
+    "created": "2026-06-05",
+    "authorClinicianId": "clinician-01",
+    "careTeamId": "careteam-02",
+    "patientCareTeamId": "careteam-patient-03",
+    "conditionIds": [
+      "condition-03"
+    ],
+    "categories": [
+      {
+        "coding": [
+          {
+            "system": "http://hl7.org/fhir/us/core/CodeSystem/careplan-category",
+            "code": "assess-plan"
+          }
+        ],
+        "text": "Substance use disorder treatment plan"
+      }
+    ],
+    "period": {
+      "start": "2026-06-05",
+      "end": "2026-09-05"
+    },
+    "goalIds": [
+      "goal-03"
+    ],
+    "activities": [
+      {
+        "position": 1,
+        "status": "scheduled",
+        "description": "Daily sobriety check-in via Anchor voice agent",
+        "schedule": "Per individualized recovery schedule"
+      },
+      {
+        "position": 2,
+        "status": "scheduled",
+        "description": "Biweekly outpatient counseling session",
+        "schedule": "Per individualized recovery schedule"
+      }
+    ],
+    "notes": [
+      "Plan is clinician-authored synthetic demo data. Anchor may surface plan content but cannot diagnose, prescribe, or alter the plan."
+    ]
+  },
+  {
+    "_id": "careplan-04",
+    "resourceType": "CarePlan",
+    "patientId": "patient-04",
+    "identifiers": [
+      {
+        "system": "urn:anchor:demo-care-plan",
+        "value": "ACP-04-2026"
+      }
+    ],
+    "title": "Personalized recovery plan for Morgan Diaz",
+    "description": "Synthetic longitudinal behavioral-health recovery plan used for the Anchor demonstration.",
+    "status": "active",
+    "intent": "plan",
+    "created": "2026-03-18",
+    "authorClinicianId": "clinician-01",
+    "careTeamId": "careteam-02",
+    "patientCareTeamId": "careteam-patient-04",
+    "conditionIds": [
+      "condition-04",
+      "condition-04b"
+    ],
+    "categories": [
+      {
+        "coding": [
+          {
+            "system": "http://hl7.org/fhir/us/core/CodeSystem/careplan-category",
+            "code": "assess-plan"
+          }
+        ],
+        "text": "Substance use disorder treatment plan (court-referred)"
+      }
+    ],
+    "period": {
+      "start": "2026-03-18",
+      "end": "2026-11-01"
+    },
+    "goalIds": [
+      "goal-04"
+    ],
+    "activities": [
+      {
+        "position": 1,
+        "status": "scheduled",
+        "description": "Daily sobriety check-in via Anchor voice agent",
+        "schedule": "Per individualized recovery schedule"
+      },
+      {
+        "position": 2,
+        "status": "scheduled",
+        "description": "IOP attendance 3x/week",
+        "schedule": "Per individualized recovery schedule"
+      },
+      {
+        "position": 3,
+        "status": "scheduled",
+        "description": "Court-mandated progress reporting",
+        "schedule": "Per individualized recovery schedule"
+      }
+    ],
+    "notes": [
+      "Plan is clinician-authored synthetic demo data. Anchor may surface plan content but cannot diagnose, prescribe, or alter the plan."
+    ]
+  },
+  {
+    "_id": "careplan-05",
+    "resourceType": "CarePlan",
+    "patientId": "patient-05",
+    "identifiers": [
+      {
+        "system": "urn:anchor:demo-care-plan",
+        "value": "ACP-05-2026"
+      }
+    ],
+    "title": "Personalized recovery plan for Avery Ellis",
+    "description": "Synthetic longitudinal behavioral-health recovery plan used for the Anchor demonstration.",
+    "status": "active",
+    "intent": "plan",
+    "created": "2026-02-27",
+    "authorClinicianId": "clinician-01",
+    "careTeamId": "careteam-03",
+    "patientCareTeamId": "careteam-patient-05",
+    "conditionIds": [
+      "condition-05"
+    ],
+    "categories": [
+      {
+        "coding": [
+          {
+            "system": "http://hl7.org/fhir/us/core/CodeSystem/careplan-category",
+            "code": "assess-plan"
+          }
+        ],
+        "text": "Substance use disorder treatment plan (court-referred)"
+      }
+    ],
+    "period": {
+      "start": "2026-02-27",
+      "end": "2026-12-15"
+    },
+    "goalIds": [
+      "goal-05"
+    ],
+    "activities": [
+      {
+        "position": 1,
+        "status": "scheduled",
+        "description": "Daily sobriety check-in via Anchor voice agent",
+        "schedule": "Per individualized recovery schedule"
+      },
+      {
+        "position": 2,
+        "status": "scheduled",
+        "description": "IOP attendance 3x/week",
+        "schedule": "Per individualized recovery schedule"
+      },
+      {
+        "position": 3,
+        "status": "scheduled",
+        "description": "Court-mandated progress reporting",
+        "schedule": "Per individualized recovery schedule"
+      }
+    ],
+    "notes": [
+      "Plan is clinician-authored synthetic demo data. Anchor may surface plan content but cannot diagnose, prescribe, or alter the plan."
+    ]
+  },
+  {
+    "_id": "careplan-06",
+    "resourceType": "CarePlan",
+    "patientId": "patient-06",
+    "identifiers": [
+      {
+        "system": "urn:anchor:demo-care-plan",
+        "value": "ACP-06-2026"
+      }
+    ],
+    "title": "Personalized recovery plan for Quinn Foster",
+    "description": "Synthetic longitudinal behavioral-health recovery plan used for the Anchor demonstration.",
+    "status": "active",
+    "intent": "plan",
+    "created": "2026-05-22",
+    "authorClinicianId": "clinician-01",
+    "careTeamId": "careteam-03",
+    "patientCareTeamId": "careteam-patient-06",
+    "conditionIds": [
+      "condition-06"
+    ],
+    "categories": [
+      {
+        "coding": [
+          {
+            "system": "http://hl7.org/fhir/us/core/CodeSystem/careplan-category",
+            "code": "assess-plan"
+          }
+        ],
+        "text": "Substance use disorder treatment plan"
+      }
+    ],
+    "period": {
+      "start": "2026-05-22",
+      "end": "2026-09-30"
+    },
+    "goalIds": [
+      "goal-06"
+    ],
+    "activities": [
+      {
+        "position": 1,
+        "status": "scheduled",
+        "description": "Daily sobriety check-in via Anchor voice agent",
+        "schedule": "Per individualized recovery schedule"
+      },
+      {
+        "position": 2,
+        "status": "scheduled",
+        "description": "Weekly outpatient counseling session",
+        "schedule": "Per individualized recovery schedule"
+      }
+    ],
+    "notes": [
+      "Plan is clinician-authored synthetic demo data. Anchor may surface plan content but cannot diagnose, prescribe, or alter the plan."
+    ]
+  },
+  {
+    "_id": "careplan-07",
+    "resourceType": "CarePlan",
+    "patientId": "patient-07",
+    "identifiers": [
+      {
+        "system": "urn:anchor:demo-care-plan",
+        "value": "ACP-07-2026"
+      }
+    ],
+    "title": "Personalized recovery plan for Sage Green",
+    "description": "Synthetic longitudinal behavioral-health recovery plan used for the Anchor demonstration.",
+    "status": "active",
+    "intent": "plan",
+    "created": "2026-06-30",
+    "authorClinicianId": "clinician-02",
+    "careTeamId": "careteam-04",
+    "patientCareTeamId": "careteam-patient-07",
+    "conditionIds": [
+      "condition-07"
+    ],
+    "categories": [
+      {
+        "coding": [
+          {
+            "system": "http://hl7.org/fhir/us/core/CodeSystem/careplan-category",
+            "code": "assess-plan"
+          }
+        ],
+        "text": "Substance use disorder treatment plan"
+      }
+    ],
+    "period": {
+      "start": "2026-06-30",
+      "end": "2026-08-30"
+    },
+    "goalIds": [
+      "goal-07"
+    ],
+    "activities": [
+      {
+        "position": 1,
+        "status": "scheduled",
+        "description": "Daily sobriety check-in via Anchor voice agent",
+        "schedule": "Per individualized recovery schedule"
+      },
+      {
+        "position": 2,
+        "status": "scheduled",
+        "description": "Biweekly outpatient counseling session",
+        "schedule": "Per individualized recovery schedule"
+      }
+    ],
+    "notes": [
+      "Plan is clinician-authored synthetic demo data. Anchor may surface plan content but cannot diagnose, prescribe, or alter the plan."
+    ]
+  },
+  {
+    "_id": "careplan-08",
+    "resourceType": "CarePlan",
+    "patientId": "patient-08",
+    "identifiers": [
+      {
+        "system": "urn:anchor:demo-care-plan",
+        "value": "ACP-08-2026"
+      }
+    ],
+    "title": "Personalized recovery plan for Drew Hayes",
+    "description": "Synthetic longitudinal behavioral-health recovery plan used for the Anchor demonstration.",
+    "status": "active",
+    "intent": "plan",
+    "created": "2026-04-14",
+    "authorClinicianId": "clinician-02",
+    "careTeamId": "careteam-04",
+    "patientCareTeamId": "careteam-patient-08",
+    "conditionIds": [
+      "condition-08"
+    ],
+    "categories": [
+      {
+        "coding": [
+          {
+            "system": "http://hl7.org/fhir/us/core/CodeSystem/careplan-category",
+            "code": "assess-plan"
+          }
+        ],
+        "text": "Substance use disorder treatment plan"
+      }
+    ],
+    "period": {
+      "start": "2026-04-14",
+      "end": "2026-11-14"
+    },
+    "goalIds": [
+      "goal-08"
+    ],
+    "activities": [
+      {
+        "position": 1,
+        "status": "scheduled",
+        "description": "Daily sobriety check-in via Anchor voice agent",
+        "schedule": "Per individualized recovery schedule"
+      },
+      {
+        "position": 2,
+        "status": "scheduled",
+        "description": "Weekly outpatient counseling session",
+        "schedule": "Per individualized recovery schedule"
+      }
+    ],
+    "notes": [
+      "Plan is clinician-authored synthetic demo data. Anchor may surface plan content but cannot diagnose, prescribe, or alter the plan."
+    ]
+  },
+  {
+    "_id": "careplan-09",
+    "resourceType": "CarePlan",
+    "patientId": "patient-09",
+    "identifiers": [
+      {
+        "system": "urn:anchor:demo-care-plan",
+        "value": "ACP-09-2026"
+      }
+    ],
+    "title": "Personalized recovery plan for Reese Irving",
+    "description": "Synthetic longitudinal behavioral-health recovery plan used for the Anchor demonstration.",
+    "status": "active",
+    "intent": "plan",
+    "created": "2026-07-01",
+    "authorClinicianId": "clinician-02",
+    "careTeamId": "careteam-05",
+    "patientCareTeamId": "careteam-patient-09",
+    "conditionIds": [
+      "condition-09"
+    ],
+    "categories": [
+      {
+        "coding": [
+          {
+            "system": "http://hl7.org/fhir/us/core/CodeSystem/careplan-category",
+            "code": "assess-plan"
+          }
+        ],
+        "text": "Substance use disorder treatment plan"
+      }
+    ],
+    "period": {
+      "start": "2026-07-01",
+      "end": "2026-09-01"
+    },
+    "goalIds": [
+      "goal-09"
+    ],
+    "activities": [
+      {
+        "position": 1,
+        "status": "scheduled",
+        "description": "Daily sobriety check-in via Anchor voice agent",
+        "schedule": "Per individualized recovery schedule"
+      },
+      {
+        "position": 2,
+        "status": "scheduled",
+        "description": "Biweekly outpatient counseling session",
+        "schedule": "Per individualized recovery schedule"
+      }
+    ],
+    "notes": [
+      "Plan is clinician-authored synthetic demo data. Anchor may surface plan content but cannot diagnose, prescribe, or alter the plan."
+    ]
+  },
+  {
+    "_id": "careplan-10",
+    "resourceType": "CarePlan",
+    "patientId": "patient-10",
+    "identifiers": [
+      {
+        "system": "urn:anchor:demo-care-plan",
+        "value": "ACP-10-2026"
+      }
+    ],
+    "title": "Personalized recovery plan for Cameron James",
+    "description": "Synthetic longitudinal behavioral-health recovery plan used for the Anchor demonstration.",
+    "status": "active",
+    "intent": "plan",
+    "created": "2026-08-10",
+    "authorClinicianId": "clinician-02",
+    "careTeamId": "careteam-05",
+    "patientCareTeamId": "careteam-patient-10",
+    "conditionIds": [
+      "condition-10"
+    ],
+    "categories": [
+      {
+        "coding": [
+          {
+            "system": "http://hl7.org/fhir/us/core/CodeSystem/careplan-category",
+            "code": "assess-plan"
+          }
+        ],
+        "text": "Substance use disorder treatment plan — post-disclosure bridge to accountability program"
+      }
+    ],
+    "period": {
+      "start": "2026-08-10",
+      "end": "2026-09-02"
+    },
+    "goalIds": [
+      "goal-10"
+    ],
+    "activities": [
+      {
+        "position": 1,
+        "status": "scheduled",
+        "description": "Daily sobriety check-in via Anchor voice agent (bridge period only — does not replace the program)",
+        "schedule": "Per individualized recovery schedule"
+      },
+      {
+        "position": 2,
+        "status": "scheduled",
+        "description": "Scheduled intake at Riverside Accountability & Recovery Program (seeded/fictional) — combined BIP + substance treatment, self-referral accepted",
+        "schedule": "Per individualized recovery schedule"
+      },
+      {
+        "position": 3,
+        "status": "scheduled",
+        "description": "Any risk-shaped disclosure during a check-in routes to escalate_to_clinician() immediately — Anchor never assesses or acts on this itself",
+        "schedule": "Per individualized recovery schedule"
+      }
+    ],
+    "notes": [
+      "Plan is clinician-authored synthetic demo data. Anchor may surface plan content but cannot diagnose, prescribe, or alter the plan."
+    ]
+  }
+]

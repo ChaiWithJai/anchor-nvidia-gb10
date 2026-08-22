@@ -1,0 +1,96 @@
+[
+  {
+    "_id": "clinician-01",
+    "resourceType": "Practitioner",
+    "givenNames": [
+      "Maya"
+    ],
+    "familyName": "Chen",
+    "displayName": "Dr. Maya Chen (seeded/fictional)",
+    "identifiers": [
+      {
+        "system": "urn:anchor:synthetic-clinician-license",
+        "value": "SYN-NY-MD-1001"
+      }
+    ],
+    "telecom": [
+      {
+        "system": "phone",
+        "value": "+1-212-555-0101",
+        "use": "work"
+      },
+      {
+        "system": "email",
+        "value": "maya.chen@anchor-demo.example.com",
+        "use": "work"
+      }
+    ],
+    "qualifications": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "urn:anchor:synthetic-qualification",
+              "code": "addiction-medicine",
+              "display": "Addiction medicine physician"
+            }
+          ],
+          "text": "Addiction medicine physician"
+        }
+      }
+    ],
+    "tags": [
+      {
+        "system": "urn:anchor:demo-data",
+        "code": "synthetic"
+      }
+    ]
+  },
+  {
+    "_id": "clinician-02",
+    "resourceType": "Practitioner",
+    "givenNames": [
+      "Liam"
+    ],
+    "familyName": "Patel",
+    "displayName": "Dr. Liam Patel (seeded/fictional)",
+    "identifiers": [
+      {
+        "system": "urn:anchor:synthetic-clinician-license",
+        "value": "SYN-NY-MD-1002"
+      }
+    ],
+    "telecom": [
+      {
+        "system": "phone",
+        "value": "+1-212-555-0102",
+        "use": "work"
+      },
+      {
+        "system": "email",
+        "value": "liam.patel@anchor-demo.example.com",
+        "use": "work"
+      }
+    ],
+    "qualifications": [
+      {
+        "code": {
+          "coding": [
+            {
+              "system": "urn:anchor:synthetic-qualification",
+              "code": "addiction-medicine",
+              "display": "Addiction medicine physician"
+            }
+          ],
+          "text": "Addiction medicine physician"
+        }
+      }
+    ],
+    "tags": [
+      {
+        "system": "urn:anchor:demo-data",
+        "code": "synthetic"
+      }
+    ]
+  }
+]

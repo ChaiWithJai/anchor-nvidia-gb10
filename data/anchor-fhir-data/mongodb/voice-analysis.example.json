@@ -1,0 +1,95 @@
+{
+  "_id": "voice-analysis-seeded-001",
+  "patientId": "patient-01",
+  "careTeamId": "careteam-01",
+  "carePlanId": "careplan-01",
+  "pipelineStage": "ingested",
+  "call": {
+    "direction": "inbound",
+    "source": "seeded_wav",
+    "receivedAt": { "$date": "2026-08-22T14:00:00Z" },
+    "completedAt": null
+  },
+  "inputAudio": {
+    "driveUri": "drive://anchor-voice/raw/seeded-checkin-001.wav",
+    "mimeType": "audio/wav",
+    "sha256": null,
+    "durationMs": null,
+    "sampleRateHz": null,
+    "channels": null
+  },
+  "acousticAnalysis": {
+    "status": "pending",
+    "engine": "Kokoro",
+    "engineVersion": null,
+    "analyzedAt": null,
+    "features": {}
+  },
+  "transcription": {
+    "status": "pending",
+    "engine": "faster-whisper",
+    "modelVersion": null,
+    "language": null,
+    "text": null,
+    "confidence": null,
+    "transcribedAt": null
+  },
+  "riskAnalysis": {
+    "status": "pending",
+    "orchestrator": "NemoClaw",
+    "model": "Qwen 27B",
+    "tierId": null,
+    "tierRank": null,
+    "rationale": null,
+    "indicators": [],
+    "patternEvidence": {
+      "sameTriggerKey": null,
+      "consecutiveCheckIns": 0,
+      "missedGoalTargets": 0,
+      "ambiguousResponse": false,
+      "safetyRelevant": false,
+      "logicalCoherenceConcern": false
+    },
+    "action": {
+      "name": null,
+      "gated": false,
+      "gate": null,
+      "status": "pending_analysis"
+    },
+    "referenceUsage": {
+      "surfacedPatientFacingReferenceIds": [],
+      "clinicianOnlyReferenceIds": [],
+      "upstreamProgramResourceId": null
+    },
+    "escalation": {
+      "terminal": false,
+      "resolved": false,
+      "resolvedByClinicianId": null,
+      "resolvedAt": null
+    },
+    "analyzedAt": null
+  },
+  "guidance": {
+    "status": "pending",
+    "referenceLibraryVersion": null,
+    "responseText": null,
+    "generatedAt": null
+  },
+  "alert": {
+    "required": false,
+    "status": "pending_analysis",
+    "careTeamAlertedAt": null,
+    "reviewedAt": null,
+    "reviewedBy": null,
+    "escalatedToClinicianAt": null
+  },
+  "responseAudio": {
+    "status": "pending",
+    "engine": "Kokoro",
+    "driveUri": null,
+    "renderedAt": null,
+    "playedAt": null
+  },
+  "createdAt": { "$date": "2026-08-22T14:00:00Z" },
+  "updatedAt": { "$date": "2026-08-22T14:00:00Z" }
+}

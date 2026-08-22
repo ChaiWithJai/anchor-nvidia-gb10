@@ -1,0 +1,258 @@
+{
+  "resourceType": "Bundle",
+  "type": "collection",
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "clinician-01",
+        "name": [
+          {
+            "use": "official",
+            "given": [
+              "Maya"
+            ],
+            "family": "Chen",
+            "text": "Dr. Maya Chen (seeded/fictional)"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "urn:anchor:synthetic-clinician-license",
+            "value": "SYN-NY-MD-1001"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+1-212-555-0101",
+            "use": "work"
+          },
+          {
+            "system": "email",
+            "value": "maya.chen@anchor-demo.example.com",
+            "use": "work"
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "urn:anchor:synthetic-qualification",
+                  "code": "addiction-medicine",
+                  "display": "Addiction medicine physician"
+                }
+              ],
+              "text": "Addiction medicine physician"
+            }
+          }
+        ],
+        "meta": {
+          "tag": [
+            {
+              "system": "urn:anchor:demo-data",
+              "code": "synthetic"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "clinician-02",
+        "name": [
+          {
+            "use": "official",
+            "given": [
+              "Liam"
+            ],
+            "family": "Patel",
+            "text": "Dr. Liam Patel (seeded/fictional)"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "urn:anchor:synthetic-clinician-license",
+            "value": "SYN-NY-MD-1002"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+1-212-555-0102",
+            "use": "work"
+          },
+          {
+            "system": "email",
+            "value": "liam.patel@anchor-demo.example.com",
+            "use": "work"
+          }
+        ],
+        "qualification": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "urn:anchor:synthetic-qualification",
+                  "code": "addiction-medicine",
+                  "display": "Addiction medicine physician"
+                }
+              ],
+              "text": "Addiction medicine physician"
+            }
+          }
+        ],
+        "meta": {
+          "tag": [
+            {
+              "system": "urn:anchor:demo-data",
+              "code": "synthetic"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Group",
+        "id": "patient-group-01",
+        "identifier": [
+          {
+            "system": "urn:anchor:operational-care-team",
+            "value": "ACT-01"
+          }
+        ],
+        "type": "person",
+        "actual": true,
+        "name": "Harbor Recovery Team patient cohort",
+        "quantity": 2,
+        "member": [
+          {
+            "entity": {
+              "reference": "Patient/patient-01"
+            }
+          },
+          {
+            "entity": {
+              "reference": "Patient/patient-02"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Group",
+        "id": "patient-group-02",
+        "identifier": [
+          {
+            "system": "urn:anchor:operational-care-team",
+            "value": "ACT-02"
+          }
+        ],
+        "type": "person",
+        "actual": true,
+        "name": "Northstar Recovery Team patient cohort",
+        "quantity": 2,
+        "member": [
+          {
+            "entity": {
+              "reference": "Patient/patient-03"
+            }
+          },
+          {
+            "entity": {
+              "reference": "Patient/patient-04"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Group",
+        "id": "patient-group-03",
+        "identifier": [
+          {
+            "system": "urn:anchor:operational-care-team",
+            "value": "ACT-03"
+          }
+        ],
+        "type": "person",
+        "actual": true,
+        "name": "Bridgeway Recovery Team patient cohort",
+        "quantity": 2,
+        "member": [
+          {
+            "entity": {
+              "reference": "Patient/patient-05"
+            }
+          },
+          {
+            "entity": {
+              "reference": "Patient/patient-06"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Group",
+        "id": "patient-group-04",
+        "identifier": [
+          {
+            "system": "urn:anchor:operational-care-team",
+            "value": "ACT-04"
+          }
+        ],
+        "type": "person",
+        "actual": true,
+        "name": "Horizon Recovery Team patient cohort",
+        "quantity": 2,
+        "member": [
+          {
+            "entity": {
+              "reference": "Patient/patient-07"
+            }
+          },
+          {
+            "entity": {
+              "reference": "Patient/patient-08"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Group",
+        "id": "patient-group-05",
+        "identifier": [
+          {
+            "system": "urn:anchor:operational-care-team",
+            "value": "ACT-05"
+          }
+        ],
+        "type": "person",
+        "actual": true,
+        "name": "Pathfinder Recovery Team patient cohort",
+        "quantity": 2,
+        "member": [
+          {
+            "entity": {
+              "reference": "Patient/patient-09"
+            }
+          },
+          {
+            "entity": {
+              "reference": "Patient/patient-10"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

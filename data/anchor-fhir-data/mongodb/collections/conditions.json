@@ -1,0 +1,365 @@
+[
+  {
+    "_id": "condition-01",
+    "resourceType": "Condition",
+    "patientId": "patient-01",
+    "clinicalStatus": {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+      "code": "active"
+    },
+    "verificationStatus": {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+      "code": "confirmed"
+    },
+    "categories": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+            "code": "problem-list-item"
+          }
+        ]
+      }
+    ],
+    "diagnosis": {
+      "system": "http://hl7.org/fhir/sid/icd-10-cm",
+      "code": "F10.20",
+      "display": "Alcohol dependence, uncomplicated",
+      "text": "Alcohol dependence, uncomplicated"
+    },
+    "onsetDateTime": "2026-05-01",
+    "notes": [
+      "DSM-5 moderate alcohol use disorder"
+    ]
+  },
+  {
+    "_id": "condition-02",
+    "resourceType": "Condition",
+    "patientId": "patient-02",
+    "clinicalStatus": {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+      "code": "active"
+    },
+    "verificationStatus": {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+      "code": "confirmed"
+    },
+    "categories": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+            "code": "problem-list-item"
+          }
+        ]
+      }
+    ],
+    "diagnosis": {
+      "system": "http://hl7.org/fhir/sid/icd-10-cm",
+      "code": "F11.20",
+      "display": "Opioid dependence, uncomplicated",
+      "text": "Opioid dependence, uncomplicated"
+    },
+    "onsetDateTime": "2026-04-10",
+    "notes": [
+      "DSM-5 severe opioid use disorder"
+    ]
+  },
+  {
+    "_id": "condition-03",
+    "resourceType": "Condition",
+    "patientId": "patient-03",
+    "clinicalStatus": {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+      "code": "active"
+    },
+    "verificationStatus": {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+      "code": "confirmed"
+    },
+    "categories": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+            "code": "problem-list-item"
+          }
+        ]
+      }
+    ],
+    "diagnosis": {
+      "system": "http://hl7.org/fhir/sid/icd-10-cm",
+      "code": "F14.10",
+      "display": "Cocaine abuse, uncomplicated",
+      "text": "Cocaine abuse, uncomplicated"
+    },
+    "onsetDateTime": "2026-06-05",
+    "notes": [
+      "DSM-5 mild stimulant (cocaine) use disorder"
+    ]
+  },
+  {
+    "_id": "condition-04",
+    "resourceType": "Condition",
+    "patientId": "patient-04",
+    "clinicalStatus": {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+      "code": "active"
+    },
+    "verificationStatus": {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+      "code": "confirmed"
+    },
+    "categories": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+            "code": "problem-list-item"
+          }
+        ]
+      }
+    ],
+    "diagnosis": {
+      "system": "http://hl7.org/fhir/sid/icd-10-cm",
+      "code": "F10.20",
+      "display": "Alcohol dependence, uncomplicated",
+      "text": "Alcohol dependence, uncomplicated"
+    },
+    "onsetDateTime": "2026-03-18",
+    "notes": [
+      "DSM-5 severe alcohol use disorder"
+    ]
+  },
+  {
+    "_id": "condition-04b",
+    "resourceType": "Condition",
+    "patientId": "patient-04",
+    "clinicalStatus": {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+      "code": "active"
+    },
+    "verificationStatus": {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+      "code": "confirmed"
+    },
+    "categories": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+            "code": "problem-list-item"
+          }
+        ]
+      }
+    ],
+    "diagnosis": {
+      "system": "http://hl7.org/fhir/sid/icd-10-cm",
+      "code": "F11.20",
+      "display": "Opioid dependence, uncomplicated",
+      "text": "Opioid dependence, uncomplicated"
+    },
+    "onsetDateTime": "2026-03-18",
+    "notes": [
+      "DSM-5 severe opioid use disorder — co-occurring, coded separately per current ICD-10-CM/DSM-5 guidance rather than a single 'polysubstance' code"
+    ]
+  },
+  {
+    "_id": "condition-05",
+    "resourceType": "Condition",
+    "patientId": "patient-05",
+    "clinicalStatus": {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+      "code": "active"
+    },
+    "verificationStatus": {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+      "code": "confirmed"
+    },
+    "categories": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+            "code": "problem-list-item"
+          }
+        ]
+      }
+    ],
+    "diagnosis": {
+      "system": "http://hl7.org/fhir/sid/icd-10-cm",
+      "code": "F10.20",
+      "display": "Alcohol dependence, uncomplicated",
+      "text": "Alcohol dependence, uncomplicated"
+    },
+    "onsetDateTime": "2026-02-27",
+    "notes": [
+      "DSM-5 severe alcohol use disorder"
+    ]
+  },
+  {
+    "_id": "condition-06",
+    "resourceType": "Condition",
+    "patientId": "patient-06",
+    "clinicalStatus": {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+      "code": "active"
+    },
+    "verificationStatus": {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+      "code": "confirmed"
+    },
+    "categories": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+            "code": "problem-list-item"
+          }
+        ]
+      }
+    ],
+    "diagnosis": {
+      "system": "http://hl7.org/fhir/sid/icd-10-cm",
+      "code": "F11.20",
+      "display": "Opioid dependence, uncomplicated",
+      "text": "Opioid dependence, uncomplicated"
+    },
+    "onsetDateTime": "2026-05-22",
+    "notes": [
+      "DSM-5 moderate opioid use disorder"
+    ]
+  },
+  {
+    "_id": "condition-07",
+    "resourceType": "Condition",
+    "patientId": "patient-07",
+    "clinicalStatus": {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+      "code": "active"
+    },
+    "verificationStatus": {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+      "code": "confirmed"
+    },
+    "categories": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+            "code": "problem-list-item"
+          }
+        ]
+      }
+    ],
+    "diagnosis": {
+      "system": "http://hl7.org/fhir/sid/icd-10-cm",
+      "code": "F12.10",
+      "display": "Cannabis abuse, uncomplicated",
+      "text": "Cannabis abuse, uncomplicated"
+    },
+    "onsetDateTime": "2026-06-30",
+    "notes": [
+      "DSM-5 mild cannabis use disorder"
+    ]
+  },
+  {
+    "_id": "condition-08",
+    "resourceType": "Condition",
+    "patientId": "patient-08",
+    "clinicalStatus": {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+      "code": "active"
+    },
+    "verificationStatus": {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+      "code": "confirmed"
+    },
+    "categories": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+            "code": "problem-list-item"
+          }
+        ]
+      }
+    ],
+    "diagnosis": {
+      "system": "http://hl7.org/fhir/sid/icd-10-cm",
+      "code": "F15.20",
+      "display": "Other stimulant dependence, uncomplicated",
+      "text": "Other stimulant dependence, uncomplicated"
+    },
+    "onsetDateTime": "2026-04-14",
+    "notes": [
+      "DSM-5 moderate stimulant use disorder"
+    ]
+  },
+  {
+    "_id": "condition-09",
+    "resourceType": "Condition",
+    "patientId": "patient-09",
+    "clinicalStatus": {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+      "code": "active"
+    },
+    "verificationStatus": {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+      "code": "confirmed"
+    },
+    "categories": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+            "code": "problem-list-item"
+          }
+        ]
+      }
+    ],
+    "diagnosis": {
+      "system": "http://hl7.org/fhir/sid/icd-10-cm",
+      "code": "F10.10",
+      "display": "Alcohol abuse, uncomplicated",
+      "text": "Alcohol abuse, uncomplicated"
+    },
+    "onsetDateTime": "2026-07-01",
+    "notes": [
+      "DSM-5 mild alcohol use disorder"
+    ]
+  },
+  {
+    "_id": "condition-10",
+    "resourceType": "Condition",
+    "patientId": "patient-10",
+    "clinicalStatus": {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+      "code": "active"
+    },
+    "verificationStatus": {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+      "code": "confirmed"
+    },
+    "categories": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+            "code": "problem-list-item"
+          }
+        ]
+      }
+    ],
+    "diagnosis": {
+      "system": "http://hl7.org/fhir/sid/icd-10-cm",
+      "code": "F10.20",
+      "display": "Alcohol dependence, uncomplicated",
+      "text": "Alcohol dependence, uncomplicated"
+    },
+    "onsetDateTime": "2026-08-10",
+    "notes": [
+      "DSM-5 moderate alcohol use disorder — co-occurring referral to combined accountability + substance-treatment program"
+    ]
+  }
+]

@@ -1,0 +1,765 @@
+[
+  {
+    "_id": "health-history-patient-01",
+    "patientId": "patient-01",
+    "asOfDate": "2026-08-22",
+    "synthetic": true,
+    "entries": [
+      {
+        "historyEntryId": "hh-p01-01",
+        "domain": "routine_sleep_biological",
+        "issueCode": "sleep_fragmentation",
+        "status": "active",
+        "severity": "moderate",
+        "firstObservedDate": "2026-05-10",
+        "lastObservedDate": "2026-08-15",
+        "evidenceSource": "patient_reported",
+        "summary": "Reports inconsistent sleep after stressful workdays, with tired evenings increasing vulnerability to cravings.",
+        "occurrenceCount": 2,
+        "consecutiveCheckIns": 1,
+        "relatedConditionIds": [
+          "condition-01"
+        ],
+        "relatedGoalIds": [
+          "goal-01"
+        ],
+        "recommendedReferenceIds": [
+          "ref-coping-box-breathing"
+        ],
+        "applicableTierId": "tier-1-mild"
+      },
+      {
+        "historyEntryId": "hh-p01-02",
+        "domain": "high_risk_lifestyle_trigger",
+        "issueCode": "halt_angry_anxious",
+        "status": "monitoring",
+        "severity": "mild",
+        "firstObservedDate": "2026-06-02",
+        "lastObservedDate": "2026-08-18",
+        "evidenceSource": "voice_check_in",
+        "summary": "Work-related tension has been described as an occasional evening craving trigger.",
+        "occurrenceCount": 2,
+        "consecutiveCheckIns": 1,
+        "relatedConditionIds": [
+          "condition-01"
+        ],
+        "relatedGoalIds": [
+          "goal-01"
+        ],
+        "recommendedReferenceIds": [
+          "ref-coping-urge-surfing"
+        ],
+        "applicableTierId": "tier-1-mild"
+      },
+      {
+        "historyEntryId": "hh-p01-03",
+        "domain": "emotional_psychological",
+        "issueCode": "low_distress_tolerance",
+        "status": "improving",
+        "severity": "mild",
+        "firstObservedDate": "2026-05-15",
+        "lastObservedDate": "2026-08-11",
+        "evidenceSource": "care_plan_review",
+        "summary": "Uses structured check-ins to practice pausing before responding to acute stress.",
+        "occurrenceCount": 2,
+        "consecutiveCheckIns": 0,
+        "relatedConditionIds": [
+          "condition-01"
+        ],
+        "relatedGoalIds": [
+          "goal-01"
+        ],
+        "recommendedReferenceIds": [
+          "ref-coping-box-breathing"
+        ],
+        "applicableTierId": "tier-1-mild"
+      }
+    ]
+  },
+  {
+    "_id": "health-history-patient-02",
+    "patientId": "patient-02",
+    "asOfDate": "2026-08-22",
+    "synthetic": true,
+    "entries": [
+      {
+        "historyEntryId": "hh-p02-01",
+        "domain": "routine_sleep_biological",
+        "issueCode": "lack_daily_structure",
+        "status": "improving",
+        "severity": "moderate",
+        "firstObservedDate": "2026-04-15",
+        "lastObservedDate": "2026-08-14",
+        "evidenceSource": "care_plan_review",
+        "summary": "Intensive outpatient scheduling is being used to rebuild a consistent weekday routine.",
+        "occurrenceCount": 2,
+        "consecutiveCheckIns": 0,
+        "relatedConditionIds": [
+          "condition-02"
+        ],
+        "relatedGoalIds": [
+          "goal-02"
+        ],
+        "recommendedReferenceIds": [
+          "ref-psychoed-craving-curve"
+        ],
+        "applicableTierId": "tier-1-mild"
+      },
+      {
+        "historyEntryId": "hh-p02-02",
+        "domain": "routine_sleep_biological",
+        "issueCode": "nutritional_depletion",
+        "status": "monitoring",
+        "severity": "mild",
+        "firstObservedDate": "2026-04-20",
+        "lastObservedDate": "2026-08-10",
+        "evidenceSource": "patient_reported",
+        "summary": "Irregular meals have occurred on high-demand treatment days and are tracked as a H.A.L.T. vulnerability.",
+        "occurrenceCount": 2,
+        "consecutiveCheckIns": 1,
+        "relatedConditionIds": [
+          "condition-02"
+        ],
+        "relatedGoalIds": [
+          "goal-02"
+        ],
+        "recommendedReferenceIds": [
+          "ref-psychoed-craving-curve"
+        ],
+        "applicableTierId": "tier-1-mild"
+      },
+      {
+        "historyEntryId": "hh-p02-03",
+        "domain": "employment_housing_financial",
+        "issueCode": "employment_disruption",
+        "status": "active",
+        "severity": "moderate",
+        "firstObservedDate": "2026-05-01",
+        "lastObservedDate": "2026-08-19",
+        "evidenceSource": "patient_reported",
+        "summary": "Treatment attendance and work scheduling create competing demands requiring ongoing coordination.",
+        "occurrenceCount": 2,
+        "consecutiveCheckIns": 1,
+        "relatedConditionIds": [
+          "condition-02"
+        ],
+        "relatedGoalIds": [
+          "goal-02"
+        ],
+        "recommendedReferenceIds": [],
+        "applicableTierId": "tier-1-mild"
+      }
+    ]
+  },
+  {
+    "_id": "health-history-patient-03",
+    "patientId": "patient-03",
+    "asOfDate": "2026-08-22",
+    "synthetic": true,
+    "entries": [
+      {
+        "historyEntryId": "hh-p03-01",
+        "domain": "social_environment_isolation",
+        "issueCode": "people_places_things_vulnerability",
+        "status": "active",
+        "severity": "moderate",
+        "firstObservedDate": "2026-06-20",
+        "lastObservedDate": "2026-08-20",
+        "evidenceSource": "voice_pattern",
+        "summary": "The same peer-group trigger has appeared in three consecutive check-ins and is ready for clinician pattern review.",
+        "occurrenceCount": 3,
+        "consecutiveCheckIns": 3,
+        "relatedConditionIds": [
+          "condition-03"
+        ],
+        "relatedGoalIds": [
+          "goal-03"
+        ],
+        "recommendedReferenceIds": [
+          "ref-coping-urge-surfing"
+        ],
+        "applicableTierId": "tier-2-moderate"
+      },
+      {
+        "historyEntryId": "hh-p03-02",
+        "domain": "social_environment_isolation",
+        "issueCode": "social_anxiety_reengagement",
+        "status": "monitoring",
+        "severity": "mild",
+        "firstObservedDate": "2026-07-01",
+        "lastObservedDate": "2026-08-12",
+        "evidenceSource": "patient_reported",
+        "summary": "Reports discomfort reconnecting with sober social activities without familiar peers.",
+        "occurrenceCount": 2,
+        "consecutiveCheckIns": 1,
+        "relatedConditionIds": [
+          "condition-03"
+        ],
+        "relatedGoalIds": [
+          "goal-03"
+        ],
+        "recommendedReferenceIds": [
+          "ref-coping-box-breathing"
+        ],
+        "applicableTierId": "tier-1-mild"
+      },
+      {
+        "historyEntryId": "hh-p03-03",
+        "domain": "routine_sleep_biological",
+        "issueCode": "lack_daily_structure",
+        "status": "active",
+        "severity": "mild",
+        "firstObservedDate": "2026-06-22",
+        "lastObservedDate": "2026-08-16",
+        "evidenceSource": "care_plan_review",
+        "summary": "Unstructured weekend time is being tracked alongside the craving-trigger logging goal.",
+        "occurrenceCount": 2,
+        "consecutiveCheckIns": 1,
+        "relatedConditionIds": [
+          "condition-03"
+        ],
+        "relatedGoalIds": [
+          "goal-03"
+        ],
+        "recommendedReferenceIds": [
+          "ref-psychoed-craving-curve"
+        ],
+        "applicableTierId": "tier-1-mild"
+      }
+    ]
+  },
+  {
+    "_id": "health-history-patient-04",
+    "patientId": "patient-04",
+    "asOfDate": "2026-08-22",
+    "synthetic": true,
+    "entries": [
+      {
+        "historyEntryId": "hh-p04-01",
+        "domain": "social_environment_isolation",
+        "issueCode": "relationship_family_strain",
+        "status": "active",
+        "severity": "moderate",
+        "firstObservedDate": "2026-03-15",
+        "lastObservedDate": "2026-08-17",
+        "evidenceSource": "patient_reported",
+        "summary": "Family trust and communication remain strained while treatment and court requirements are underway.",
+        "occurrenceCount": 2,
+        "consecutiveCheckIns": 1,
+        "relatedConditionIds": [
+          "condition-04",
+          "condition-04b"
+        ],
+        "relatedGoalIds": [
+          "goal-04"
+        ],
+        "recommendedReferenceIds": [
+          "ref-coping-box-breathing"
+        ],
+        "applicableTierId": "tier-1-mild"
+      },
+      {
+        "historyEntryId": "hh-p04-02",
+        "domain": "employment_housing_financial",
+        "issueCode": "financial_instability",
+        "status": "active",
+        "severity": "moderate",
+        "firstObservedDate": "2026-04-01",
+        "lastObservedDate": "2026-08-18",
+        "evidenceSource": "patient_reported",
+        "summary": "Treatment, transportation, and legal obligations are contributing to ongoing financial pressure.",
+        "occurrenceCount": 2,
+        "consecutiveCheckIns": 1,
+        "relatedConditionIds": [
+          "condition-04",
+          "condition-04b"
+        ],
+        "relatedGoalIds": [
+          "goal-04"
+        ],
+        "recommendedReferenceIds": [],
+        "applicableTierId": "tier-1-mild"
+      },
+      {
+        "historyEntryId": "hh-p04-03",
+        "domain": "emotional_psychological",
+        "issueCode": "executive_dysfunction",
+        "status": "monitoring",
+        "severity": "mild",
+        "firstObservedDate": "2026-04-12",
+        "lastObservedDate": "2026-08-08",
+        "evidenceSource": "care_plan_review",
+        "summary": "Multiple appointments and reporting requirements create decision fatigue and scheduling difficulty.",
+        "occurrenceCount": 2,
+        "consecutiveCheckIns": 0,
+        "relatedConditionIds": [
+          "condition-04",
+          "condition-04b"
+        ],
+        "relatedGoalIds": [
+          "goal-04"
+        ],
+        "recommendedReferenceIds": [
+          "ref-coping-box-breathing"
+        ],
+        "applicableTierId": "tier-1-mild"
+      }
+    ]
+  },
+  {
+    "_id": "health-history-patient-05",
+    "patientId": "patient-05",
+    "asOfDate": "2026-08-22",
+    "synthetic": true,
+    "entries": [
+      {
+        "historyEntryId": "hh-p05-01",
+        "domain": "employment_housing_financial",
+        "issueCode": "financial_instability",
+        "status": "active",
+        "severity": "moderate",
+        "firstObservedDate": "2026-02-15",
+        "lastObservedDate": "2026-08-18",
+        "evidenceSource": "patient_reported",
+        "summary": "Legal costs and reduced work availability are contributing to budget instability.",
+        "occurrenceCount": 2,
+        "consecutiveCheckIns": 1,
+        "relatedConditionIds": [
+          "condition-05"
+        ],
+        "relatedGoalIds": [
+          "goal-05"
+        ],
+        "recommendedReferenceIds": [],
+        "applicableTierId": "tier-1-mild"
+      },
+      {
+        "historyEntryId": "hh-p05-02",
+        "domain": "social_environment_isolation",
+        "issueCode": "relationship_family_strain",
+        "status": "monitoring",
+        "severity": "moderate",
+        "firstObservedDate": "2026-03-01",
+        "lastObservedDate": "2026-08-13",
+        "evidenceSource": "patient_reported",
+        "summary": "Rebuilding trust with family is an ongoing recovery concern.",
+        "occurrenceCount": 2,
+        "consecutiveCheckIns": 1,
+        "relatedConditionIds": [
+          "condition-05"
+        ],
+        "relatedGoalIds": [
+          "goal-05"
+        ],
+        "recommendedReferenceIds": [
+          "ref-coping-box-breathing"
+        ],
+        "applicableTierId": "tier-1-mild"
+      },
+      {
+        "historyEntryId": "hh-p05-03",
+        "domain": "high_risk_lifestyle_trigger",
+        "issueCode": "halt_tired",
+        "status": "active",
+        "severity": "mild",
+        "firstObservedDate": "2026-05-01",
+        "lastObservedDate": "2026-08-20",
+        "evidenceSource": "voice_check_in",
+        "summary": "Long days combining work, treatment, and reporting requirements occasionally produce high-risk fatigue.",
+        "occurrenceCount": 2,
+        "consecutiveCheckIns": 1,
+        "relatedConditionIds": [
+          "condition-05"
+        ],
+        "relatedGoalIds": [
+          "goal-05"
+        ],
+        "recommendedReferenceIds": [
+          "ref-psychoed-craving-curve"
+        ],
+        "applicableTierId": "tier-1-mild"
+      }
+    ]
+  },
+  {
+    "_id": "health-history-patient-06",
+    "patientId": "patient-06",
+    "asOfDate": "2026-08-22",
+    "synthetic": true,
+    "entries": [
+      {
+        "historyEntryId": "hh-p06-01",
+        "domain": "employment_housing_financial",
+        "issueCode": "appointment_adherence_barrier",
+        "status": "active",
+        "severity": "moderate",
+        "firstObservedDate": "2026-06-10",
+        "lastObservedDate": "2026-08-20",
+        "evidenceSource": "voice_pattern",
+        "summary": "Work-schedule conflicts affecting outpatient attendance have appeared in three consecutive check-ins.",
+        "occurrenceCount": 3,
+        "consecutiveCheckIns": 3,
+        "relatedConditionIds": [
+          "condition-06"
+        ],
+        "relatedGoalIds": [
+          "goal-06"
+        ],
+        "recommendedReferenceIds": [],
+        "applicableTierId": "tier-2-moderate"
+      },
+      {
+        "historyEntryId": "hh-p06-02",
+        "domain": "emotional_psychological",
+        "issueCode": "executive_dysfunction",
+        "status": "monitoring",
+        "severity": "mild",
+        "firstObservedDate": "2026-06-15",
+        "lastObservedDate": "2026-08-09",
+        "evidenceSource": "patient_reported",
+        "summary": "Scheduling and short-term planning become more difficult during high-workload weeks.",
+        "occurrenceCount": 2,
+        "consecutiveCheckIns": 1,
+        "relatedConditionIds": [
+          "condition-06"
+        ],
+        "relatedGoalIds": [
+          "goal-06"
+        ],
+        "recommendedReferenceIds": [
+          "ref-coping-box-breathing"
+        ],
+        "applicableTierId": "tier-1-mild"
+      },
+      {
+        "historyEntryId": "hh-p06-03",
+        "domain": "high_risk_lifestyle_trigger",
+        "issueCode": "halt_tired",
+        "status": "active",
+        "severity": "mild",
+        "firstObservedDate": "2026-06-18",
+        "lastObservedDate": "2026-08-14",
+        "evidenceSource": "voice_check_in",
+        "summary": "Fatigue after schedule disruptions is tracked as a situational vulnerability.",
+        "occurrenceCount": 2,
+        "consecutiveCheckIns": 1,
+        "relatedConditionIds": [
+          "condition-06"
+        ],
+        "relatedGoalIds": [
+          "goal-06"
+        ],
+        "recommendedReferenceIds": [
+          "ref-psychoed-craving-curve"
+        ],
+        "applicableTierId": "tier-1-mild"
+      }
+    ]
+  },
+  {
+    "_id": "health-history-patient-07",
+    "patientId": "patient-07",
+    "asOfDate": "2026-08-22",
+    "synthetic": true,
+    "entries": [
+      {
+        "historyEntryId": "hh-p07-01",
+        "domain": "emotional_psychological",
+        "issueCode": "anhedonia_emotional_flatness",
+        "status": "active",
+        "severity": "moderate",
+        "firstObservedDate": "2026-07-01",
+        "lastObservedDate": "2026-08-18",
+        "evidenceSource": "patient_reported",
+        "summary": "Previously enjoyable sober activities currently feel less rewarding during early recovery.",
+        "occurrenceCount": 2,
+        "consecutiveCheckIns": 1,
+        "relatedConditionIds": [
+          "condition-07"
+        ],
+        "relatedGoalIds": [
+          "goal-07"
+        ],
+        "recommendedReferenceIds": [
+          "ref-psychoed-craving-curve"
+        ],
+        "applicableTierId": "tier-1-mild"
+      },
+      {
+        "historyEntryId": "hh-p07-02",
+        "domain": "social_environment_isolation",
+        "issueCode": "social_isolation",
+        "status": "active",
+        "severity": "moderate",
+        "firstObservedDate": "2026-07-05",
+        "lastObservedDate": "2026-08-19",
+        "evidenceSource": "patient_reported",
+        "summary": "Reducing contact with substance-using peers has left evenings with limited supportive contact.",
+        "occurrenceCount": 2,
+        "consecutiveCheckIns": 1,
+        "relatedConditionIds": [
+          "condition-07"
+        ],
+        "relatedGoalIds": [
+          "goal-07"
+        ],
+        "recommendedReferenceIds": [
+          "ref-coping-urge-surfing"
+        ],
+        "applicableTierId": "tier-1-mild"
+      },
+      {
+        "historyEntryId": "hh-p07-03",
+        "domain": "social_environment_isolation",
+        "issueCode": "social_anxiety_reengagement",
+        "status": "monitoring",
+        "severity": "mild",
+        "firstObservedDate": "2026-07-12",
+        "lastObservedDate": "2026-08-11",
+        "evidenceSource": "voice_check_in",
+        "summary": "Sober social settings can feel uncomfortable but remain manageable within the call.",
+        "occurrenceCount": 1,
+        "consecutiveCheckIns": 1,
+        "relatedConditionIds": [
+          "condition-07"
+        ],
+        "relatedGoalIds": [
+          "goal-07"
+        ],
+        "recommendedReferenceIds": [
+          "ref-coping-box-breathing"
+        ],
+        "applicableTierId": "tier-1-mild"
+      }
+    ]
+  },
+  {
+    "_id": "health-history-patient-08",
+    "patientId": "patient-08",
+    "asOfDate": "2026-08-22",
+    "synthetic": true,
+    "entries": [
+      {
+        "historyEntryId": "hh-p08-01",
+        "domain": "routine_sleep_biological",
+        "issueCode": "sleep_fragmentation",
+        "status": "active",
+        "severity": "moderate",
+        "firstObservedDate": "2026-04-08",
+        "lastObservedDate": "2026-08-19",
+        "evidenceSource": "patient_reported",
+        "summary": "Irregular sleep timing and nighttime waking contribute to daytime fatigue.",
+        "occurrenceCount": 2,
+        "consecutiveCheckIns": 1,
+        "relatedConditionIds": [
+          "condition-08"
+        ],
+        "relatedGoalIds": [
+          "goal-08"
+        ],
+        "recommendedReferenceIds": [
+          "ref-coping-box-breathing"
+        ],
+        "applicableTierId": "tier-1-mild"
+      },
+      {
+        "historyEntryId": "hh-p08-02",
+        "domain": "routine_sleep_biological",
+        "issueCode": "nutritional_depletion",
+        "status": "improving",
+        "severity": "mild",
+        "firstObservedDate": "2026-04-15",
+        "lastObservedDate": "2026-08-10",
+        "evidenceSource": "care_plan_review",
+        "summary": "Meal consistency is improving but remains part of relapse-vulnerability monitoring.",
+        "occurrenceCount": 2,
+        "consecutiveCheckIns": 0,
+        "relatedConditionIds": [
+          "condition-08"
+        ],
+        "relatedGoalIds": [
+          "goal-08"
+        ],
+        "recommendedReferenceIds": [
+          "ref-psychoed-craving-curve"
+        ],
+        "applicableTierId": "tier-1-mild"
+      },
+      {
+        "historyEntryId": "hh-p08-03",
+        "domain": "emotional_psychological",
+        "issueCode": "executive_dysfunction",
+        "status": "monitoring",
+        "severity": "moderate",
+        "firstObservedDate": "2026-04-20",
+        "lastObservedDate": "2026-08-16",
+        "evidenceSource": "patient_reported",
+        "summary": "Brain fog and decision fatigue make multi-step daily tasks harder during periods of poor sleep.",
+        "occurrenceCount": 2,
+        "consecutiveCheckIns": 1,
+        "relatedConditionIds": [
+          "condition-08"
+        ],
+        "relatedGoalIds": [
+          "goal-08"
+        ],
+        "recommendedReferenceIds": [
+          "ref-coping-box-breathing"
+        ],
+        "applicableTierId": "tier-1-mild"
+      }
+    ]
+  },
+  {
+    "_id": "health-history-patient-09",
+    "patientId": "patient-09",
+    "asOfDate": "2026-08-22",
+    "synthetic": true,
+    "entries": [
+      {
+        "historyEntryId": "hh-p09-01",
+        "domain": "high_risk_lifestyle_trigger",
+        "issueCode": "halt_lonely",
+        "status": "active",
+        "severity": "moderate",
+        "firstObservedDate": "2026-06-10",
+        "lastObservedDate": "2026-08-20",
+        "evidenceSource": "voice_pattern",
+        "summary": "Lonely, unstructured weeknights have appeared in three consecutive check-ins and are ready for clinician pattern review.",
+        "occurrenceCount": 3,
+        "consecutiveCheckIns": 3,
+        "relatedConditionIds": [
+          "condition-09"
+        ],
+        "relatedGoalIds": [
+          "goal-09"
+        ],
+        "recommendedReferenceIds": [
+          "ref-coping-urge-surfing"
+        ],
+        "applicableTierId": "tier-2-moderate"
+      },
+      {
+        "historyEntryId": "hh-p09-02",
+        "domain": "high_risk_lifestyle_trigger",
+        "issueCode": "halt_angry_anxious",
+        "status": "monitoring",
+        "severity": "mild",
+        "firstObservedDate": "2026-06-18",
+        "lastObservedDate": "2026-08-12",
+        "evidenceSource": "patient_reported",
+        "summary": "Work frustration is an occasional weeknight trigger but has not formed a consecutive pattern.",
+        "occurrenceCount": 2,
+        "consecutiveCheckIns": 1,
+        "relatedConditionIds": [
+          "condition-09"
+        ],
+        "relatedGoalIds": [
+          "goal-09"
+        ],
+        "recommendedReferenceIds": [
+          "ref-coping-box-breathing"
+        ],
+        "applicableTierId": "tier-1-mild"
+      },
+      {
+        "historyEntryId": "hh-p09-03",
+        "domain": "routine_sleep_biological",
+        "issueCode": "lack_daily_structure",
+        "status": "active",
+        "severity": "mild",
+        "firstObservedDate": "2026-06-22",
+        "lastObservedDate": "2026-08-15",
+        "evidenceSource": "care_plan_review",
+        "summary": "Weeknight downtime lacks consistent planned activities and overlaps with the abstinence goal window.",
+        "occurrenceCount": 2,
+        "consecutiveCheckIns": 1,
+        "relatedConditionIds": [
+          "condition-09"
+        ],
+        "relatedGoalIds": [
+          "goal-09"
+        ],
+        "recommendedReferenceIds": [
+          "ref-psychoed-craving-curve"
+        ],
+        "applicableTierId": "tier-1-mild"
+      }
+    ]
+  },
+  {
+    "_id": "health-history-patient-10",
+    "patientId": "patient-10",
+    "asOfDate": "2026-08-22",
+    "synthetic": true,
+    "entries": [
+      {
+        "historyEntryId": "hh-p10-01",
+        "domain": "employment_housing_financial",
+        "issueCode": "program_access_gap",
+        "status": "active",
+        "severity": "moderate",
+        "firstObservedDate": "2026-07-20",
+        "lastObservedDate": "2026-08-20",
+        "evidenceSource": "care_plan_review",
+        "summary": "The period before scheduled program intake creates a temporary gap in structured support.",
+        "occurrenceCount": 2,
+        "consecutiveCheckIns": 1,
+        "relatedConditionIds": [
+          "condition-10"
+        ],
+        "relatedGoalIds": [
+          "goal-10"
+        ],
+        "recommendedReferenceIds": [],
+        "applicableTierId": "tier-1-mild"
+      },
+      {
+        "historyEntryId": "hh-p10-02",
+        "domain": "social_environment_isolation",
+        "issueCode": "social_isolation",
+        "status": "monitoring",
+        "severity": "moderate",
+        "firstObservedDate": "2026-07-25",
+        "lastObservedDate": "2026-08-18",
+        "evidenceSource": "patient_reported",
+        "summary": "Limited support during the intake waiting period makes evening check-ins especially important.",
+        "occurrenceCount": 2,
+        "consecutiveCheckIns": 1,
+        "relatedConditionIds": [
+          "condition-10"
+        ],
+        "relatedGoalIds": [
+          "goal-10"
+        ],
+        "recommendedReferenceIds": [
+          "ref-coping-urge-surfing"
+        ],
+        "applicableTierId": "tier-1-mild"
+      },
+      {
+        "historyEntryId": "hh-p10-03",
+        "domain": "high_risk_lifestyle_trigger",
+        "issueCode": "halt_angry_anxious",
+        "status": "active",
+        "severity": "mild",
+        "firstObservedDate": "2026-07-28",
+        "lastObservedDate": "2026-08-16",
+        "evidenceSource": "voice_check_in",
+        "summary": "Anxiety about the upcoming program transition is currently situational and clearly described.",
+        "occurrenceCount": 1,
+        "consecutiveCheckIns": 1,
+        "relatedConditionIds": [
+          "condition-10"
+        ],
+        "relatedGoalIds": [
+          "goal-10"
+        ],
+        "recommendedReferenceIds": [
+          "ref-coping-box-breathing"
+        ],
+        "applicableTierId": "tier-1-mild"
+      }
+    ]
+  }
+]

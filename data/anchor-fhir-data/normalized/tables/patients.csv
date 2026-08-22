@@ -1,0 +1,11 @@
+patient_id,gender,birth_date
+patient-01,male,1988-03-14
+patient-02,female,1992-07-22
+patient-03,other,1995-11-02
+patient-04,male,1985-01-30
+patient-05,female,1979-09-09
+patient-06,male,1990-05-17
+patient-07,other,1999-12-01
+patient-08,male,1983-08-08
+patient-09,female,1997-02-19
+patient-10,male,1986-10-23

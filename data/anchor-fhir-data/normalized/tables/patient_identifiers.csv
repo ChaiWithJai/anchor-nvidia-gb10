@@ -1,0 +1,11 @@
+identifier_id,patient_id,system,value
+1,patient-01,urn:anchor:demo-mrn,demo-patient-01
+2,patient-02,urn:anchor:demo-mrn,demo-patient-02
+3,patient-03,urn:anchor:demo-mrn,demo-patient-03
+4,patient-04,urn:anchor:demo-mrn,demo-patient-04
+5,patient-05,urn:anchor:demo-mrn,demo-patient-05
+6,patient-06,urn:anchor:demo-mrn,demo-patient-06
+7,patient-07,urn:anchor:demo-mrn,demo-patient-07
+8,patient-08,urn:anchor:demo-mrn,demo-patient-08
+9,patient-09,urn:anchor:demo-mrn,demo-patient-09
+10,patient-10,urn:anchor:demo-mrn,demo-patient-bridge

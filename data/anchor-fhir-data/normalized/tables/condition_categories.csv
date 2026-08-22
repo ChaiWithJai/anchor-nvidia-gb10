@@ -1,0 +1,12 @@
+category_id,condition_id,system,code,display
+1,condition-01,http://terminology.hl7.org/CodeSystem/condition-category,problem-list-item,
+2,condition-02,http://terminology.hl7.org/CodeSystem/condition-category,problem-list-item,
+3,condition-03,http://terminology.hl7.org/CodeSystem/condition-category,problem-list-item,
+4,condition-04,http://terminology.hl7.org/CodeSystem/condition-category,problem-list-item,
+5,condition-04b,http://terminology.hl7.org/CodeSystem/condition-category,problem-list-item,
+6,condition-05,http://terminology.hl7.org/CodeSystem/condition-category,problem-list-item,
+7,condition-06,http://terminology.hl7.org/CodeSystem/condition-category,problem-list-item,
+8,condition-07,http://terminology.hl7.org/CodeSystem/condition-category,problem-list-item,
+9,condition-08,http://terminology.hl7.org/CodeSystem/condition-category,problem-list-item,
+10,condition-09,http://terminology.hl7.org/CodeSystem/condition-category,problem-list-item,
+11,condition-10,http://terminology.hl7.org/CodeSystem/condition-category,problem-list-item,

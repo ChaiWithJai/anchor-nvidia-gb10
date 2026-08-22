@@ -1,0 +1,302 @@
+{
+  "resourceType": "Bundle",
+  "type": "collection",
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "patient-09",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-mrn",
+            "value": "demo-patient-09"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "given": [
+              "Reese"
+            ],
+            "family": "Irving",
+            "text": "Reese Irving"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+1-718-555-0109",
+            "use": "mobile"
+          },
+          {
+            "system": "email",
+            "value": "reese.irving@example.com",
+            "use": "home"
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1997-02-19",
+        "address": [
+          {
+            "use": "home",
+            "type": "physical",
+            "text": "146 Belmont Avenue, Bronx, NY 10458",
+            "line": [
+              "146 Belmont Avenue"
+            ],
+            "city": "Bronx",
+            "state": "NY",
+            "postalCode": "10458",
+            "country": "US"
+          }
+        ],
+        "maritalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+              "code": "S",
+              "display": "Never Married"
+            }
+          ],
+          "text": "Never Married"
+        },
+        "communication": [
+          {
+            "language": {
+              "coding": [
+                {
+                  "system": "urn:ietf:bcp:47",
+                  "code": "en",
+                  "display": "English"
+                }
+              ],
+              "text": "English"
+            },
+            "preferred": true
+          }
+        ],
+        "extension": [
+          {
+            "url": "urn:anchor:employment-status",
+            "valueCode": "employed_full_time"
+          }
+        ],
+        "meta": {
+          "tag": [
+            {
+              "system": "urn:anchor:demo-data",
+              "code": "synthetic"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "condition-09",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "problem-list-item"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "F10.10",
+              "display": "Alcohol abuse, uncomplicated"
+            }
+          ],
+          "text": "Alcohol abuse, uncomplicated"
+        },
+        "subject": {
+          "reference": "Patient/patient-09"
+        },
+        "onsetDateTime": "2026-07-01",
+        "note": [
+          {
+            "text": "DSM-5 mild alcohol use disorder"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Goal",
+        "id": "goal-09",
+        "lifecycleStatus": "active",
+        "description": {
+          "text": "Limit drinking to zero on weeknights for 6 weeks"
+        },
+        "subject": {
+          "reference": "Patient/patient-09"
+        },
+        "target": [
+          {
+            "measure": {
+              "text": "self-reported drinking days/week"
+            },
+            "dueDate": "2026-09-01"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "CarePlan",
+        "id": "careplan-09",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-care-plan",
+            "value": "ACP-09-2026"
+          }
+        ],
+        "title": "Personalized recovery plan for Reese Irving",
+        "description": "Synthetic longitudinal behavioral-health recovery plan used for the Anchor demonstration.",
+        "status": "active",
+        "intent": "plan",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/us/core/CodeSystem/careplan-category",
+                "code": "assess-plan"
+              }
+            ],
+            "text": "Substance use disorder treatment plan"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/patient-09"
+        },
+        "created": "2026-07-01",
+        "author": {
+          "reference": "Practitioner/clinician-02",
+          "display": "Dr. Liam Patel (seeded/fictional)"
+        },
+        "careTeam": [
+          {
+            "reference": "CareTeam/careteam-patient-09"
+          }
+        ],
+        "addresses": [
+          {
+            "reference": "Condition/condition-09"
+          }
+        ],
+        "period": {
+          "start": "2026-07-01",
+          "end": "2026-09-01"
+        },
+        "goal": [
+          {
+            "reference": "Goal/goal-09"
+          }
+        ],
+        "activity": [
+          {
+            "detail": {
+              "status": "scheduled",
+              "description": "Daily sobriety check-in via Anchor voice agent",
+              "scheduledString": "Per individualized recovery schedule"
+            }
+          },
+          {
+            "detail": {
+              "status": "scheduled",
+              "description": "Biweekly outpatient counseling session",
+              "scheduledString": "Per individualized recovery schedule"
+            }
+          }
+        ],
+        "note": [
+          {
+            "text": "Plan is clinician-authored synthetic demo data. Anchor may surface plan content but cannot diagnose, prescribe, or alter the plan."
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "CareTeam",
+        "id": "careteam-patient-09",
+        "identifier": [
+          {
+            "system": "urn:anchor:demo-patient-care-team",
+            "value": "PCT-09"
+          },
+          {
+            "system": "urn:anchor:operational-care-team",
+            "value": "ACT-05"
+          }
+        ],
+        "status": "active",
+        "name": "Pathfinder Recovery Team \u2014 patient-09",
+        "category": [
+          {
+            "text": "Behavioral health recovery management"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/patient-09"
+        },
+        "period": {
+          "start": "2026-03-01"
+        },
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+1-212-555-0205",
+            "use": "work"
+          }
+        ],
+        "participant": [
+          {
+            "role": [
+              {
+                "text": "Addiction medicine physician"
+              }
+            ],
+            "member": {
+              "reference": "Practitioner/clinician-02",
+              "display": "Dr. Liam Patel (seeded/fictional)"
+            },
+            "period": {
+              "start": "2026-03-01"
+            }
+          }
+        ],
+        "note": [
+          {
+            "text": "Coverage hours: Mon-Sat 09:00-18:00."
+          },
+          {
+            "text": "Anchor (voice check-in agent) is NOT a CareTeam member and is not represented here. It is a patient-facing adherence/check-in tool that reads this record's CarePlan and Goal resources \u2014 it never makes a clinical judgment, diagnosis, or care decision on this team's behalf."
+          }
+        ]
+      }
+    }
+  ]
+}

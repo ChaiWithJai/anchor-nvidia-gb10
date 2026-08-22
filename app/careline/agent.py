@@ -51,7 +51,7 @@ def _alert_reply(resident_id: str, severity: str) -> str:
         clauses.append(clause[:1].lower() + clause[1:])
     choices = ", ".join(clauses[:-1]) + f", or {clauses[-1]}"
     return (
-        f"{prefix} Right now you could {choices}. Which feels most doable?"
+        f"{prefix} You could {choices}. Which feels most doable?"
     )
 
 

@@ -85,6 +85,9 @@ def main() -> int:
     assert b"Needs attention now" in admin_page
     assert b"Anchor is calling" in patient_page
     assert b"GB10 live operations" in goal_page
+    assert b'id="performanceTab" class="tab" role="tab" aria-selected="true"' in goal_page
+    assert b'id="performance" class="surface" role="tabpanel" aria-labelledby="performanceTab">' in goal_page
+    assert b"Live NVIDIA GB10 profiler" in goal_page
     print("PASS interfaces: clinician console + patient phone call + live GB10 view")
 
     client_id = f"verify-{uuid.uuid4().hex}"

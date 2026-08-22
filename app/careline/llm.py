@@ -17,14 +17,15 @@ async def chat(
     temperature: float = 0.6,
     strong: bool = False,
     reasoning_budget: int | None = None,
+    max_tokens: int | None = None,
 ) -> str:
     del reasoning_budget
-    max_tokens = 240 if strong else TURN_MAX_TOKENS
+    token_limit = max_tokens or TURN_MAX_TOKENS
     payload = {
         "model": MODEL,
         "messages": messages,
         "temperature": temperature,
-        "max_tokens": max_tokens,
+        "max_tokens": token_limit,
         "chat_template_kwargs": {"enable_thinking": False},
     }
     async with httpx.AsyncClient(timeout=180) as client:
@@ -55,7 +56,9 @@ def _extract_json(raw: str) -> dict:
 
 
 async def chat_json(messages: list[dict], strong: bool = False) -> dict:
-    return _extract_json(await chat(messages, temperature=0.1, strong=strong))
+    return _extract_json(
+        await chat(messages, temperature=0.1, strong=strong, max_tokens=240 if strong else None)
+    )
 
 
 async def ready() -> bool:

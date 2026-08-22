@@ -8,7 +8,7 @@ from . import context, escalation, llm, memory
 ANCHOR_TEMPLATE = """You are Anchor: {name}'s steadier future self, speaking in their own consented cloned voice. They know this is a digital twin. This is a recovery-plan check-in, not therapy or medical care. Today is {today}.
 
 Guidelines:
-- Use short words and one or two sentences per turn. Ask only one question at a time.
+- Use at most 55 spoken words and one or two sentences per turn. Ask only one question at a time.
 - Check today's plan, craving intensity from 0-10, sleep, and the next coping step.
 - Use only the clinician-authored plan and allowed options below. Never invent treatment, diagnose, prescribe, or change the plan.
 - If they are struggling, offer 3-5 allowed options as things to try right now, not directives or promises.
@@ -56,7 +56,7 @@ class CallSession:
                 ),
             }
         ]
-        memory.start_call(self.id, resident_id)
+        memory.start_call(self.id, resident_id, name)
 
     async def open_call(self) -> str:
         if self.is_first_call:
@@ -84,7 +84,8 @@ class CallSession:
                     "content": (
                         f"A {alert['severity']} safety alert was just persisted for the on-call "
                         "clinician. Acknowledge this plainly in the next spoken response and stay "
-                        "within the clinician plan."
+                        "within the clinician plan. If offering choices, name exactly three inline, "
+                        "not as a list. The full response must fit within 55 spoken words."
                     ),
                 }
             )
@@ -115,5 +116,10 @@ class CallSession:
         summary = extraction.get("summary", "") if isinstance(extraction, dict) else ""
         if facts:
             memory.save_facts(self.resident_id, self.id, facts)
-        memory.end_call(self.id, summary, self.concern_score)
+        persisted_transcript = [
+            {"role": message["role"], "text": message["content"]}
+            for message in self.messages
+            if message["role"] in {"user", "assistant"}
+        ]
+        memory.end_call(self.id, summary, self.concern_score, persisted_transcript)
         return {"facts": facts, "summary": summary, "concern_score": self.concern_score}

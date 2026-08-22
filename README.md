@@ -1,19 +1,21 @@
 # Anchor NVIDIA GB10
 
-An NVIDIA-only hackathon proof of concept for an outbound "call yourself"
-experience. A local Nemotron model holds a short, memory-aware conversation and
-Sesame CSM-1B speaks every digital-twin turn in the enrolled, consented voice.
+An NVIDIA GB10 hackathon proof of concept for an outpatient recovery clinic.
+Anchor gives clinicians a local care-operations console and gives patients an
+outbound "call yourself" experience in an enrolled, consented voice.
 
-The first screen is the application, not a landing page: consent, ring, connect,
-talk by microphone or text, hear the clone, hang up, and see durable memories on
-the next call.
+The clinician authors the plan and reviews alerts, calls, transcripts, and an
+audit trail. The patient consents, answers, speaks by microphone or text, hears
+the clone, and hangs up. MongoDB carries the plan and call memory into the next
+check-in.
 
 ## NVIDIA stack
 
 - Dell Pro Max with GB10 (ARM64, CUDA compute capability 12.1)
 - `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4` served locally by NVIDIA vLLM
 - Sesame CSM-1B native Transformers inference on CUDA BF16
-- SQLite call summaries and cross-call memory on a named Docker volume
+- MongoDB 8 stores patients, plans, signals, calls, memories, alerts, and audit events
+- OpenClaw 2026.7.1 and NVIDIA OpenShell 0.0.106 from the offline T7 bundle
 - Browser SpeechRecognition for microphone input; no cloud inference
 
 The POC simulates the outbound phone lifecycle in the browser. It deliberately
@@ -31,13 +33,14 @@ export HACKATHON_BUNDLE=/media/dell/T7/hackathon-2026-08-22
 ./scripts/run-nvidia
 ```
 
-Open <http://127.0.0.1:8100/>. The launcher waits for both Nemotron and a real
-CSM synthesis, then runs the complete call workload before reporting ready.
+Open the clinician console at <http://127.0.0.1:8100/> and the patient call at
+<http://127.0.0.1:8100/patient>. The launcher waits for Nemotron, MongoDB, and a
+real CSM synthesis, then runs the complete workload before reporting ready.
 
 Repeat verification without rebuilding:
 
 ```bash
-CARELINE_BASE_URL=http://127.0.0.1:8100 python3 scripts/verify-nvidia.py
+ANCHOR_DEMO_URL=http://127.0.0.1:8100 python3 scripts/verify-nvidia.py
 ```
 
 ## Share across segmented Wi-Fi
@@ -53,10 +56,9 @@ export ANCHOR_DEMO_ACCESS_KEY='choose-a-private-team-code'
 The launcher restarts only the application with signed-cookie access enabled,
 starts a pinned Cloudflare quick-tunnel container, verifies that private APIs
 reject anonymous requests, and prints the temporary `trycloudflare.com` URL.
-Share the access code separately from the URL. Each browser receives a distinct
-resident ID so attendee memories do not mix.
+Share the access code separately from the URL. Use synthetic records only.
 
-Nemotron, CSM, deterministic escalation, and SQLite remain on the GB10. Remote
+Nemotron, CSM, deterministic escalation, and MongoDB remain on the GB10. Remote
 HTTP traffic is transported through Cloudflare, so do not describe shared mode
 as network-free or use it with real patient data. Quick tunnels are ephemeral,
 best-effort demo infrastructure, not a clinical deployment boundary.
@@ -82,3 +84,11 @@ prompt, readiness, consent, CUDA dtype, UI, and workload corrections.
 and model weights. Do not commit a voice reference or its transcript. Only use
 a voice with the owner's informed consent and disclose that the caller is a
 digital twin.
+
+## Safety boundary
+
+Anchor is a wellness workflow demo, not medical care. The twin can only use the
+clinician-authored plan and vetted self-directed options. Deterministic safety
+scoring persists concerning turns for human review; crisis language tells the
+patient to contact emergency or crisis services. It does not diagnose,
+prescribe, or autonomously change a care plan.

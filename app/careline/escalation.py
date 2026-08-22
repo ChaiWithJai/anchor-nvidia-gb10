@@ -65,8 +65,9 @@ async def check_and_alert(
         return running_score, alerted_severity, None
 
     reason = f"Recovery safety signals: {', '.join(hits)} (score {running_score})"
-    memory.save_alert(resident_id, call_id, reason, severity)
+    alert_id = memory.save_alert(resident_id, call_id, reason, severity)
     alert = {
+        "alert_id": alert_id,
         "resident_id": resident_id,
         "call_id": call_id,
         "reason": reason,

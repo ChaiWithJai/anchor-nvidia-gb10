@@ -7,9 +7,9 @@ from urllib.parse import parse_qs
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse, Response
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
-from . import context, llm, memory, tts
+from . import context, llm, memory, store, tts
 from .agent import CallSession
 
 from contextlib import asynccontextmanager
@@ -21,13 +21,14 @@ VOICE_READY = False
 @asynccontextmanager
 async def lifespan(app):
     global VOICE_READY
+    store.initialize()
     await CLONE_TTS.synthesize("Your digital twin is ready.")
     VOICE_READY = True
     yield
     VOICE_READY = False
 
 
-app = FastAPI(title="Anchor NVIDIA GB10", version="1.0.0", lifespan=lifespan)
+app = FastAPI(title="Anchor NVIDIA GB10", version="2.0.0", lifespan=lifespan)
 
 SESSIONS: dict[str, CallSession] = {}
 WEB_DIR = os.path.join(os.path.dirname(__file__), "..", "web")
@@ -86,6 +87,39 @@ class AmbientSignal(BaseModel):
     unit: str = ""
     status: str
 
+class PatientUpdate(BaseModel):
+
+    display_name: str | None = Field(default=None, max_length=80)
+    age_band: str | None = Field(default=None, max_length=20)
+    program: str | None = Field(default=None, max_length=120)
+    status: str | None = Field(default=None, max_length=30)
+    risk_band: str | None = Field(default=None, max_length=30)
+    next_check_in: str | None = Field(default=None, max_length=80)
+    clinician_name: str | None = Field(default=None, max_length=80)
+
+
+class CarePlanUpdate(BaseModel):
+    author: str = Field(min_length=2, max_length=80)
+    program: str = Field(min_length=2, max_length=120)
+    today: list[str]
+    check_in: list[str]
+    options: list[str]
+    on_call: str = Field(min_length=2, max_length=120)
+
+
+class AlertResolution(BaseModel):
+    resolved_by: str = Field(default="Dr. Maya Chen", min_length=2, max_length=80)
+    note: str = Field(min_length=2, max_length=300)
+
+
+def _validate_plan(body: CarePlanUpdate) -> None:
+    if not 1 <= len(body.today) <= 8 or not 1 <= len(body.check_in) <= 8:
+        raise HTTPException(400, "care plan requires 1-8 commitments and check-in topics")
+    if not 3 <= len(body.options) <= 8:
+        raise HTTPException(400, "care plan requires 3-8 clinician-approved options")
+    if any(not item.strip() or len(item) > 240 for item in body.today + body.check_in + body.options):
+        raise HTTPException(400, "care plan items must contain 1-240 characters")
+
 
 @app.middleware("http")
 async def require_demo_access(request: Request, call_next):
@@ -94,7 +128,7 @@ async def require_demo_access(request: Request, call_next):
     supplied = request.cookies.get(ACCESS_COOKIE, "")
     if hmac.compare_digest(supplied, _access_cookie_value()):
         return await call_next(request)
-    if request.method == "GET" and request.url.path == "/":
+    if request.method == "GET" and request.url.path in {"/", "/patient"}:
         return _login_page()
     return Response(
         "Authentication required",
@@ -138,17 +172,29 @@ async def index():
         headers={"Cache-Control": "no-store, max-age=0"},
     )
 
+@app.get("/patient")
+
+async def patient_experience():
+    return FileResponse(
+        os.path.join(WEB_DIR, "patient.html"),
+        headers={"Cache-Control": "no-store, max-age=0"},
+    )
+
+
 
 @app.get("/api/status")
 async def status():
     nemotron_ready = await llm.ready()
+    database = store.health()
     return {
-        "ready": nemotron_ready and VOICE_READY,
+        "ready": nemotron_ready and VOICE_READY and database["ready"],
         "runtime": "NVIDIA GB10",
         "llm": "Nemotron 3 Nano NVFP4",
         "voice": "Sesame CSM-1B CUDA",
         "nemotron_ready": nemotron_ready,
         "voice_ready": VOICE_READY,
+        "database_ready": database["ready"],
+        "database": database,
         "shared_access": bool(ACCESS_KEY),
     }
 
@@ -230,6 +276,54 @@ async def resident_memory(resident_id: str):
     }
 
 
+
+
+@app.get("/api/clinic/dashboard")
+async def clinic_dashboard():
+    return store.clinic_dashboard()
+
+
+@app.get("/api/clinic/patients")
+async def clinic_patients():
+    return {"patients": store.list_patients(), "synthetic_demo_data": True}
+
+
+@app.get("/api/clinic/patients/{patient_id}")
+async def clinic_patient(patient_id: str):
+    patient = store.get_patient(patient_id)
+    if not patient:
+        raise HTTPException(404, "unknown clinic patient")
+    return patient
+
+
+@app.put("/api/clinic/patients/{patient_id}")
+async def update_clinic_patient(patient_id: str, body: PatientUpdate):
+    patient = store.update_patient(patient_id, body.model_dump(), "Dr. Maya Chen")
+    if not patient:
+        raise HTTPException(404, "unknown clinic patient")
+    return patient
+
+
+@app.put("/api/clinic/patients/{patient_id}/plan")
+async def update_clinic_plan(patient_id: str, body: CarePlanUpdate):
+    _validate_plan(body)
+    plan = store.update_plan(patient_id, body.model_dump(), body.author)
+    if not plan:
+        raise HTTPException(404, "unknown clinic patient")
+    return plan
+
+
+@app.post("/api/clinic/alerts/{alert_id}/resolve")
+async def resolve_clinic_alert(alert_id: str, body: AlertResolution):
+    alert = store.resolve_alert(alert_id, body.resolved_by, body.note)
+    if not alert:
+        raise HTTPException(404, "open alert not found")
+    return alert
+
+
+@app.get("/api/clinic/activity")
+async def clinic_activity():
+    return {"events": store.recent_activity(), "synthetic_demo_data": True}
 @app.get("/api/alerts")
 async def alerts():
     return {"alerts": memory.list_alerts()}

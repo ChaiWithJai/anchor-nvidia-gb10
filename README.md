@@ -46,9 +46,20 @@ export HACKATHON_BUNDLE=/media/dell/T7/hackathon-2026-08-22
 ./scripts/run-nvidia
 ```
 
-Open the clinician console at <http://127.0.0.1:8100/> and the patient call at
-<http://127.0.0.1:8100/patient>. The launcher waits for Nemotron, MongoDB, and a
+Open the clinician console at <http://127.0.0.1:8100/>, the patient call at
+<http://127.0.0.1:8100/patient>, and the live GB10 operations view at
+<http://127.0.0.1:8100/goal>. The launcher waits for Nemotron, MongoDB, and a
 real CSM synthesis, then runs the complete workload before reporting ready.
+
+`/goal` samples `nvidia-smi` once per second and combines GPU utilization,
+temperature, power, clocks, active Nemotron/CSM work, masked browser clients,
+request counts, and latency in one private server-sent-event stream. Multiple
+viewers share the cached GPU sample rather than spawning one profiler per page.
+
+For concurrent worktrees, build a uniquely tagged application image and set
+`ANCHOR_APP_IMAGE` when recreating only `digital-twin` with `--no-deps`.
+Keep the canonical Compose project, Nemotron, MongoDB volume, GPU, and published
+ports shared; do not start a second inference stack from another worktree.
 
 Repeat verification without rebuilding:
 
@@ -90,6 +101,9 @@ branch `blueprint/careline-wellness-checkin` at commit `5f967406`, combined with
 the GB10 additions pinned in the T7 snapshot dated 2026-08-22. This repository
 narrows that work to one publishable NVIDIA runtime and includes subsequent
 prompt, readiness, consent, CUDA dtype, UI, and workload corrections.
+
+The persisted clinical entities, relationships, indexes, and invariants are
+documented in [DATA-MODEL.md](DATA-MODEL.md).
 
 ## Public-repo boundary
 

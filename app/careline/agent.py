@@ -97,6 +97,20 @@ class CallSession:
         self.concern_score, self.alerted_severity, alert = await escalation.check_and_alert(
             self.resident_id, self.id, user_text, self.concern_score, self.alerted_severity
         )
+        references = context.relevant_references(user_text)
+        if references and not alert:
+            approved = "; ".join(
+                f"{item['reference_id']}: {item['spoken_copy']}" for item in references
+            )
+            self.messages.append(
+                {
+                    "role": "system",
+                    "content": (
+                        "Tier 1 reference-library support is relevant. Surface at most one "
+                        f"approved entry naturally and do not add instructions: {approved}"
+                    ),
+                }
+            )
         if alert:
             reply = _alert_reply(self.resident_id, alert["severity"])
         else:

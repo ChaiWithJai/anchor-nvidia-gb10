@@ -9,6 +9,8 @@ from pymongo import ASCENDING, DESCENDING, MongoClient, ReturnDocument
 from pymongo.database import Database
 from pymongo.errors import PyMongoError
 
+from . import clinical_model
+
 
 MONGO_URI = os.environ.get(
     "CARELINE_MONGO_URI",
@@ -102,11 +104,14 @@ def initialize() -> None:
     db.patients.create_index("patient_id", unique=True)
     db.patients.create_index([("visible_in_clinic", ASCENDING), ("display_name", ASCENDING)])
     db.care_plans.create_index("patient_id", unique=True)
+    db.calls.create_index("call_id", unique=True)
     db.calls.create_index([("patient_id", ASCENDING), ("started_at", DESCENDING)])
     db.memories.create_index([("patient_id", ASCENDING), ("created_at", DESCENDING)])
     db.alerts.create_index([("status", ASCENDING), ("created_at", DESCENDING)])
+    db.alerts.create_index([("patient_id", ASCENDING), ("status", ASCENDING), ("created_at", DESCENDING)])
     db.signals.create_index([("patient_id", ASCENDING), ("type", ASCENDING)], unique=True)
     db.audit_events.create_index([("created_at", DESCENDING)])
+    db.audit_events.create_index("event_key", unique=True, sparse=True)
 
     timestamp = now()
     for patient in DEMO_PATIENTS:
@@ -124,6 +129,12 @@ def initialize() -> None:
         {"patient_id": "demo-jai"},
         {"$setOnInsert": {**DEMO_PLAN, "created_at": timestamp}, "$set": {"updated_at": timestamp}},
         upsert=True,
+    )
+    clinical_model.initialize(
+        db,
+        timestamp,
+        DEMO_PATIENTS,
+        DEMO_PLAN,
     )
     for signal in DEMO_SIGNALS:
         db.signals.update_one(
@@ -177,6 +188,7 @@ def end_call(call_id: str, summary: str, concern_score: int, transcript: list[di
         return_document=ReturnDocument.AFTER,
     )
     if call:
+        clinical_model.save_voice_analysis(_db(), call, summary, concern_score)
         _db().patients.update_one({"patient_id": call["patient_id"]}, {"$set": {"last_check_in_at": now(), "last_summary": summary, "updated_at": now()}})
         audit("call.completed", "anchor-agent", call["patient_id"], call_id)
 
@@ -197,8 +209,22 @@ def recent_calls(patient_id: str, limit: int = 5) -> list[dict]:
     return [_public(row) for row in rows]
 
 
-def save_alert(patient_id: str, call_id: str, reason: str, severity: str) -> str:
-    result = _db().alerts.insert_one({"patient_id": patient_id, "call_id": call_id, "reason": reason, "severity": severity, "status": "open", "destination": "on-call clinician", "created_at": now(), "synthetic_demo_data": True})
+def save_alert(
+    patient_id: str,
+    call_id: str,
+    reason: str,
+    severity: str,
+    alert_type: str = "safety-escalation",
+    tier: int = 3,
+    pattern_key: str | None = None,
+) -> str:
+    if pattern_key:
+        existing = _db().alerts.find_one(
+            {"patient_id": patient_id, "pattern_key": pattern_key, "status": "open"}
+        )
+        if existing:
+            return str(existing["_id"])
+    result = _db().alerts.insert_one({"patient_id": patient_id, "call_id": call_id, "reason": reason, "severity": severity, "alert_type": alert_type, "triage_tier": tier, "pattern_key": pattern_key, "status": "open", "destination": "on-call clinician", "created_at": now(), "synthetic_demo_data": True})
     _db().patients.update_one({"patient_id": patient_id}, {"$set": {"risk_band": "elevated", "updated_at": now()}})
     audit("alert.created", "anchor-agent", patient_id, f"{severity}: {reason}")
     return str(result.inserted_id)
@@ -220,17 +246,25 @@ def list_alerts(limit: int = 20, status: str | None = None) -> list[dict]:
     return [_public(row) for row in rows]
 
 
-def resolve_alert(alert_id: str, actor: str, note: str) -> dict | None:
+def resolve_alert(
+    alert_id: str,
+    actor: str,
+    note: str,
+    clinician_id: str = "clinician-maya",
+) -> dict | None:
     try:
         object_id = ObjectId(alert_id)
     except Exception:
         return None
     alert = _db().alerts.find_one_and_update(
         {"_id": object_id, "status": "open"},
-        {"$set": {"status": "resolved", "resolved_at": now(), "resolved_by": actor, "resolution_note": note}},
+        {"$set": {"status": "resolved", "resolved_at": now(), "resolved_by": actor, "resolved_by_clinician_id": clinician_id, "resolution_note": note}},
         return_document=ReturnDocument.AFTER,
     )
     if alert:
+        clinical_model.resolve_voice_analysis(
+            _db(), alert["call_id"], clinician_id, note
+        )
         audit("alert.resolved", actor, alert["patient_id"], note)
     return _public(alert) if alert else None
 
@@ -242,6 +276,11 @@ def set_signal(patient_id: str, signal: dict) -> list[dict]:
         {"$set": {**signal, "patient_id": patient_id, "updated_at": timestamp}, "$setOnInsert": {"created_at": timestamp}},
         upsert=True,
     )
+    goal_id = signal.get("goal_id")
+    if goal_id and signal.get("status") in {"met", "missed"}:
+        clinical_model.record_goal_observation(
+            _db(), patient_id, goal_id, signal["status"], signal.get("value"), "ambient-signal"
+        )
     audit("signal.recorded", "ambient-agent", patient_id, signal["label"])
     return get_context(patient_id)["signals"]
 
@@ -253,7 +292,33 @@ def get_context(patient_id: str) -> dict:
     if not signals:
         signals = [dict(item) for item in DEMO_SIGNALS]
     reasons = [item["label"] for item in signals if item.get("status") != "normal"]
-    return {"plan": _public(plan), "signals": _public(signals), "triggered": bool(reasons), "trigger_reason": " + ".join(reasons) if reasons else "Scheduled check-in", "synthetic_demo_data": True}
+    references = clinical_model.list_references(db, ["coping", "psychoeducation"])
+    goals = list(db.goals.find({"patient_id": patient_id, "status": "active"}))
+    goal_patterns = clinical_model.repeated_goal_misses(db, patient_id)
+    return {"plan": _public(plan), "signals": _public(signals), "goals": _public(goals), "goal_patterns": _public(goal_patterns), "references": _public(references), "triggered": bool(reasons or goal_patterns), "trigger_reason": " + ".join(reasons) if reasons else "Repeated goal misses" if goal_patterns else "Scheduled check-in", "synthetic_demo_data": True}
+
+
+def reference_library(categories: list[str] | None = None) -> list[dict]:
+    return _public(clinical_model.list_references(_db(), categories))
+
+
+def relevant_references(text: str, include_crisis: bool = False) -> list[dict]:
+    return _public(clinical_model.relevant_references(_db(), text, include_crisis))
+
+
+def goal_miss_patterns(patient_id: str) -> list[dict]:
+    return _public(clinical_model.repeated_goal_misses(_db(), patient_id))
+
+
+def record_goal_observation(
+    patient_id: str, goal_id: str, status: str, value: Any, source: str
+) -> dict | None:
+    observation = clinical_model.record_goal_observation(
+        _db(), patient_id, goal_id, status, value, source
+    )
+    if observation:
+        audit("goal.observed", source, patient_id, f"{goal_id}: {status}")
+    return _public(observation) if observation else None
 
 
 def _patient_view(patient: dict) -> dict:
@@ -263,6 +328,7 @@ def _patient_view(patient: dict) -> dict:
     result["recent_calls"] = recent_calls(patient_id, limit=8)
     result["memories"] = recall(patient_id, limit=12)
     result["alerts"] = [row for row in list_alerts(limit=100) if row.get("patient_id") == patient_id][:8]
+    result.update(_public(clinical_model.patient_graph(_db(), patient_id)))
     return result
 
 
@@ -299,6 +365,7 @@ def update_plan(patient_id: str, plan: dict, actor: str) -> dict | None:
     version = int(current.get("version", 0)) + 1
     payload = {**plan, "patient_id": patient_id, "plan_id": current.get("plan_id", f"plan-{patient_id}"), "version": version, "updated_at": now()}
     db.care_plans.update_one({"patient_id": patient_id}, {"$set": payload, "$setOnInsert": {"created_at": now()}}, upsert=True)
+    clinical_model.save_plan_revision(db, payload, actor)
     audit("care_plan.updated", actor, patient_id, f"version {version}")
     return get_context(patient_id)["plan"]
 

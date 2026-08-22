@@ -7,6 +7,8 @@ import tempfile
 import wave
 from concurrent.futures import ThreadPoolExecutor
 
+from . import telemetry
+
 
 def _validate_reference(path: str) -> None:
     if not os.path.isfile(path):
@@ -105,10 +107,19 @@ class CudaCsmCloneBackend:
         text = text.strip()
         if not text or len(text) > 500:
             raise ValueError("speech text must contain 1-500 characters")
-        async with self._lock:
-            if self._model is None:
-                await self._run(self._load)
-            return await self._run(self._generate, text)
+        workload_id = telemetry.workload_started(
+            "csm", "Sesame CSM synthesis", f"{len(text)} characters"
+        )
+        try:
+            async with self._lock:
+                if self._model is None:
+                    await self._run(self._load)
+                payload = await self._run(self._generate, text)
+            telemetry.workload_finished(workload_id)
+            return payload
+        except Exception:
+            telemetry.workload_finished(workload_id, "failed")
+            raise
 
 
 def get_clone_backend() -> CudaCsmCloneBackend:

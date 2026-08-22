@@ -1,5 +1,14 @@
 # Changelog
 
+## Live GB10 operations and clinical graph
+
+- Added the private `/goal` real-time view for masked browser connections,
+  NVIDIA GPU telemetry, active inference, request volume, and latency.
+- Implemented the clinic ERD with care teams, conditions, goals, goal
+  observations, immutable plan revisions, voice analyses, and risk tiers.
+- Added the clinician-reviewed reference library and executable Tier 1/Tier 2
+  goal-tracking behavior.
+
 ## 2.0.0 - 2026-08-22
 
 - Added a MongoDB 8 clinical system of record with indexes and synthetic fixtures.

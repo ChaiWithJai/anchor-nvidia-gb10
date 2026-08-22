@@ -12,14 +12,24 @@ def get_context(resident_id: str) -> dict:
     return store.get_context(resident_id)
 
 
+def relevant_references(text: str, include_crisis: bool = False) -> list[dict]:
+    return store.relevant_references(text, include_crisis)
+
+
 def prompt_block(resident_id: str) -> str:
     context = get_context(resident_id)
     plan = context["plan"]
+    references = [
+        f"{item['reference_id']}: {item['spoken_copy']}"
+        for item in context.get("references", [])
+    ]
     return (
         f"CLINICIAN-AUTHORED PLAN ({plan['author']}):\n"
         + "Today's commitments:\n- "
         + "\n- ".join(plan["today"])
         + "\nAllowed in-the-moment options (offer 3-5 only when useful):\n- "
         + "\n- ".join(plan["options"])
+        + "\nClinician-reviewed reference library (surface only when relevant):\n- "
+        + "\n- ".join(references)
         + f"\nAmbient trigger: {context['trigger_reason']} (synthetic demo signals)."
     )

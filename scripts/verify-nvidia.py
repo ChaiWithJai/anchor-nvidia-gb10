@@ -69,9 +69,26 @@ def main() -> int:
 
     _, admin_page = request("/")
     _, patient_page = request("/patient")
+    _, goal_page = request("/goal")
     assert b"Care operations" in admin_page
     assert b"Answer check-in" in patient_page
-    print("PASS interfaces: clinician console + patient phone call")
+    assert b"GB10 live operations" in goal_page
+    print("PASS interfaces: clinician console + patient phone call + live GB10 view")
+
+    client_id = f"verify-{uuid.uuid4().hex}"
+    request(
+        "/api/goal/heartbeat",
+        {"client_id": client_id, "surface": "verification", "connected": True},
+    )
+    _, live = request("/api/goal/snapshot")
+    assert live["gpu"]["ready"] is True
+    assert "GB10" in live["gpu"]["name"]
+    assert any(item["client_id"] == client_id[:12] for item in live["clients"])
+    assert "request_counts" in live and "average_latency_ms" in live
+    print(
+        "PASS live operations: masked client + "
+        f"{live['gpu']['utilization_gpu']}% GPU at {live['gpu']['temperature_c']}C"
+    )
 
     _, dashboard = request("/api/clinic/dashboard")
     _, roster = request("/api/clinic/patients")
@@ -80,6 +97,28 @@ def main() -> int:
     demo_patient = next(
         patient for patient in roster["patients"] if patient["patient_id"] == "demo-jai"
     )
+    assert len(demo_patient["care_team"]["clinician_ids"]) == 2
+    assert demo_patient["conditions"] and demo_patient["goals"]
+    _, references = request("/api/reference-library")
+    reference_ids = {item["reference_id"] for item in references["references"]}
+    assert {
+        "ref-coping-box-breathing",
+        "ref-coping-urge-surfing",
+        "ref-psychoed-craving-curve",
+        "ref-crisis-988",
+        "ref-crisis-ndvh",
+    } <= reference_ids
+    goal_id = demo_patient["goals"][0]["goal_id"]
+    request(
+        f"/api/clinic/patients/demo-jai/goals/{goal_id}/observations",
+        {"status": "missed", "value": "missed", "source": "verification"},
+    )
+    _, observed = request(
+        f"/api/clinic/patients/demo-jai/goals/{goal_id}/observations",
+        {"status": "missed", "value": "missed", "source": "verification"},
+    )
+    assert any(item["goal_id"] == goal_id for item in observed["patterns"])
+    print("PASS clinical graph: two-person team, condition, goals, references, and tracking window")
     plan = demo_patient["plan"]
     plan_payload = {
         "author": plan["author"],

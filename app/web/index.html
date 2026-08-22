@@ -136,6 +136,10 @@
     font-size: 12px;
   }
   .consent input { margin-top: 2px; accent-color: var(--green); }
+  .audio-line { width: min(100%, 500px); margin: 0 0 16px; display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--muted); font-size: 11px; }
+  .audio-line.error { color: var(--red); }
+  .secondary { min-height: 34px; padding: 0 12px; border: 1px solid var(--line); border-radius: 6px; background: white; color: var(--ink); font-size: 12px; font-weight: 650; }
+  .secondary:hover { border-color: var(--green); color: var(--green); }
   .primary {
     min-height: 44px;
     padding: 0 20px;
@@ -228,6 +232,7 @@
           <h1>Your future self is ready</h1>
           <p>Anchor found a change in today's pattern and prepared a plan-grounded check-in.</p>
           <label class="consent"><input id="consent" type="checkbox"><span>I consent to using my enrolled voice reference for this call.</span></label>
+          <div id="audioLine" class="audio-line" role="status"><span id="audioStatus">System audio not tested</span><button id="testAudio" class="secondary" type="button">Test output</button></div>
           <button id="callButton" class="primary" type="button" disabled>Trigger check-in</button>
         </div>
         <div id="ringingView" class="ringing-view hidden">
@@ -263,6 +268,7 @@ let turnBusy = false;
 let startedAt = 0;
 let timerHandle = null;
 let recognition = null;
+let audioContext = null;
 
 function show(view) {
   ["idleView", "ringingView", "liveView", "endedView"].forEach(id => $(id).classList.toggle("hidden", id !== view));
@@ -331,19 +337,67 @@ function addSafetyAlert(alert) {
   $("transcript").append(notice); $("transcript").scrollTop = $("transcript").scrollHeight;
 }
 
+function setAudioState(text, failed = false) {
+  $("audioStatus").textContent = text;
+  $("audioLine").classList.toggle("error", failed);
+}
+
+async function unlockAudio() {
+  try {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) throw new Error("Web Audio is unavailable in this browser");
+    if (!audioContext) audioContext = new AudioContextClass();
+    if (audioContext.state !== "running") await audioContext.resume();
+    if (audioContext.state !== "running") throw new Error("browser audio is blocked");
+    setAudioState("Audio enabled / system default output");
+    return true;
+  } catch (error) {
+    setAudioState(error.message, true);
+    setState(`Audio unavailable: ${error.message}`);
+    console.error("Anchor audio unlock failed", error);
+    return false;
+  }
+}
+
+async function testAudio() {
+  if (!await unlockAudio()) return;
+  const oscillator = audioContext.createOscillator();
+  const gain = audioContext.createGain();
+  oscillator.frequency.value = 660;
+  gain.gain.setValueAtTime(0.12, audioContext.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.25);
+  oscillator.connect(gain).connect(audioContext.destination);
+  await new Promise(resolve => {
+    oscillator.onended = resolve;
+    oscillator.start();
+    oscillator.stop(audioContext.currentTime + 0.25);
+  });
+  setAudioState("Test tone sent to system default output");
+}
+
 async function speak(text) {
   try {
+    if (!audioContext || audioContext.state !== "running") throw new Error("select Test output, then retry the call");
     const response = await api("/api/tts", {
       method: "POST", headers: {"Content-Type": "application/json"},
       body: JSON.stringify({text, mode: "self", consent_confirmed: true})
     });
-    const url = URL.createObjectURL(await response.blob());
-    await new Promise(resolve => {
-      const audio = new Audio(url);
-      audio.onended = audio.onerror = () => { URL.revokeObjectURL(url); resolve(); };
-      audio.play().catch(resolve);
+    const buffer = await audioContext.decodeAudioData(await response.arrayBuffer());
+    await new Promise((resolve, reject) => {
+      const source = audioContext.createBufferSource();
+      source.buffer = buffer;
+      source.connect(audioContext.destination);
+      source.onended = resolve;
+      try { source.start(); } catch (error) { reject(error); }
     });
-  } catch (error) { console.error(error); }
+    setAudioState("Cloned voice played");
+    return true;
+  } catch (error) {
+    setAudioState(`Playback failed: ${error.message}`, true);
+    setState(`Audio failed: ${error.message}`);
+    console.error("Anchor voice playback failed", error);
+    return false;
+  }
 }
 
 function startTimer() {
@@ -358,6 +412,7 @@ function startTimer() {
 function stopTimer() { clearInterval(timerHandle); timerHandle = null; }
 
 async function beginCall() {
+  if (!await unlockAudio()) return;
   show("ringingView"); setState("Incoming check-in"); $("timer").textContent = "00:00";
   await delay(900);
   try {
@@ -365,7 +420,7 @@ async function beginCall() {
       method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(resident)
     }).then(r => r.json());
     callId = data.call_id; $("transcript").replaceChildren(); show("liveView"); setState("Connected"); startTimer();
-    addMessage("twin", data.greeting); speak(data.greeting);
+    addMessage("twin", data.greeting); await speak(data.greeting);
   } catch (error) {
     show("idleView"); setState(error.message); $("callButton").disabled = false;
   }
@@ -380,7 +435,7 @@ async function sendTurn(text) {
       method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({text, mode: "self", consent_confirmed: true})
     }).then(r => r.json());
     if (data.alert) addSafetyAlert(data.alert);
-    addMessage("twin", data.reply); setState(data.alert ? "Clinician notified" : "Connected"); speak(data.reply);
+    addMessage("twin", data.reply); setState(data.alert ? "Clinician notified" : "Connected"); await speak(data.reply);
   } catch (error) { setState(error.message); }
   finally { turnBusy = false; if (callId) { $("sendButton").disabled = false; $("micButton").disabled = false; } }
 }
@@ -410,6 +465,7 @@ function startRecognition() {
 }
 
 $("consent").onchange = () => { $("callButton").disabled = !$("consent").checked; };
+$("testAudio").onclick = testAudio;
 $("callButton").onclick = beginCall;
 $("callAgain").onclick = () => { show("idleView"); setState("Ambient watch active"); $("consent").checked = true; $("callButton").disabled = false; };
 $("sendButton").onclick = () => sendTurn($("textInput").value);

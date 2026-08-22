@@ -84,6 +84,32 @@ Repeat verification without rebuilding:
 CARELINE_BASE_URL=http://127.0.0.1:8100 python3 scripts/verify-nvidia.py
 ```
 
+### Inspect local MongoDB
+
+The optional `inspect` profile runs an authenticated mongo-express UI on the
+GB10 loopback interface. It connects to the existing `mongodb` service over the
+private Compose network; MongoDB port `27017` remains unpublished and the
+existing `mongo-data` volume is unchanged.
+
+```bash
+export MONGO_EXPRESS_USERNAME=anchor-inspector
+export MONGO_EXPRESS_PASSWORD='choose-a-separate-local-password'
+docker compose -f compose.nvidia.yml --profile inspect up -d mongo-express
+```
+
+Open <http://127.0.0.1:8081/> and sign in with those two values. Override the
+loopback port with `MONGO_EXPRESS_PORT` if `8081` is already in use. Keep this
+developer tool on localhost and do not use it through the Cloudflare tunnel.
+If no inspector credentials are exported, the local demo defaults are
+`anchor-inspector` and `anchor-gb10-inspect-local-only`; set distinct values on
+any shared workstation.
+
+Stop the inspector without stopping Anchor or deleting its data:
+
+```bash
+docker compose -f compose.nvidia.yml --profile inspect stop mongo-express
+```
+
 ## Share across segmented Wi-Fi
 
 Use the temporary HTTPS profile only for a staffed hackathon demonstration:

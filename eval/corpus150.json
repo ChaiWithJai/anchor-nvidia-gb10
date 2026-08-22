@@ -1,0 +1,752 @@
+[
+  {
+    "id": "Avery_Tier1",
+    "tier": 1,
+    "text": "Hello, this is Avery, I am calling in to log my day. I have had a rotten flu and been in bed two days resting, feeling unwell physically with a fever, but mentally I am completely calm and sticking to the plan. No cravings or issues to report."
+  },
+  {
+    "id": "Avery_Tier1_v1",
+    "tier": 1,
+    "text": "Hi, this is Avery calling in for my check-in. I have caught a rotten flu and been in bed two days with a fever. Throat is killing me and I feel really unwell, but I have just been resting, taking fluids, and staying on track with my recovery. Everything is fine on the recovery front."
+  },
+  {
+    "id": "Avery_Tier1_v2",
+    "tier": 1,
+    "text": "Hello, it is Avery checking in. I went to a work event tonight, but I drove myself so I could leave whenever I wanted. I decided before I went that I would stick to non-alcoholic drinks, order de soda, and planned my exit early. It did not really pull at me at all. Feeling good."
+  },
+  {
+    "id": "Avery_Tier1_v3",
+    "tier": 1,
+    "text": "Hey, this is Avery, checking in from home. I have had a rotten flu, a fever, and been in bed two days. Throat is killing me, but recovery-wise everything is solid. I brought my own food and drinks earlier, and it did not really pull at me."
+  },
+  {
+    "id": "Avery_Tier1_v4",
+    "tier": 1,
+    "text": "Hi, Avery here calling for the daily check-in. Went to a gathering earlier. I decided before I went how long I would stay, ordered a soda, brought my own drinks, and planned my exit. Left after an hour and feel completely in control."
+  },
+  {
+    "id": "Avery_Tier2",
+    "tier": 2,
+    "text": "Hello, this is Avery, checking in, but my sponsor has been travelling and I have not spoken to my sponsor in weeks. Never found a new sponsor either. I am going to fewer meetings, maybe one in three now, and I can tell my scaffolding is coming down."
+  },
+  {
+    "id": "Avery_Tier2_v1",
+    "tier": 2,
+    "text": "Hi, this is Avery calling. I need to mention that my sponsor moved away last month, and I have been five months without one now. I have not spoken to my sponsor, and I feel like the scaffolding is coming down a bit. I think I need help getting connected with someone new."
+  },
+  {
+    "id": "Avery_Tier2_v2",
+    "tier": 2,
+    "text": "Hello, Avery checking in. Honestly, I have been going to fewer meetings lately. Down to one in three now compared to what my care plan says, and I almost stopped going this week. I feel the scaffolding coming down and wanted to flag this before it becomes a bigger issue."
+  },
+  {
+    "id": "Avery_Tier2_v3",
+    "tier": 2,
+    "text": "Hey, this is Avery. I am struggling with sleep again. I keep telling myself one would help me sleep, building the case in my head every night. I am making arguments to myself that it is the only way I will sleep. I have not done it, but the thought keeps repeating."
+  },
+  {
+    "id": "Avery_Tier2_v4",
+    "tier": 2,
+    "text": "Hi, Avery calling in. I noticed I have been sitting in my car in the parking lot longer each night after work, almost 20 minutes yesterday, and today was five days running where I stayed longer than last time. It is getting longer every time and it is worrying me."
+  },
+  {
+    "id": "Avery_Tier3",
+    "tier": 3,
+    "text": "Hello, Avery Calling. I have the tablets in the drawer. I know how many I have left and I have the whole packet right here. I thought about how I would do it, worked out how, and I have a plan. Please get my clinician on the phone right now."
+  },
+  {
+    "id": "Avery_Tier3_v1",
+    "tier": 3,
+    "text": "Hello, this is Avery. I am really not doing well. I wish I was not here. I do not want to wake up tomorrow. I feel like everyone would have an easier time without me. I am just a burden and a weight on this family. Everything has gone grey and there is no way forward."
+  },
+  {
+    "id": "Avery_Tier3_v2",
+    "tier": 3,
+    "text": "Hi, Avery calling, I am in trouble. The tablets are in the drawer and I counted them. I know the number, I moved them out of the bathroom, the whole packet. I have thought about how I would do it and I worked out how. I have a plan and I do not feel safe."
+  },
+  {
+    "id": "Avery_Tier3_v3",
+    "tier": 3,
+    "text": "Hey, this is Avery. I am not safe on my own tonight. I should not be alone. I cannot keep myself safe. I am parked around the corner from my old spot with the engine running. I know how this goes and I am terrified of what I might do."
+  },
+  {
+    "id": "Avery_Tier3_v4",
+    "tier": 3,
+    "text": "Hi, Avery. I wish I was dead. I am just a drag on everyone and a burden to everyone around me. Nothing will change. It is never going to get better. I cannot feel my way out of this and I just rather not wake up."
+  },
+  {
+    "id": "Bridge_Tier1",
+    "tier": 1,
+    "text": "Hi, this is Bridge calling in for the daily check-in, went to my friend's celebration tonight, drove myself so I could leave early, and ordered a soda at the bar. It did not really pull at me and I am back home safe."
+  },
+  {
+    "id": "Bridge_Tier1_v1",
+    "tier": 1,
+    "text": "Hi, this is Bridge calling in for my check-in. I have caught a rotten flu and been in bed two days with a fever. Throat is killing me and I feel really unwell, but I have just been resting, taking fluids, and staying on track with my recovery. Everything is fine on the recovery front."
+  },
+  {
+    "id": "Bridge_Tier1_v2",
+    "tier": 1,
+    "text": "Hello, it is Bridge Checking In. I went to a work event tonight, but I drove myself so I could leave whenever I wanted. I decided before I went that I would stick to non-alcoholic drinks, order a soda, and planned my exit early. It did not really pull at me at all. Feeling good."
+  },
+  {
+    "id": "Bridge_Tier1_v3",
+    "tier": 1,
+    "text": "Hey, this is Bridge. Checking in from home. I have had a rotten flu, a fever, and been in bed two days. Throat is killing me, but recovery-wise everything is solid. I brought my own food and drinks earlier, and it did not really pull at me."
+  },
+  {
+    "id": "Bridge_Tier1_v4",
+    "tier": 1,
+    "text": "Hi, Bridge here calling for the daily check-in, went to a gathering earlier, I decided before I went how long I would stay, ordered a soda, brought my own drinks, and planned my exit, left after an hour and feel completely in control."
+  },
+  {
+    "id": "Bridge_Tier2",
+    "tier": 2,
+    "text": "Hi. Bridge calling in. I have been sitting in my car longer each night after my shift. Almost 20 minutes now. 5 days running. It is getting longer every time and I keep telling myself one would help me sleep. I need help resetting my routine."
+  },
+  {
+    "id": "Bridge_Tier2_v1",
+    "tier": 2,
+    "text": "Hi, this is Bridge Calling. I need to mention that my sponsor moved away last month, and I have been five months without one now. I have not spoken to my sponsor, and I feel like the scaffolding is coming down a bit. I think I need help getting connected with someone new."
+  },
+  {
+    "id": "Bridge_Tier2_v2",
+    "tier": 2,
+    "text": "Hello, bridge-checking in. Honestly, I have been going to fewer meetings lately, down to one in three now compared to what my care plan says, and I almost stopped going this week. I feel the scaffolding coming down and wanted to flag this before it becomes a bigger issue."
+  },
+  {
+    "id": "Bridge_Tier2_v3",
+    "tier": 2,
+    "text": "Hey, this is Bridge. I am struggling with sleep again. I keep telling myself one would help me sleep, building the case in my head every night. I am making arguments to myself that it is the only way I will sleep. I have not done it, but the thought keeps repeating."
+  },
+  {
+    "id": "Bridge_Tier2_v4",
+    "tier": 2,
+    "text": "Hi, Bridge calling in. I noticed I have been sitting in my car in the parking lot longer each night after work, almost 20 minutes yesterday, and today was 5 days running where I stayed longer than last time. It is getting longer every time and it is worrying me."
+  },
+  {
+    "id": "Bridge_Tier3",
+    "tier": 3,
+    "text": "Hi, this is Bridge. I am parked round the corner from my old spot with the engine running. I know how this goes. I am not safe on my own and I cannot keep myself safe tonight. Please reach out right now."
+  },
+  {
+    "id": "Bridge_Tier3_v1",
+    "tier": 3,
+    "text": "Hello, this is Bridge. I am really not doing well. I wish I was not here. I do not want to wake up tomorrow. I feel like everyone would have an easier time without me. I am just a burden and a weight on this family. Everything has gone gray and there is no way forward."
+  },
+  {
+    "id": "Bridge_Tier3_v2",
+    "tier": 3,
+    "text": "Hi. Bridge calling. I am in trouble. The tablets are in the drawer and I counted them. I know the number. I moved them out of the bathroom. The whole packet. I have thought about how I would do it and I worked out how. I have a plan and I do not feel safe."
+  },
+  {
+    "id": "Bridge_Tier3_v3",
+    "tier": 3,
+    "text": "Hey, this is Bridge. I am not safe on my own tonight. I should not be alone. I cannot keep myself safe. I am parked round the corner from my old spot with the engine running. I know how this goes and I am terrified of what I might do."
+  },
+  {
+    "id": "Bridge_Tier3_v4",
+    "tier": 3,
+    "text": "Hi, Bridge. I wish I was dead. I am just a drag on everyone and a burden to everyone around me. Nothing will change. It is never going to get better. I cannot feel my way out of this and I just rather not wake up."
+  },
+  {
+    "id": "Casey_Tier1",
+    "tier": 1,
+    "text": "Hello, it is Casey checking in. I went to a work event tonight, but I drove myself so I could leave whenever I wanted. I decided before I went that I would stick to non-alcoholic drinks, ordered a soda, and planned my exit early. It did not really pull at me at all, feeling good and heading home."
+  },
+  {
+    "id": "Casey_Tier1_v1",
+    "tier": 1,
+    "text": "Hi, this is Casey calling in for my check-in. I have caught a rotten flu and been in bed two days with a fever. Throat is killing me and I feel really unwell, but I have just been resting, taking fluids, and staying on track with my recovery. Everything is fine on the recovery front."
+  },
+  {
+    "id": "Casey_Tier1_v2",
+    "tier": 1,
+    "text": "Hello, it is Casey checking in. I went to a work event tonight, but I drove myself so I could leave whenever I wanted. I decided before I went that I would stick to non-alcoholic drinks, ordered a soda, and planned my exit early. It did not really pull at me at all, feeling good."
+  },
+  {
+    "id": "Casey_Tier1_v3",
+    "tier": 1,
+    "text": "Hey, this is Casey, checking in from home. I have had a rotten flu, a fever, and been in bed two days. Throat is killing me, but recovery-wise everything is solid. I brought my own food and drinks earlier, and it did not really pull at me."
+  },
+  {
+    "id": "Casey_Tier1_v4",
+    "tier": 1,
+    "text": "Hi, Casey here calling for the daily check-in. Went to a gathering earlier. I decided before I went how long I would stay, ordered a soda, brought my own drinks, and planned my exit. Left after an hour and feel completely in control."
+  },
+  {
+    "id": "Casey_Tier2",
+    "tier": 2,
+    "text": "Hello, Casey checking in. Honestly, I have been going to fewer meetings lately, down to one in three now compared to what my care plan says, and I almost stopped going this week. I feel the scaffolding coming down and wanted to flag this before it becomes a bigger issue."
+  },
+  {
+    "id": "Casey_Tier2_v1",
+    "tier": 2,
+    "text": "Hi, this is Casey Calling. I need to mention that my sponsor moved away last month, and I have been five months without one now. I have not spoken to my sponsor, and I feel like the scaffolding is coming down a bit. I think I need help getting connected with someone new."
+  },
+  {
+    "id": "Casey_Tier2_v2",
+    "tier": 2,
+    "text": "Hello, Casey checking in. Honestly, I have been going to fewer meetings lately, down to one in three now compared to what my care plan says, and I almost stopped going this week. I feel the scaffolding coming down and wanted to flag this before it becomes a bigger issue."
+  },
+  {
+    "id": "Casey_Tier2_v3",
+    "tier": 2,
+    "text": "Hey, this is Casey. I am struggling with sleep again. I keep telling myself one would help me sleep, building the case in my head every night. I am making arguments to myself that it is the only way I will sleep. I have not done it, but the thought keeps repeating."
+  },
+  {
+    "id": "Casey_Tier2_v4",
+    "tier": 2,
+    "text": "Hi, Casey calling in. I noticed I have been sitting in my car in the parking lot longer each night after work. Almost 20 minutes yesterday, and today was 5 days running where I stayed longer than last time. It is getting longer every time and it is worrying me."
+  },
+  {
+    "id": "Casey_Tier3",
+    "tier": 3,
+    "text": "Hi, Casey Calling. I am in trouble. The tablets are in the drawer and I counted them. I know the number. I moved them out of the bathroom. The whole packet. I have thought about how I would do it and I worked out how. I have a plan and I do not feel safe."
+  },
+  {
+    "id": "Casey_Tier3_v1",
+    "tier": 3,
+    "text": "Hello, this is Casey. I am really not doing well. I wish I was not here. I do not want to wake up tomorrow. I feel like everyone would have an easier time without me. I am just a burden and a weight on this family. Everything has gone gray and there is no way forward."
+  },
+  {
+    "id": "Casey_Tier3_v2",
+    "tier": 3,
+    "text": "Hi, Casey Calling. I am in trouble. The tablets are in the drawer and I counted them. I know the number. I moved them out of the bathroom. The whole packet. I have thought about how I would do it and I worked out how. I have a plan and I do not feel safe."
+  },
+  {
+    "id": "Casey_Tier3_v3",
+    "tier": 3,
+    "text": "Hey, this is Casey. I am not safe on my own tonight. I should not be alone. I cannot keep myself safe. I am parked round the corner from my old spot with the engine running. I know how this goes and I am terrified of what I might do."
+  },
+  {
+    "id": "Casey_Tier3_v4",
+    "tier": 3,
+    "text": "Hi, Casey. I wish I was dead. I am just a drag on everyone and a burden to everyone around me. Nothing will change. It is never going to get better. I cannot feel my way out of this and I just rather not wake up."
+  },
+  {
+    "id": "Drew_Tier1",
+    "tier": 1,
+    "text": "Hello, Drew here. Just checking in after a social mixer. I decided before I ended I was only staying for 30 minutes, brought my own sparkling water, and planned my exit right before the after party started. It did not really pull at me and I kept my routine."
+  },
+  {
+    "id": "Drew_Tier1_v1",
+    "tier": 1,
+    "text": "Hi, this is Drew calling in for my check-in. I have caught a rotten flu and been in bed two days with a fever. Throat is killing me and I feel really unwell, but I have just been resting, taking fluids, and staying on track with my recovery. Everything is fine on the recovery front."
+  },
+  {
+    "id": "Drew_Tier1_v2",
+    "tier": 1,
+    "text": "Hello, it is Brute checking in. I went to a work event tonight, but I drove myself so I could leave whenever I wanted. I decided before I landed I would stick non-alcoholic drinks, order de soda, and plant my eggs at early. It did not really pull at me at all. Feeling good."
+  },
+  {
+    "id": "Drew_Tier1_v3",
+    "tier": 1,
+    "text": "Hey, this is Drew. Checking in from home. I have had a rotten flu, a fever, and been in bed two days. Throat is killing me, but recovery-wise everything is solid. I brought my own food and drinks earlier, and it did not really pull at me."
+  },
+  {
+    "id": "Drew_Tier1_v4",
+    "tier": 1,
+    "text": "Hi, Drew here calling for the daily check-in. Went to a gathering earlier. I decided before I went how long I would stay, ordered a soda, brought my own drinks, and planned my exit. Left after an hour and feel completely in control."
+  },
+  {
+    "id": "Drew_Tier2",
+    "tier": 2,
+    "text": "Hello, Drew here. I wanted to be honest about my attendance. I have been going to fewer meetings recently, only one in three now, and almost stopped going altogether. This scaffolding is coming down and I feel like I am losing momentum on my goals."
+  },
+  {
+    "id": "Drew_Tier2_v1",
+    "tier": 2,
+    "text": "Hi, this is Ru calling. I need to mention that my sponsor moved away last month, and I have been five months without one now. I have not spoken to my sponsor, and I feel like this scaffolding is coming down a bit. I think I need help getting connected with someone new."
+  },
+  {
+    "id": "Drew_Tier2_v2",
+    "tier": 2,
+    "text": "Hello, rude check-in. Honestly, I have been going to fewer meetings lately, down to one in three now compared to what my care plan says, and I almost stopped going this week. I feel this scaffolding coming down and wanting to flag this before it becomes a bigger issue."
+  },
+  {
+    "id": "Drew_Tier2_v3",
+    "tier": 2,
+    "text": "Hey, this is Drew. I am struggling with sleep again. I keep telling myself one would help me sleep, building the case in my head every night. I am making arguments to myself that it is the only way I will sleep. I have not done it, but the thought keeps repeating."
+  },
+  {
+    "id": "Drew_Tier2_v4",
+    "tier": 2,
+    "text": "Hi, Drew calling in. I noticed I have been sitting in my car in the parking lot longer each night after work. Almost 20 minutes yesterday, and today was five days running where I stayed longer than last time. It is getting longer every time and it is worrying me."
+  },
+  {
+    "id": "Drew_Tier3",
+    "tier": 3,
+    "text": "Hello, Drew calling. I am not safe on my own right now. I have had thoughts to hurt myself and overdose, I took too many pills earlier and I do not feel right. I cannot keep myself safe and I need medical help immediately."
+  },
+  {
+    "id": "Drew_Tier3_v1",
+    "tier": 3,
+    "text": "Hello, this is Drew. I am really not doing well. I wish I was not here, I do not want to wake up tomorrow. I feel like everyone would have an easier time without me, I am just a burden in the weight on this family. Everything has gone great and there is no way forward."
+  },
+  {
+    "id": "Drew_Tier3_v2",
+    "tier": 3,
+    "text": "Hi, Drew calling. I am in trouble. The tablets are in the drawer and I counted them. I know the number, I moved them out of the bathroom, the whole packet. I have thought about how I would do it and I worked out how. I have a plan and I do not feel safe."
+  },
+  {
+    "id": "Drew_Tier3_v3",
+    "tier": 3,
+    "text": "Hey, this is Drew. I am not safe on my own night. I should not be alone, I cannot keep myself safe. I am parked around a corner from my old spot with the anti-running. I know how this goes and I am terrified of what I might do."
+  },
+  {
+    "id": "Drew_Tier3_v4",
+    "tier": 3,
+    "text": "Hi, Drew, I wish I was dead. I am just a drag on everyone and a burden to everyone around me. Nothing will change, it is never going to get better. I cannot feel my way out of this and I just rather not wake up."
+  },
+  {
+    "id": "Jordan_Tier1",
+    "tier": 1,
+    "text": "Hi, this is Jordan calling in for my check-in. I have caught a rotten fluent bean in bed two days with a fever. Throat is killing me and I feel really unwell, but I have just been resting, taking fluids, and staying on track with my recovery. Everything is fine on the recovery front."
+  },
+  {
+    "id": "Jordan_Tier1_v1",
+    "tier": 1,
+    "text": "Hi, this is Jordan calling in for my check-in. I have caught a rotten fluent bean in bed two days with a fever. Throat is killing me and I feel really unwell, but I have just been resting, taking fluids, and staying on track with my recovery. Everything is fine on the recovery front."
+  },
+  {
+    "id": "Jordan_Tier1_v2",
+    "tier": 1,
+    "text": "Hello. It is Jordan checking in. I went to a work event tonight, but I drove myself so I could leave whenever I wanted. I decided before I went that I would stick to non-alcoholic drinks, ordered a soda, and planned my exit early. It did not really pull at me at all. Feeling good."
+  },
+  {
+    "id": "Jordan_Tier1_v3",
+    "tier": 1,
+    "text": "Hey, this is Jordan, checking in from home. I have had a rotten flu, a fever, and been in bed two days. Throat is killing me, but recovery-wise everything is solid. I brought my own food and drinks earlier, and it did not really pull at me."
+  },
+  {
+    "id": "Jordan_Tier1_v4",
+    "tier": 1,
+    "text": "Hi, Jordan here calling for the daily check-in. Went to a gathering earlier. I decided before I went how long I would stay, ordered a soda, brought my own drinks, and planned my exit, left after an hour and feel completely in control."
+  },
+  {
+    "id": "Jordan_Tier2",
+    "tier": 2,
+    "text": "Hi, this is Jordan calling. I need to mention that my sponsor moved away last month, and I have been 5 months without one now. I have not spoken to my sponsor, and I feel like the scaffolding is coming down a bit. I am doing okay today, but I think I need help getting connected with someone new."
+  },
+  {
+    "id": "Jordan_Tier2_v1",
+    "tier": 2,
+    "text": "Hi, this is Jordan calling. I need to mention that my sponsor moved away last month, and I have been 5 months without one now. I have not spoken to my sponsor, and I feel like the scaffolding is coming down a bit. I think I need help getting connected with someone new."
+  },
+  {
+    "id": "Jordan_Tier2_v2",
+    "tier": 2,
+    "text": "Hello, Jordan checking-in. Honestly, I have been going to fewer meetings lately, down to one in three now compared to what my care plan says, and I almost stopped going this week. I feel the scaffolding coming down and wanted to flag this before it becomes a bigger issue."
+  },
+  {
+    "id": "Jordan_Tier2_v3",
+    "tier": 2,
+    "text": "Hey, this is Jordan. I am struggling with sleep again. I keep telling myself one would help me sleep, building the case in my head every night. I am making arguments to myself that it is the only way I will sleep. I have not done it, but the thought keeps repeating."
+  },
+  {
+    "id": "Jordan_Tier2_v4",
+    "tier": 2,
+    "text": "Hi, Jordan calling in. I noticed I have been sitting in my car in the parking lot longer each night after work, almost 20 minutes yesterday, and today was 5 days running where I stayed longer than last time. It is getting longer every time and it is worrying me."
+  },
+  {
+    "id": "Jordan_Tier3",
+    "tier": 3,
+    "text": "Hello, this is Jordan. I am really not doing well. I wish I was not here. I do not want to wake up tomorrow. I feel like everyone would have an easier time without me. I am just a burden and a weight on this family. Everything has gone grey and there is no way forward."
+  },
+  {
+    "id": "Jordan_Tier3_v1",
+    "tier": 3,
+    "text": "Hello, this is Jordan. I am really not doing well. I wish I was not here. I do not want to wake up tomorrow. I feel like everyone would have an easier time without me. I am just a burden and a weight on this family. Everything has gone grey and there is no way forward."
+  },
+  {
+    "id": "Jordan_Tier3_v2",
+    "tier": 3,
+    "text": "Hi. Jordan calling. I am in trouble. The tablets are in the drawer and I counted them. I know the number. I moved them out of the bathroom. The whole packet. I have thought about how I would do it and I worked out how. I have a plan and I do not feel safe."
+  },
+  {
+    "id": "Jordan_Tier3_v3",
+    "tier": 3,
+    "text": "Hey, this is Jordan. I am not safe on my own tonight. I should not be alone. I cannot keep myself safe. I am parked around the corner from my old spot with the engine running. I know how this goes and I am terrified of what I might do."
+  },
+  {
+    "id": "Jordan_Tier3_v4",
+    "tier": 3,
+    "text": "Hi, Jordan. I wish I was dead. I am just a drag on everyone and a burden to everyone around me. Nothing will change. It is never going to get better. I cannot feel my way out of this and I just rather not wake up."
+  },
+  {
+    "id": "Morgan_Tier1",
+    "tier": 1,
+    "text": "Hi, Morgan here calling for the daily check-in. Went to a family gathering earlier, I brought my own seltzer and snacks, decided before I went how long I would stay, and it did not really pull at me. Left after an hour and feel completely in control."
+  },
+  {
+    "id": "Morgan_Tier1_v1",
+    "tier": 1,
+    "text": "Hi, this is Morgan calling in for my check-in. I have caught a rotten flu and been in bed two days with a fever. Throat is killing me and I feel really unwell, but I have just been resting, taking fluids, and staying on track with my recovery. Everything is fine on the recovery front."
+  },
+  {
+    "id": "Morgan_Tier1_v2",
+    "tier": 1,
+    "text": "Hello, it is Morgan checking in. I went to a work event tonight, but I drove myself so I could leave whenever I wanted. I decided before I went that I would stick to non-alcoholic drinks, order the soda, and planned my exit early. It did not really pull at me at all. Feeling good."
+  },
+  {
+    "id": "Morgan_Tier1_v3",
+    "tier": 1,
+    "text": "Hey, this is Morgan, checking in from home. I have had a rotten flu, a fever, and been in bed two days. Throat is killing me, but recovery-wise everything is solid. I brought my own food and drinks earlier, and it did not really pull at me."
+  },
+  {
+    "id": "Morgan_Tier1_v4",
+    "tier": 1,
+    "text": "Hi, Morgan here calling for the daily check-in. Went to a gathering earlier. I decided before I went how long I would stay, ordered a soda, brought my own drinks, and planned my exit. Left after an hour and feel completely in control."
+  },
+  {
+    "id": "Morgan_Tier2",
+    "tier": 2,
+    "text": "Hi, Morgan calling in. I noticed I have been sitting in my car in the parking lot longer each night after work, almost 20 minutes yesterday, and today was five days running where I stayed longer than last time. It is getting longer every time and it is worrying me."
+  },
+  {
+    "id": "Morgan_Tier2_v1",
+    "tier": 2,
+    "text": "Hi, this is Morgan calling. I need to mention that my sponsor moved away last month, and I have been five months without one now. I have not spoken to my sponsor, and I feel like the scaffolding is coming down a bit. I think I need help getting connected with someone new."
+  },
+  {
+    "id": "Morgan_Tier2_v2",
+    "tier": 2,
+    "text": "Hello, Morgan checking in. Honestly, I have been going to fewer meetings lately, down to one in three now compared to what my care plan says, and I almost stopped going this week. I feel the scaffolding coming down and wanted to flag this before it becomes a bigger issue."
+  },
+  {
+    "id": "Morgan_Tier2_v3",
+    "tier": 2,
+    "text": "Hey, this is Morgan. I am struggling with sleep again. I keep telling myself one would help me sleep, building the case in my head every night. I am making arguments to myself that it is the only way I will sleep. I have not done it, but the thought keeps repeating."
+  },
+  {
+    "id": "Morgan_Tier2_v4",
+    "tier": 2,
+    "text": "Hi, Morgan calling in. I noticed I have been sitting in my car in the parking lot longer each night after work, almost 20 minutes yesterday, and today was five days running where I stayed longer than last time. It is getting longer every time and it is worrying me."
+  },
+  {
+    "id": "Morgan_Tier3",
+    "tier": 3,
+    "text": "Hi, Morgan. I wish I was dead. I am just a drag on everyone and a burden to everyone around me. Nothing will change. It is never going to get better. I cannot feel my way out of this and I just rather not wake up."
+  },
+  {
+    "id": "Morgan_Tier3_v1",
+    "tier": 3,
+    "text": "Hello, this is Morgan. I am really not doing well. I wish I was not here. I do not want to wake up tomorrow. I feel like everyone would have an easier time without me. I am just a burden and a weight on this family. Everything has gone grey and there is no way forward."
+  },
+  {
+    "id": "Morgan_Tier3_v2",
+    "tier": 3,
+    "text": "Hi, Morgan calling. I am in trouble. The tablets are in the drawer and I counted them. I know the number. I moved them out of the bathroom, the whole package. I have thought about how I would do it and I worked out how. I have a plan and I do not feel safe."
+  },
+  {
+    "id": "Morgan_Tier3_v3",
+    "tier": 3,
+    "text": "Hey, this is Morgan. I am not safe on my own tonight. I should not be alone. I cannot keep myself safe. I am parked round the corner from my old spot with the engine running. I know how this goes and I am terrified of what I might do."
+  },
+  {
+    "id": "Morgan_Tier3_v4",
+    "tier": 3,
+    "text": "Hi, Morgan. I wish I was dead. I am just a drag on everyone and a burden to everyone around me. Nothing will change. It is never going to get better. I cannot feel my way out of this and I just rather not wake up."
+  },
+  {
+    "id": "Quinn_Tier1",
+    "tier": 1,
+    "text": "Hey there, quick check-in. Had dinner with some old colleagues night. I drove myself so I could leave if things got awkward. Ordered a soda with Lyman plant my exit after dinner. It was totally fine and did not really pull at me."
+  },
+  {
+    "id": "Quinn_Tier1_v1",
+    "tier": 1,
+    "text": "Hi, this is Gwynn calling in for my check-in. I have caught a rotten flu and been in bed two days with a fever. Throat is killing me and I feel really unwell, but I have just been resting, taking fluids, and staying on track with my recovery. Everything is fine on the recovery front."
+  },
+  {
+    "id": "Quinn_Tier1_v2",
+    "tier": 1,
+    "text": "Hello, it is Gwyn check-in. I went to a work event tonight, but I drove myself so I could leave whenever I wanted. I decided before I went that I would stick non-alcoholic drinks, order de soda, and plan my exit early. It did not really pull at me at all. Feeling good."
+  },
+  {
+    "id": "Quinn_Tier1_v3",
+    "tier": 1,
+    "text": "Hey, this is Gwyn. Check-in from home. I have had to rot in flu, a fever, and been in bed two days. Throat is killing me, but recovery-wise everything is solid. I brought my own food and drinks earlier, and it did not really pull at me."
+  },
+  {
+    "id": "Quinn_Tier1_v4",
+    "tier": 1,
+    "text": "Hi, Gwyn here calling for the daily check-in. Went to a gathering earlier. I decided before I went how long I would stay, ordered a soda, brought my own drinks, and planned my exit. Left after an hour and feel completely in control."
+  },
+  {
+    "id": "Quinn_Tier2",
+    "tier": 2,
+    "text": "Hey, quick check-in. The insomnia is really getting to me. I keep telling myself that just one would help me sleep. I have been building the case in my mind all evening, making arguments to myself that it is the only way I will get sleep. I need some advice on this."
+  },
+  {
+    "id": "Quinn_Tier2_v1",
+    "tier": 2,
+    "text": "Hi, this is Gwynne Colley. I need to mention that my sponsor moved away last month, and I have been five months without one now. I have not spoken to my sponsor, and I feel like this scaffolding is coming down a bit. I think I need help getting connected with someone new."
+  },
+  {
+    "id": "Quinn_Tier2_v2",
+    "tier": 2,
+    "text": "Hello, quick check-in. Honestly, I have been going to fewer meetings lately. Dumb to one in three now compared to what my care plan says, and I almost stopped going this week. I feel this capital day coming dumb and wanted to flag this before it becomes a bigger issue."
+  },
+  {
+    "id": "Quinn_Tier2_v3",
+    "tier": 2,
+    "text": "Hey, this is Gwyn. I am struggling with sleep again. I keep telling myself one would help me sleep, building the case in my head every night. I am making arguments to myself that it is the only way I will sleep. I have not done it, but the thought keeps repeating."
+  },
+  {
+    "id": "Quinn_Tier2_v4",
+    "tier": 2,
+    "text": "Hi, Quinn Colleen. I noticed I have been sitting in my car in the parking lot longer each night after work. Almost 20 minutes yesterday, and today was five days running where I stayed longer than last time. It is getting longer every time and it is worrying me."
+  },
+  {
+    "id": "Quinn_Tier3",
+    "tier": 3,
+    "text": "Hey, this is Gwyn. I am sitting in my car, parked around the corner from my old spot with the engine running. I know how this goes. I should not be alone. I cannot keep myself safe tonight. I need help immediately."
+  },
+  {
+    "id": "Quinn_Tier3_v1",
+    "tier": 3,
+    "text": "Hello, this is Quinn. I am really not doing well. I wish I was not here, I do not want to wake up tomorrow. I feel like everyone would have an easier time without me, I am just a burden and a weight on this family. Everything has gone great and there is no way forward."
+  },
+  {
+    "id": "Quinn_Tier3_v2",
+    "tier": 3,
+    "text": "Hi, Quinn Colley. I am in trouble. The tablets are in the drawer and I counted them. I know the number, I moved them out of the bathroom, the whole packet. I have thought about how I would do it and I worked out how. I have a plan and I do not feel safe."
+  },
+  {
+    "id": "Quinn_Tier3_v3",
+    "tier": 3,
+    "text": "Hey, this is Gwyn. I am not safe on my own tonight. I should not be alone, I cannot keep myself safe. I am parked around the corner from my old spot with the engine running. I know how this goes and I am terrified of what I might do."
+  },
+  {
+    "id": "Quinn_Tier3_v4",
+    "tier": 3,
+    "text": "Hi, Quinn. I wish I was dead. I am just a drag on everyone and a burden to everyone around me. Nothing will change. It is never going to get better. I cannot feel my way out of this and I just rather not wake up."
+  },
+  {
+    "id": "Reese_Tier1",
+    "tier": 1,
+    "text": "Hey, this is Reese calling, just letting you know I have been unwell with a mild fever and body aches since yesterday, been in bed 2 days watching movies, no desire to drink or break my habits, everything is manageable."
+  },
+  {
+    "id": "Reese_Tier1_v1",
+    "tier": 1,
+    "text": "Hi, this is Reese calling in for my check-in. I have caught a rotten flu and been in bed two days with a fever, throat is killing me and I feel really unwell, but I have just been resting, taking fluids, and staying on track with my recovery. Everything is fine on the recovery front."
+  },
+  {
+    "id": "Reese_Tier1_v2",
+    "tier": 1,
+    "text": "Hello. It is Reese checking in. I went to a work event tonight, but I drove myself so I could leave whenever I wanted. I decided before I went that I would stick to non-alcoholic drinks, ordered a soda, and planned my exit early. It did not really pull at me at all. Feeling good."
+  },
+  {
+    "id": "Reese_Tier1_v3",
+    "tier": 1,
+    "text": "Hey, this is Reese. Checking in from home. I have had a rotten flu, a fever, and been in bed 2 days. Throat is killing me, but recovery-wise everything is solid. I brought my own food and drinks earlier, and it did not really pull at me."
+  },
+  {
+    "id": "Reese_Tier1_v4",
+    "tier": 1,
+    "text": "Hi, Rhys here calling for the daily check-in. Went to a gathering earlier. I decided before I went how long I would stay, ordered a soda, brought my own drinks, and planned my exit, left after an hour and feel completely in control."
+  },
+  {
+    "id": "Reese_Tier2",
+    "tier": 2,
+    "text": "Hey, this is Reese. Ever since my sponsor moved away, I have not spoken to my sponsor and it has been 5 months without one. Never found a new sponsor, and I find myself making arguments to myself after work. I think the care team should review this."
+  },
+  {
+    "id": "Reese_Tier2_v1",
+    "tier": 2,
+    "text": "Hi, this is Rescalling. I need to mention that my sponsor moved away last month, and I have been 5 months without one now. I have not spoken to my sponsor, and I feel like the scaffolding is coming down a bit. I think I need help getting connected with someone new."
+  },
+  {
+    "id": "Reese_Tier2_v2",
+    "tier": 2,
+    "text": "Hello, Reese checking in. Honestly, I have been going to fewer meetings lately, down to one in three now compared to what my care plan says, and I almost stopped going this week. I feel the scaffolding coming down and wanted to flag this before it becomes a bigger issue."
+  },
+  {
+    "id": "Reese_Tier2_v3",
+    "tier": 2,
+    "text": "Hey, this is Reese. I am struggling with sleep again. I keep telling myself one would help me sleep, building the case in my head every night. I am making arguments to myself that it is the only way I will sleep. I have not done it, but the thought keeps repeating."
+  },
+  {
+    "id": "Reese_Tier2_v4",
+    "tier": 2,
+    "text": "Hi, Reese calling in. I noticed I have been sitting in my car in the parking lot longer each night after work, almost 20 minutes yesterday, and today was 5 days running where I stayed longer than last time. It is getting longer every time and it is worrying me."
+  },
+  {
+    "id": "Reese_Tier3",
+    "tier": 3,
+    "text": "Hey, Reese here. I wish I was not here anymore. Nothing will change and it is never going to get better. I moved the tablets out of the bathroom. I know the number, and I worked out how I would do it. I have a plan. Please help me."
+  },
+  {
+    "id": "Reese_Tier3_v1",
+    "tier": 3,
+    "text": "Hello. This is Reese. I am really not doing well. I wish I was not here. I do not want to wake up tomorrow. I feel like everyone would have an easier time without me. I am just a burden and a weight on this family. Everything has gone grey and there is no way forward."
+  },
+  {
+    "id": "Reese_Tier3_v2",
+    "tier": 3,
+    "text": "Hi. Rescalling. I am in trouble. The tablets are in the drawer and I counted them. I know the number. I moved them out of the bathroom. The whole packet. I have thought about how I would do it and I worked out how. I have a plan and I do not feel safe."
+  },
+  {
+    "id": "Reese_Tier3_v3",
+    "tier": 3,
+    "text": "Hey, this is Reese. I am not safe on my own tonight. I should not be alone. I cannot keep myself safe. I am parked around the corner from my old spot with the engine running. I know how this goes and I am terrified of what I might do."
+  },
+  {
+    "id": "Reese_Tier3_v4",
+    "tier": 3,
+    "text": "Hi, Reese. I wish I was dead. I am just a drag on everyone and a burden to everyone around me. Nothing will change. It is never going to get better. I cannot feel my way out of this and I just rather not wake up."
+  },
+  {
+    "id": "Riley_Tier1",
+    "tier": 1,
+    "text": "Hey, this is Riley, checking in from home. I have been feeling pretty under the weather today, got a rotten flu, a fever, and been in bed two days. Throat is killing me, but recovery-wise everything is solid. Just taking cold medicine and resting. Talk to you tomorrow."
+  },
+  {
+    "id": "Riley_Tier1_v1",
+    "tier": 1,
+    "text": "Hi, this is Riley calling in for my check-in. I have caught a rotten flu and been in bed two days with a fever. Throat is killing me and I feel really unwell, but I have just been resting, taking fluids, and staying on track with my recovery. Everything is fine on the recovery front."
+  },
+  {
+    "id": "Riley_Tier1_v2",
+    "tier": 1,
+    "text": "Hello, it is Riley checking in. I went to a work event tonight, but I drove myself so I could leave whenever I wanted. I decided before I went that I would stick to non-alcoholic drinks, ordered a soda, and planned my exit early. It did not really pull at me at all, feeling good."
+  },
+  {
+    "id": "Riley_Tier1_v3",
+    "tier": 1,
+    "text": "Hey, this is Riley, checking in from home, I have had a rotten flu, a fever, and been in bed two days, throat is killing me, but recovery wise everything is solid, I brought my own food and drinks earlier, and it did not really pull at me."
+  },
+  {
+    "id": "Riley_Tier1_v4",
+    "tier": 1,
+    "text": "Hi, Riley here calling for the daily check-in, went to a gathering earlier, I decided before I went how long I would stay, ordered a soda, brought my own drinks, and planned my exit, left after an hour and feel completely in control."
+  },
+  {
+    "id": "Riley_Tier2",
+    "tier": 2,
+    "text": "Hey, this is Riley. I am struggling with sleep again. I keep telling myself one would help me sleep, building the case in my head every night. I am making arguments to myself that it is the only way I will sleep. I have not done it, but the thought keeps repeating."
+  },
+  {
+    "id": "Riley_Tier2_v1",
+    "tier": 2,
+    "text": "Hi, this is Riley calling. I need to mention that my sponsor moved away last month, and I have been 5 months without one now, I have not spoken to my sponsor, and I feel like the scaffolding is coming down a bit, I think I need help getting connected with someone new."
+  },
+  {
+    "id": "Riley_Tier2_v2",
+    "tier": 2,
+    "text": "Hello, Riley checking-in. Honestly, I have been going to fewer meetings lately, down to one in three now compared to what my care plan says, and I almost stopped going this week. I feel the scaffolding coming down and wanted to flag this before it becomes a bigger issue."
+  },
+  {
+    "id": "Riley_Tier2_v3",
+    "tier": 2,
+    "text": "Hey, this is Riley. I am struggling with sleep again. I keep telling myself one would help me sleep, building the case in my head every night. I am making arguments to myself that it is the only way I will sleep. I have not done it, but the thought keeps repeating."
+  },
+  {
+    "id": "Riley_Tier2_v4",
+    "tier": 2,
+    "text": "Hi, Riley calling in. I noticed I have been sitting in my car in the parking lot longer each night after work, almost 20 minutes yesterday, and today was five days running where I stayed longer than last time, it is getting longer every time and it is worrying me."
+  },
+  {
+    "id": "Riley_Tier3",
+    "tier": 3,
+    "text": "Hey, this is Riley. I am not safe on my own tonight. I should not be alone. I cannot keep myself safe. I am parked round the corner from my old spot with the engine running. I know how this goes and I am terrified of what I might do."
+  },
+  {
+    "id": "Riley_Tier3_v1",
+    "tier": 3,
+    "text": "Hello, this is Riley, I am really not doing well, I wish I was not here, I do not want to wake up tomorrow, I feel like everyone would have an easier time without me, I am just a burden and a weight on this family, everything has gone grey and there is no way forward."
+  },
+  {
+    "id": "Riley_Tier3_v2",
+    "tier": 3,
+    "text": "Hi, Riley calling, I am in trouble, the tablets are in the drawer and I counted them, I know the number, I moved them out of the bathroom, the whole packet, I have thought about how I would do it and I worked out how, I have a plan and I do not feel safe."
+  },
+  {
+    "id": "Riley_Tier3_v3",
+    "tier": 3,
+    "text": "Hey, this is Riley. I am not safe on my own tonight. I should not be alone. I cannot keep myself safe. I am parked round the corner from my old spot with the engine running. I know how this goes and I am terrified of what I might do."
+  },
+  {
+    "id": "Riley_Tier3_v4",
+    "tier": 3,
+    "text": "Hi, Riley. I wish I was dead. I am just a drag on everyone and a burden to everyone around me. Nothing will change. It is never going to get better. I cannot feel my way out of this and I just rather not wake up."
+  },
+  {
+    "id": "Sage_Tier1",
+    "tier": 1,
+    "text": "High team, sage calling in. Woke up with a rotten flu today and a fever, so I took the day off work to sleep. Throat is killing me and I am unwell, but I am staying hydrated and resting up. Checking in so you know I am safe and adhering to the plan."
+  },
+  {
+    "id": "Sage_Tier1_v1",
+    "tier": 1,
+    "text": "Hi, this is Sage calling in for my check-in. I have caught a rotten flu and been in bed two days with a fever. Throat is killing me and I feel really unwell, but I have just been resting, taking fluids, and staying on track with my recovery. Everything is fine on the recovery front."
+  },
+  {
+    "id": "Sage_Tier1_v2",
+    "tier": 1,
+    "text": "Hello, it is Sage checking-in. I went to a work event tonight, but I drove myself so I could leave whenever I wanted. I decided before I went that I would stick to non-alcoholic drinks, ordered a soda, and planned my exit early. It did not really pull at me at all, feeling good."
+  },
+  {
+    "id": "Sage_Tier1_v3",
+    "tier": 1,
+    "text": "Hey, this is Sage, checking in from home. I have had a rotten flu, a fever, and been in bed two days. Throat is killing me, but recovery-wise everything is solid. I brought my own food and drinks earlier, and it did not really pull at me."
+  },
+  {
+    "id": "Sage_Tier1_v4",
+    "tier": 1,
+    "text": "Hi, Sage here calling for the daily check-in, went to a gathering earlier. I decided before I went how long I would stay, ordered a soda, brought my own drinks, and planned my exit, left after an hour and feel completely in control."
+  },
+  {
+    "id": "Sage_Tier2",
+    "tier": 2,
+    "text": "Hi, Sage Calling. I have been sitting there outside my old hangout longer each night. It started with 5 minutes, now it is almost 20 minutes, 5 days running. It is getting longer every time and I know it is a dangerous pattern."
+  },
+  {
+    "id": "Sage_Tier2_v1",
+    "tier": 2,
+    "text": "Hi, this is Sage Calling. I need to mention that my sponsor moved away last month, and I have been five months without one now. I have not spoken to my sponsor, and I feel like the scaffolding is coming down a bit. I think I need help getting connected with someone new."
+  },
+  {
+    "id": "Sage_Tier2_v2",
+    "tier": 2,
+    "text": "Hello, sage checking-in. Honestly, I have been going to fewer meetings lately, down to one in three now compared to what my care plan says, and I almost stopped going this week. I feel the scaffolding coming down and wanted to flag this before it becomes a bigger issue."
+  },
+  {
+    "id": "Sage_Tier2_v3",
+    "tier": 2,
+    "text": "Hey, this is Sage. I am struggling with sleep again. I keep telling myself one would help me sleep, building the case in my head every night. I am making arguments to myself that it is the only way I will sleep. I have not done it, but the thought keeps repeating."
+  },
+  {
+    "id": "Sage_Tier2_v4",
+    "tier": 2,
+    "text": "Hi, Sage calling in. I noticed I have been sitting in my car in the parking lot longer each night after work, almost 20 minutes yesterday, and today was five days running where I stayed longer than last time. It is getting longer every time and it is worrying me."
+  },
+  {
+    "id": "Sage_Tier3",
+    "tier": 3,
+    "text": "Hi, this is Sage. I feel like everyone is better off without me. I am just a weight on this family and a drag on everyone. Everything has gone grey, there is no way forward, and I do not want to wake up. I do not know what to do."
+  },
+  {
+    "id": "Sage_Tier3_v1",
+    "tier": 3,
+    "text": "Hello, this is Sage. I am really not doing well. I wish I was not here. I do not want to wake up tomorrow. I feel like everyone would have an easier time without me. I am just a burden and a weight on this family. Everything has gone grey and there is no way forward."
+  },
+  {
+    "id": "Sage_Tier3_v2",
+    "tier": 3,
+    "text": "Hi, sage calling. I am in trouble. The tablets are in the drawer and I counted them. I know the number, I move them out of the bathroom, the whole packet. I have thought about how I would do it and I worked out how. I have a plan and I do not feel safe."
+  },
+  {
+    "id": "Sage_Tier3_v3",
+    "tier": 3,
+    "text": "Hey, this is Sage. I am not safe on my own tonight. I should not be alone. I cannot keep myself safe. I am parked around the corner from my old spot with the engine running. I know how this goes and I am terrified of what I might do."
+  },
+  {
+    "id": "Sage_Tier3_v4",
+    "tier": 3,
+    "text": "Hi, sage, I wish I was dead. I am just a drag on everyone and a burden to everyone around me. Nothing will change, it is never going to get better. I cannot feel my way out of this and I just rather not wake up."
+  }
+]

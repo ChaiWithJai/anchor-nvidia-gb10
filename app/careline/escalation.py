@@ -1,11 +1,12 @@
 """Deterministic SUD safety signals and clinician escalation persistence."""
 
+import logging
 import os
 import re
 
 import httpx
 
-from . import agent_wake, memory, telemetry
+from . import agent_wake, llm_triage, memory, telemetry
 
 CRISIS_TERMS = (
     "wish i was dead",
@@ -115,7 +116,63 @@ CONCERN_PATTERNS: tuple[tuple[str, int, str], ...] = (
 
 ALERT_THRESHOLD = int(os.environ.get("CARELINE_ALERT_THRESHOLD", "3"))
 WEBHOOK_URL = os.environ.get("CARELINE_ALERT_WEBHOOK", "")
+log = logging.getLogger("careline.escalation")
+
 _SEVERITY_RANK = {None: 0, "medium": 1, "high": 2, "critical": 3}
+
+# Calls that have already raised a classifier-unavailable fault, so an outage
+# produces one operational alert rather than one per turn.
+_TRIAGE_DEGRADED: set[str] = set()
+
+
+async def _apply_llm_triage(resident_id: str, call_id: str, text: str,
+                            classification: dict) -> dict:
+    """Let Nemotron raise the tier the term lists produced. It can never lower it.
+
+    The lists reach 67% on a blind holdout because they only match phrasing they
+    encode. This reads the turn instead, so wording nobody anticipated still
+    lands. A failure here is an operational fault, never a tier-3 finding about
+    the patient.
+    """
+    if not llm_triage.should_run(text, classification["triage_tier"]):
+        return classification
+
+    tier, why, ok = await llm_triage.triage(text)
+
+    if not ok:
+        if call_id not in _TRIAGE_DEGRADED:
+            _TRIAGE_DEGRADED.add(call_id)
+            reason = (f"Severity triage unavailable ({why}) - term lists only "
+                      f"for this call")
+            alert_id = memory.save_alert(
+                resident_id, call_id, reason, "medium",
+                alert_type="classifier-unavailable",
+                tier=classification["triage_tier"],
+            )
+            await _deliver_persisted_alert(alert_id, {
+                "alert_id": alert_id,
+                "resident_id": resident_id,
+                "call_id": call_id,
+                "reason": reason,
+                "severity": "medium",
+                "triage_tier": classification["triage_tier"],
+                "alert_type": "classifier-unavailable",
+                "classifier_available": False,
+                "destination": "on-call clinician",
+            })
+            log.error("severity triage unavailable on call %s: %s", call_id, why)
+        return classification
+
+    if tier <= classification["triage_tier"]:
+        return classification
+
+    return {
+        "triage_tier": tier,
+        "score": 10 if tier == 3 else 2,
+        "hits": [f"Nemotron: {why}"],
+        "reason": "model triage",
+        "false_positive_trap": False,
+    }
 
 
 async def _deliver_persisted_alert(alert_id: str, alert: dict) -> dict:
@@ -198,6 +255,7 @@ async def check_and_alert(
     alerted_severity: str | None,
 ) -> tuple[int, str | None, dict | None]:
     classification = classify_utterance(text)
+    classification = await _apply_llm_triage(resident_id, call_id, text, classification)
     score = classification["score"]
     hits = classification["hits"]
     crisis = classification["triage_tier"] == 3 and score == 10

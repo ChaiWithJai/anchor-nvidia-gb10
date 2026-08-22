@@ -11,8 +11,11 @@
 5. CUDA CSM conditions on the read-only 24 kHz reference and exact transcript,
    then returns a cloned WAV.
 6. The browser accepts speech through SpeechRecognition or typed input.
-7. Deterministic scoring persists concerning turns as clinician alerts.
-8. Hangup asks Nemotron for strict JSON facts plus a one-line summary and saves
+7. Deterministic scoring persists concerning turns as clinician alerts, then
+   produces exact plan-grounded escalation wording.
+8. If configured, the local OpenClaw `/hooks/wake` endpoint receives an
+   authenticated review task; its delivery result is stored on the MongoDB alert.
+9. Hangup asks Nemotron for strict JSON facts plus a one-line summary and saves
    the call, transcript, facts, and audit evidence to MongoDB.
 
 ## Interfaces
@@ -38,6 +41,6 @@ the BF16/FP32 mismatch observed on GB10.
 
 `scripts/verify-nvidia.py` checks MongoDB health and both interfaces, publishes
 a care plan, rejects a missing-consent call, opens a fresh self call, generates
-a real cloned greeting WAV, checks low- and high-risk turns, verifies clinician
-escalation and cloned reply audio, persists the transcript, and opens a second
-call using stored memory.
+a real cloned greeting WAV, checks low- and high-risk turns, verifies exact
+escalation wording, agent-delivery audit state, and cloned reply audio, persists
+the transcript, and opens a second call using stored memory.

@@ -15,12 +15,25 @@ check-in.
 - `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4` served locally by NVIDIA vLLM
 - Sesame CSM-1B native Transformers inference on CUDA BF16
 - MongoDB 8 stores patients, plans, signals, calls, memories, alerts, and audit events
-- OpenClaw 2026.7.1 and NVIDIA OpenShell 0.0.106 from the offline T7 bundle
+- OpenClaw 2026.5.27 in NVIDIA OpenShell 0.0.106 from the offline T7 bundle
 - Browser SpeechRecognition for microphone input; no cloud inference
 
 The POC simulates the outbound phone lifecycle in the browser. It deliberately
 does not dial the public telephone network, so no carrier credentials or call
 charges are required for judging.
+
+Safety alerts are written to MongoDB before any agent handoff. When a local
+OpenClaw hook is configured, Anchor wakes the OpenClaw agent inside NVIDIA
+OpenShell and stores the HTTP delivery result on the same alert. When it is not
+configured, the alert says `not-configured`; the patient UI does not claim that
+a clinician was contacted. Spoken high-risk responses use deterministic,
+clinician-authored options rather than improvised advice.
+
+OpenClaw never contacts a patient or changes a care plan autonomously.
+
+The base workload runs fail-closed without a hook. [OPENSHLL.md](OPENSHLL.md)
+documents the validated optional OpenShell + OpenClaw handoff and its private
+network boundary.
 
 ## Run
 
@@ -40,7 +53,7 @@ real CSM synthesis, then runs the complete workload before reporting ready.
 Repeat verification without rebuilding:
 
 ```bash
-ANCHOR_DEMO_URL=http://127.0.0.1:8100 python3 scripts/verify-nvidia.py
+CARELINE_BASE_URL=http://127.0.0.1:8100 python3 scripts/verify-nvidia.py
 ```
 
 ## Share across segmented Wi-Fi

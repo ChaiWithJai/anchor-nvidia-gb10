@@ -7,6 +7,9 @@
 - Split the patient experience into a focused, iPhone-safe phone-call interface.
 - Added plan publishing and alert-resolution APIs with persisted audit events.
 - Expanded local and public verification through the full safety and voice path.
+- Added an authenticated OpenClaw wake adapter with MongoDB delivery evidence.
+- Made high-risk speech deterministic and forbade unproven notification claims.
+- Corrected the MongoDB runbook and verifier environment variable.
 
 ## 1.0.0 - 2026-08-22
 

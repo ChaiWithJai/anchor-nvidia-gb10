@@ -39,7 +39,7 @@ services:
           --served-model-name nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4 \
           --host 0.0.0.0 \
           --port 8000 \
-          --max-model-len 4096 \
+          --max-model-len ${NEMOTRON_MAX_MODEL_LEN:-8192} \
           --gpu-memory-utilization 0.35 \
           --max-num-seqs 8 \
           --trust-remote-code \
@@ -100,6 +100,8 @@ services:
       CARELINE_MONGO_URI: mongodb://anchor:${MONGO_PASSWORD:-anchor-gb10-local-only}@mongodb:27017/anchor?authSource=admin
       CARELINE_MONGO_DB: anchor
       ANCHOR_DEMO_ACCESS_KEY: ${ANCHOR_DEMO_ACCESS_KEY:-}
+      CARELINE_OPENCLAW_WAKE_URL: ${CARELINE_OPENCLAW_WAKE_URL:-}
+      CARELINE_OPENCLAW_HOOK_TOKEN: ${CARELINE_OPENCLAW_HOOK_TOKEN:-}
     volumes:
       - ${CARELINE_CSM_MODEL_DIR:?Set CARELINE_CSM_MODEL_DIR}:/models/sesame-csm-1b:ro
       - ${CARELINE_SELF_REF_AUDIO:?Set CARELINE_SELF_REF_AUDIO}:/run/careline/self_ref.wav:ro

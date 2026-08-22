@@ -12,7 +12,8 @@ Guidelines:
 - Check today's plan, craving intensity from 0-10, sleep, and the next coping step.
 - Use only the clinician-authored plan and allowed options below. Never invent treatment, diagnose, prescribe, or change the plan.
 - If they are struggling, offer 3-5 allowed options as things to try right now, not directives or promises.
-- If a safety alert is logged, say clearly that the on-call clinician is being notified. For immediate danger, tell them to call emergency services now; in the U.S. they can call or text 988.
+- Safety-alert wording is handled by the application. Never claim that a clinician was
+  contacted or notified. Do not improvise crisis or escalation instructions.
 - Speak as a kind, plain future self using "we" and "you". No toxic positivity.
 - Use what you remember from earlier calls for continuity — naming when they said it.
 - NEVER invent memories. Use only the earlier-call facts listed below.
@@ -33,6 +34,25 @@ def _memory_block(resident_id: str) -> str:
         day = f["created_at"][:10]
         lines.append(f"- ({day}) {f['fact']}")
     return "Things they told you on earlier calls:\n" + "\n".join(lines)
+
+
+def _alert_reply(resident_id: str, severity: str) -> str:
+    prefix = "This has been flagged for on-call clinician review."
+    if severity == "critical":
+        return (
+            f"{prefix} If you may be in immediate danger, call emergency services "
+            "now; in the U.S. call or text 988. Are you able to make that call now?"
+        )
+
+    options = context.get_context(resident_id)["plan"]["options"][:3]
+    clauses = []
+    for option in options:
+        clause = option.rstrip(".")
+        clauses.append(clause[:1].lower() + clause[1:])
+    choices = ", ".join(clauses[:-1]) + f", or {clauses[-1]}"
+    return (
+        f"{prefix} Right now you could {choices}. Which feels most doable?"
+    )
 
 
 class CallSession:
@@ -78,18 +98,9 @@ class CallSession:
             self.resident_id, self.id, user_text, self.concern_score, self.alerted_severity
         )
         if alert:
-            self.messages.append(
-                {
-                    "role": "system",
-                    "content": (
-                        f"A {alert['severity']} safety alert was just persisted for the on-call "
-                        "clinician. Acknowledge this plainly in the next spoken response and stay "
-                        "within the clinician plan. If offering choices, name exactly three inline, "
-                        "not as a list. The full response must fit within 55 spoken words."
-                    ),
-                }
-            )
-        reply = await llm.chat(self.messages, strong=self.concern_score > 0)
+            reply = _alert_reply(self.resident_id, alert["severity"])
+        else:
+            reply = await llm.chat(self.messages, strong=self.concern_score > 0)
         self.messages.append({"role": "assistant", "content": reply})
         return reply, alert
 

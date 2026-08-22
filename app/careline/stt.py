@@ -80,7 +80,10 @@ class LocalWhisperBackend:
         samples, duration, frame_count = self._decode_wav(payload)
         inputs = self._processor(
             samples, sampling_rate=16_000, return_tensors="pt"
-        ).input_features.to(self._model.device)
+        ).input_features.to(
+            device=self._model.device,
+            dtype=next(self._model.parameters()).dtype,
+        )
         with torch.inference_mode():
             generated = self._model.generate(inputs, max_new_tokens=120)
         text = self._processor.batch_decode(

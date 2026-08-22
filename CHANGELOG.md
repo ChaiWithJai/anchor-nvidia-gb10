@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.0.0 - 2026-08-22
+
+- Added a MongoDB 8 clinical system of record with indexes and synthetic fixtures.
+- Added clinician roster, care-plan editing, calls, transcripts, alerts, and audit UI.
+- Split the patient experience into a focused, iPhone-safe phone-call interface.
+- Added plan publishing and alert-resolution APIs with persisted audit events.
+- Expanded local and public verification through the full safety and voice path.
+
 ## 1.0.0 - 2026-08-22
 
 - Extracted the CareLine self-call flow from `hybrid-ai-blueprints`.

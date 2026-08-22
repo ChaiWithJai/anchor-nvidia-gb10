@@ -11,9 +11,9 @@
 <body>
 <header class="top"><div class="brand"><div class="mark">G</div><div><strong>Anchor Proof</strong><small>GB10 live operations</small></div></div><div class="live"><i id="dot" class="dot"></i><span id="streamState">Connecting</span><a class="back" href="/">Clinic</a></div></header>
 <main class="wrap">
-<header class="heading"><div><h1>Local agent evidence</h1><p>Inspect what happened across durable state, the secure agent handoff, and GB10 inference.</p></div><time id="sampled" class="stamp">Waiting for first sample</time></header>
-<div class="tabs" role="tablist" aria-label="Evidence views"><button id="architectureTab" class="tab" role="tab" aria-selected="true" aria-controls="architecture">Architecture</button><button id="performanceTab" class="tab" role="tab" aria-selected="false" aria-controls="performance">Performance</button></div>
-<section id="architecture" class="surface" role="tabpanel" aria-labelledby="architectureTab">
+<header class="heading"><div><h1 id="viewTitle">Live NVIDIA GB10 profiler</h1><p id="viewCopy">Watch GPU utilization, unified memory, thermals, power, inference latency, and agent activity as the call runs.</p></div><time id="sampled" class="stamp">Waiting for first sample</time></header>
+<div class="tabs" role="tablist" aria-label="Evidence views"><button id="performanceTab" class="tab" role="tab" aria-selected="true" aria-controls="performance">Live performance</button><button id="architectureTab" class="tab" role="tab" aria-selected="false" aria-controls="architecture">Architecture traces</button></div>
+<section id="architecture" class="surface" role="tabpanel" aria-labelledby="architectureTab" hidden>
   <section class="proofs" aria-label="Proof lanes">
     <article id="durabilityProof" class="proof"><h2>Durability</h2><strong>Waiting for a traced call</strong><p>Context reads, acknowledged writes, alert ordering, and persisted delivery state.</p></article>
     <article id="isolationProof" class="proof"><h2>Isolation</h2><strong>Waiting for agent evidence</strong><p>Bounded OpenClaw hook, NVIDIA OpenShell sandbox, and forced local provider route.</p></article>
@@ -33,7 +33,7 @@
     <article class="panel arch-detail"><header class="panel-head"><strong>Trace evidence</strong><span>Safe operational metadata only</span></header><div id="traceDetail" class="body"><div class="empty">Select a trace to inspect its ordered spans.</div></div></article>
   </section>
 </section>
-<section id="performance" class="surface" role="tabpanel" aria-labelledby="performanceTab" hidden>
+<section id="performance" class="surface" role="tabpanel" aria-labelledby="performanceTab">
   <section class="cards" aria-label="Live GB10 metrics">
     <article class="card"><span class="label">GPU compute</span><strong id="gpuUtil" class="value">-</strong><span class="sub">Streaming multiprocessors</span></article>
     <article class="card"><span class="label">GPU memory</span><strong id="memUtil" class="value">-</strong><span id="memDetail" class="sub">Unified memory</span></article>
@@ -54,7 +54,7 @@ const $=id=>document.getElementById(id),gpuHistory=[];
 const clientId=sessionStorage.anchorGoalClientId||(sessionStorage.anchorGoalClientId=crypto.randomUUID());
 let topologyData={nodes:[],edges:[]},latest=null,paused=false,follow=true,selectedTrace="",selectedComponent="",selectedEdge="";
 function heartbeat(connected=true){const body=JSON.stringify({client_id:clientId,surface:"goal",connected:connected});if(!connected&&navigator.sendBeacon){navigator.sendBeacon("/api/goal/heartbeat",new Blob([body],{type:"application/json"}));return}fetch("/api/goal/heartbeat",{method:"POST",headers:{"Content-Type":"application/json"},body:body,keepalive:true}).catch(()=>{})}
-function tab(name){const architecture=name==="architecture";$("architecture").hidden=!architecture;$("performance").hidden=architecture;$("architectureTab").setAttribute("aria-selected",String(architecture));$("performanceTab").setAttribute("aria-selected",String(!architecture));if(!architecture)draw()}
+function tab(name){const architecture=name==="architecture";$("architecture").hidden=!architecture;$("performance").hidden=architecture;$("architectureTab").setAttribute("aria-selected",String(architecture));$("performanceTab").setAttribute("aria-selected",String(!architecture));$("viewTitle").textContent=architecture?"Local agent evidence":"Live NVIDIA GB10 profiler";$("viewCopy").textContent=architecture?"Inspect durable state, the secure agent handoff, and ordered local inference traces.":"Watch GPU utilization, unified memory, thermals, power, inference latency, and agent activity as the call runs.";if(!architecture)draw()}
 $("architectureTab").onclick=()=>tab("architecture");$("performanceTab").onclick=()=>tab("performance");
 function metric(id,value,unit){const target=$(id);target.textContent=value==null?"N/A":String(value);if(value!=null&&unit){const span=document.createElement("span");span.className="unit";span.textContent=unit;target.append(span)}}
 function duration(seconds){const h=Math.floor(seconds/3600),m=Math.floor(seconds%3600/60),s=seconds%60;return h+"h "+m+"m "+s+"s"}
@@ -74,7 +74,7 @@ function update(data){latest=data;$("sampled").textContent=new Date(data.sampled
 $("proofFilter").onchange=$("outcomeFilter").onchange=()=>renderArchitecture(latest);$("componentFilter").onchange=event=>{selectedComponent=event.target.value;selectedEdge="";renderArchitecture(latest)};$("followButton").onclick=()=>{follow=!follow;$("followButton").classList.toggle("active",follow);$("followButton").setAttribute("aria-pressed",String(follow));if(follow)renderArchitecture(latest)};$("pauseButton").onclick=()=>{paused=!paused;$("pauseButton").classList.toggle("active",paused);$("pauseButton").setAttribute("aria-pressed",String(paused));$("pauseButton").textContent=paused?"Resume view":"Pause view";if(!paused)renderArchitecture(latest)};
 async function loadTopology(){const response=await fetch("/api/goal/architecture");if(!response.ok)throw new Error("Architecture unavailable");topologyData=await response.json();const select=$("componentFilter");topologyData.nodes.forEach(item=>{const option=document.createElement("option");option.value=item.node_id;option.textContent=item.label;select.append(option)});if(latest)renderArchitecture(latest)}
 function connect(){const stream=new EventSource("/api/goal/events");stream.onopen=()=>{$("dot").classList.add("ready");$("streamState").textContent="Live / 1-second stream"};stream.onmessage=event=>{try{update(JSON.parse(event.data))}catch(error){console.error(error)}};stream.onerror=()=>{$("dot").classList.remove("ready");$("streamState").textContent="Reconnecting"}}
-heartbeat();setInterval(heartbeat,5000);addEventListener("beforeunload",()=>heartbeat(false));addEventListener("resize",draw);loadTopology().catch(error=>{$("topology").innerHTML='<div class="empty">'+error.message+"</div>"});connect();
+tab(new URLSearchParams(location.search).get("view")==="architecture"?"architecture":"performance");heartbeat();setInterval(heartbeat,5000);addEventListener("beforeunload",()=>heartbeat(false));addEventListener("resize",draw);loadTopology().catch(error=>{$("topology").innerHTML='<div class="empty">'+error.message+"</div>"});connect();
 </script>
 </body>
 </html>

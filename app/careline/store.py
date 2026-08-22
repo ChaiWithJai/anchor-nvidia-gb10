@@ -117,6 +117,7 @@ def initialize(force_reseed: bool = False) -> None:
     db.signals.create_index([("patient_id", ASCENDING), ("type", ASCENDING)], unique=True)
     db.audit_events.create_index([("created_at", DESCENDING)])
     db.audit_events.create_index("event_key", unique=True, sparse=True)
+    db.audio_session_events.create_index([("call_id", ASCENDING), ("created_at", ASCENDING)])
     db.fixture_metadata.create_index("dataset_version", unique=True)
 
     current_fixture = db.fixture_metadata.find_one({"active": True})
@@ -519,3 +520,54 @@ def add_note(patient_id: str, title: str, body: str, author: str) -> dict | None
     _db().clinical_notes.insert_one(note)
     audit("clinical_note.created", author, patient_id, title)
     return _public(note)
+
+
+def update_voice_preference(
+    patient_id: str,
+    mode: str,
+    voice_id: str | None,
+    consent_confirmed: bool,
+    actor: str,
+) -> dict | None:
+    patient = _db().patients.find_one({"patient_id": patient_id})
+    if not patient:
+        return None
+    if mode == "personalized":
+        if patient.get("voice_enrollment") != "consented" or not consent_confirmed:
+            raise ValueError("personalized voice requires enrolled affirmative consent")
+        voice_id = None
+    elif mode == "text-only":
+        voice_id = None
+    payload = {
+        "voice_mode": mode,
+        "voice_id": voice_id,
+        "voice_consent_confirmed": bool(consent_confirmed and mode == "personalized"),
+        "voice_preference_updated_at": now(),
+        "updated_at": now(),
+    }
+    updated = _db().patients.find_one_and_update(
+        {"patient_id": patient_id}, {"$set": payload}, return_document=ReturnDocument.AFTER
+    )
+    audit("voice_preference.updated", actor, patient_id, f"mode={mode};voice={voice_id or 'none'}")
+    return _public(updated) if updated else None
+
+
+def record_audio_event(
+    patient_id: str, call_id: str, event: str, metrics: dict | None = None
+) -> None:
+    safe_metrics = {
+        key: value
+        for key, value in (metrics or {}).items()
+        if key in {"frame_count", "duration_seconds", "engine", "state", "error"}
+    }
+    _db().audio_session_events.insert_one(
+        {
+            "patient_id": patient_id,
+            "call_id": call_id,
+            "event": event,
+            "metrics": safe_metrics,
+            "raw_audio_retained": False,
+            "created_at": now(),
+            "synthetic_demo_data": True,
+        }
+    )

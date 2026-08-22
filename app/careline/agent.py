@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 
 from . import context, escalation, llm, memory
 
-ANCHOR_TEMPLATE = """You are Anchor: {name}'s steadier future self, speaking in their own consented cloned voice. They know this is a digital twin. This is a recovery-plan check-in, not therapy or medical care. Today is {today}.
+ANCHOR_TEMPLATE = """You are Anchor: {identity}. They know this is a digital check-in. This is recovery-plan support, not therapy or medical care. Today is {today}.
 
 Guidelines:
 - Use at most 55 spoken words and one or two sentences per turn. Ask only one question at a time.
@@ -56,11 +56,18 @@ def _alert_reply(resident_id: str, severity: str) -> str:
 
 
 class CallSession:
-    def __init__(self, resident_id: str, name: str, mode: str = "care"):
+    def __init__(
+        self,
+        resident_id: str,
+        name: str,
+        mode: str = "catalog",
+        voice_id: str | None = "anchor-grounded",
+    ):
         self.id = uuid.uuid4().hex[:12]
         self.resident_id = resident_id
         self.name = name
         self.mode = mode
+        self.voice_id = voice_id
         self.concern_score = 0
         self.alerted_severity: str | None = None
         today = datetime.now(timezone.utc).strftime("%A, %B %d")
@@ -69,7 +76,11 @@ class CallSession:
             {
                 "role": "system",
                 "content": ANCHOR_TEMPLATE.format(
-                    name=name,
+                    identity=(
+                        f"{name}'s steadier future self speaking in their explicitly consented personalized voice"
+                        if mode == "personalized"
+                        else f"a synthetic recovery check-in voice selected by {name}"
+                    ),
                     today=today,
                     plan_block=context.prompt_block(resident_id),
                     memory_block=_memory_block(resident_id),
@@ -81,7 +92,7 @@ class CallSession:
     async def open_call(self) -> str:
         if self.is_first_call:
             cue = (
-                "(The proactive call connects. Introduce yourself as Anchor, their future self. "
+                "(The proactive call connects. Introduce yourself as Anchor, a future-self check-in. "
                 "Say the clinician's plan has today's peer meeting, then ask how cravings are "
                 "right now from zero to ten. Do not claim shared history.)"
             )

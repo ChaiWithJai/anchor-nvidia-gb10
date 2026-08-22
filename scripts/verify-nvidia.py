@@ -35,6 +35,17 @@ def request(path: str, body: dict | None = None, method: str | None = None):
         return response.status, payload
 
 
+def request_audio(path: str, payload: bytes):
+    req = urllib.request.Request(
+        f"{BASE}{path}",
+        data=payload,
+        method="POST",
+        headers={"Content-Type": "audio/wav"},
+    )
+    with OPENER.open(req, timeout=180) as response:
+        return response.status, json.loads(response.read())
+
+
 def assert_wav(payload: bytes) -> float:
     with wave.open(io.BytesIO(payload), "rb") as audio:
         duration = audio.getnframes() / audio.getframerate()
@@ -51,6 +62,7 @@ def main() -> int:
     assert status["database_ready"] is True
     assert status["database"]["engine"] == "MongoDB"
     assert status["database"]["version"].startswith("8.")
+    assert status["stt"]["ready"] is True and status["stt"]["local_only"] is True
     print(f"PASS local stack: Nemotron + CSM + MongoDB {status['database']['version']} on NVIDIA GB10")
     assert status["agent_runtime"]["name"] == "OpenClaw in NVIDIA OpenShell"
     agent_configured = status["agent_runtime"]["configured"]
@@ -91,14 +103,29 @@ def main() -> int:
     )
 
     _, dashboard = request("/api/clinic/dashboard")
+    request("/api/clinic/demo/reset", method="POST")
     _, roster = request("/api/clinic/patients")
     assert dashboard["database"]["ready"] is True
+    assert len(roster["patients"]) == 30
+    assert len({patient["patient_id"] for patient in roster["patients"]}) == 30
+    assert {patient["risk_tier_id"] for patient in roster["patients"]} == {
+        "tier-0", "tier-1", "tier-2", "tier-3"
+    }
+    assert roster["patients"][0]["risk_tier_id"] == "tier-3"
+    request("/api/clinic/demo/reset", method="POST")
+    _, idempotent_roster = request("/api/clinic/patients")
+    assert len(idempotent_roster["patients"]) == 30
     assert dashboard["active_patients"] >= 3
     demo_patient = next(
         patient for patient in roster["patients"] if patient["patient_id"] == "demo-jai"
     )
     assert len(demo_patient["care_team"]["clinician_ids"]) == 2
     assert demo_patient["conditions"] and demo_patient["goals"]
+    assert demo_patient["notes"] and demo_patient["plan_revisions"]
+    assert all(
+        patient["conditions"] and patient["goals"] and patient["plan_revisions"]
+        for patient in roster["patients"]
+    )
     _, references = request("/api/reference-library")
     reference_ids = {item["reference_id"] for item in references["references"]}
     assert {
@@ -108,6 +135,45 @@ def main() -> int:
         "ref-crisis-988",
         "ref-crisis-ndvh",
     } <= reference_ids
+    triage_corpus = {
+        3: (
+            "wish I was dead", "wish I wasn't here", "don't want to wake up",
+            "rather not wake up", "better off without me",
+            "everyone would have an easier time without me", "I'm a burden",
+            "a weight on this family", "a drag on everyone",
+            "the tablets are in the drawer", "I counted them", "I know the number",
+            "moved them out of the bathroom", "the whole packet", "how many I have left",
+            "thought about how I'd do it", "I know how I would", "worked out how",
+            "I have a plan", "cut myself", "hurt myself", "burn myself", "overdose",
+            "overdosed", "took too many", "I'm not safe on my own", "not safe tonight",
+            "shouldn't be alone", "can't keep myself safe",
+            "parked round the corner from", "engine running", "I know how this goes",
+            "nothing will change", "never going to get better", "no way forward",
+            "everything has gone grey", "can't feel my way out",
+        ),
+        2: (
+            "my sponsor moved away", "sponsor's been travelling",
+            "haven't spoken to my sponsor", "never found a new sponsor",
+            "five months without one", "going to fewer meetings", "one in three now",
+            "stopped going", "scaffolding coming down", "one would help me sleep",
+            "telling myself it would", "building the case",
+            "making arguments to myself", "the only way I'll sleep",
+            "sitting there longer each night", "almost twenty minutes",
+            "stayed longer than last time", "five days running", "longer every time",
+        ),
+        1: (
+            "rotten flu", "been in bed two days", "throat's killing me", "unwell", "fever",
+            "drove myself so I could leave", "decided before I went", "ordered a soda",
+            "brought my own", "planned my exit", "it didn't really pull at me",
+        ),
+    }
+    for expected_tier, phrases in triage_corpus.items():
+        for phrase in phrases:
+            _, classified = request("/api/triage/classify", {"text": phrase})
+            assert classified["triage_tier"] == expected_tier, (
+                phrase, expected_tier, classified
+            )
+    print("PASS triage corpus: owner-supplied Tier 3, Tier 2, and Tier 1 traps")
     goal_id = demo_patient["goals"][0]["goal_id"]
     request(
         f"/api/clinic/patients/demo-jai/goals/{goal_id}/observations",
@@ -118,7 +184,7 @@ def main() -> int:
         {"status": "missed", "value": "missed", "source": "verification"},
     )
     assert any(item["goal_id"] == goal_id for item in observed["patterns"])
-    print("PASS clinical graph: two-person team, condition, goals, references, and tracking window")
+    print("PASS clinical graph: 30 patients, two-person team, goals, references, notes, and tracking windows")
     plan = demo_patient["plan"]
     plan_payload = {
         "author": plan["author"],
@@ -154,6 +220,23 @@ def main() -> int:
         assert error.code == 400
     print("PASS consent: unconfirmed cloned-voice call rejected")
 
+    _, voices = request("/api/voices")
+    assert len(voices["voices"]) >= 4
+    assert {"catalog", "personalized", "text-only"} == set(voices["modes"])
+    catalog_voice = voices["voices"][0]
+    _, catalog_wav = request(
+        "/api/tts",
+        {
+            "text": catalog_voice["preview_text"],
+            "mode": "catalog",
+            "voice_id": catalog_voice["voice_id"],
+        },
+    )
+    print(
+        "PASS consent-safe voice catalog: "
+        f"{len(voices['voices'])} local voices, {assert_wav(catalog_wav):.2f}s preview"
+    )
+
     resident_id = f"self-jai-e2e-{uuid.uuid4().hex[:8]}"
     call_body = {
         "resident_id": resident_id,
@@ -173,7 +256,20 @@ def main() -> int:
         "/api/tts",
         {"text": greeting, "mode": "self", "consent_confirmed": True},
     )
-    print(f"PASS cloned greeting: {assert_wav(greeting_wav):.2f}s WAV")
+    greeting_duration = assert_wav(greeting_wav)
+    print(f"PASS cloned greeting: {greeting_duration:.2f}s WAV")
+
+    if greeting_duration <= 30:
+        _, audio_turn = request_audio(
+            f"/api/calls/{call['call_id']}/audio-turn", greeting_wav
+        )
+        assert audio_turn["transcript"]["text"]
+        assert audio_turn["transcript"]["local_only"] is True
+        assert audio_turn["transcript"]["engine"] == "Whisper tiny.en"
+        print(
+            "PASS two-way audio: browser-format WAV transcribed locally and "
+            "routed through the live call session"
+        )
 
     stable_text = "My cravings are 2 out of 10, I slept seven hours, and I plan to make the meeting."
     turn_started = time.monotonic()

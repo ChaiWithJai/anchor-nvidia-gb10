@@ -12,12 +12,13 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse, Response, StreamingResponse
 from pydantic import BaseModel, Field
 
-from . import agent_wake, context, llm, memory, store, telemetry, tts
+from . import agent_wake, context, escalation, llm, memory, store, stt, telemetry, tts
 from .agent import CallSession
 
 from contextlib import asynccontextmanager
 
 CLONE_TTS = tts.get_clone_backend()
+LOCAL_STT = stt.get_backend()
 VOICE_READY = False
 
 
@@ -71,14 +72,27 @@ button{{width:100%;height:44px;margin-top:12px;border:0;border-radius:6px;backgr
 class StartCall(BaseModel):
     resident_id: str
     name: str
-    mode: str = "care"  # "care" (Dorothy demo, Kokoro voice) | "self" (cloned voice)
+    mode: str = "catalog"
+    voice_id: str | None = "anchor-grounded"
     consent_confirmed: bool = False
 
 
 class Turn(BaseModel):
     text: str
-    mode: str = "care"
+    mode: str = "catalog"
+    voice_id: str | None = "anchor-grounded"
     consent_confirmed: bool = False
+
+
+class VoicePreferenceUpdate(BaseModel):
+    mode: str
+    voice_id: str | None = None
+    consent_confirmed: bool = False
+    actor: str = Field(default="patient", min_length=2, max_length=80)
+
+
+class TriageSample(BaseModel):
+    text: str = Field(min_length=2, max_length=500)
 
 
 class AmbientSignal(BaseModel):
@@ -133,6 +147,22 @@ class GoalClientHeartbeat(BaseModel):
     client_id: str = Field(min_length=8, max_length=80, pattern=r"^[A-Za-z0-9-]+$")
     surface: str = Field(min_length=1, max_length=40)
     connected: bool = True
+
+
+def _voice_choice(mode: str, voice_id: str | None, consent_confirmed: bool) -> tuple[str, str | None]:
+    normalized = "personalized" if mode == "self" else mode
+    if normalized == "personalized":
+        if not consent_confirmed:
+            raise HTTPException(400, "personalized voice requires affirmative consent")
+        return normalized, None
+    if normalized == "text-only":
+        return normalized, None
+    if normalized != "catalog":
+        raise HTTPException(400, "voice mode must be catalog, personalized, or text-only")
+    enabled = {item["voice_id"] for item in tts.public_catalog()["voices"]}
+    if not voice_id or voice_id not in enabled:
+        raise HTTPException(400, "unknown or disabled catalog voice")
+    return normalized, voice_id
 
 
 def _validate_plan(body: CarePlanUpdate) -> None:
@@ -280,6 +310,7 @@ async def status():
         "runtime": "NVIDIA GB10",
         "llm": "Nemotron 3 Nano NVFP4",
         "voice": "Sesame CSM-1B CUDA",
+        "stt": LOCAL_STT.status(),
         "nemotron_ready": nemotron_ready,
         "voice_ready": VOICE_READY,
         "agent_runtime": agent_wake.status(),
@@ -308,6 +339,16 @@ async def reference_library():
     }
 
 
+@app.post("/api/triage/classify")
+async def classify_triage_sample(body: TriageSample):
+    return escalation.classify_utterance(body.text)
+
+
+@app.get("/api/voices")
+async def voice_catalog():
+    return {**tts.public_catalog(), "modes": ["catalog", "personalized", "text-only"]}
+
+
 @app.post("/api/clinic/patients/{patient_id}/goals/{goal_id}/observations")
 async def observe_goal(patient_id: str, goal_id: str, body: GoalObservation):
     if body.status not in {"met", "missed"}:
@@ -327,39 +368,41 @@ async def observe_goal(patient_id: str, goal_id: str, body: GoalObservation):
 # page load, so "Start call" returns a ready greeting (text + cached audio)
 # instead of paying LLM + TTS latency while the user waits.
 PREPARED: dict[str, tuple[CallSession, str]] = {}
-TTS_CACHE: dict[str, bytes] = {}
+TTS_CACHE: dict[tuple[str, str, str], bytes] = {}
 
 
 @app.post("/api/calls/prepare")
 async def prepare_call(body: StartCall):
-    if body.mode != "self" or not body.consent_confirmed:
-        raise HTTPException(400, "self-voice consent must be confirmed")
-    session = CallSession(body.resident_id, body.name, mode=body.mode)
+    mode, voice_id = _voice_choice(body.mode, body.voice_id, body.consent_confirmed)
+    session = CallSession(body.resident_id, body.name, mode=mode, voice_id=voice_id)
     greeting = await session.open_call()
-    try:
-        TTS_CACHE[greeting] = await CLONE_TTS.synthesize(greeting)
-        while len(TTS_CACHE) > 32:
-            TTS_CACHE.pop(next(iter(TTS_CACHE)))
-    except Exception:
-        import logging
+    if mode != "text-only":
+        try:
+            cache_key = (mode, voice_id or "personalized", greeting)
+            TTS_CACHE[cache_key] = await CLONE_TTS.synthesize(
+                greeting, mode=mode, voice_id=voice_id
+            )
+            while len(TTS_CACHE) > 32:
+                TTS_CACHE.pop(next(iter(TTS_CACHE)))
+        except Exception:
+            import logging
 
-        logging.getLogger("careline").exception("prepare: greeting TTS failed")
+            logging.getLogger("careline").exception("prepare: greeting TTS failed")
     PREPARED[body.resident_id] = (session, greeting)
-    return {"prepared": True}
+    return {"prepared": True, "voice_mode": mode, "voice_id": voice_id}
 
 
 @app.post("/api/calls")
 async def start_call(body: StartCall):
-    if body.mode != "self" or not body.consent_confirmed:
-        raise HTTPException(400, "self-voice consent must be confirmed")
+    mode, voice_id = _voice_choice(body.mode, body.voice_id, body.consent_confirmed)
     prepared = PREPARED.pop(body.resident_id, None)
-    if prepared and prepared[0].mode == body.mode:
+    if prepared and prepared[0].mode == mode and prepared[0].voice_id == voice_id:
         session, greeting = prepared
     else:
-        session = CallSession(body.resident_id, body.name, mode=body.mode)
+        session = CallSession(body.resident_id, body.name, mode=mode, voice_id=voice_id)
         greeting = await session.open_call()
     SESSIONS[session.id] = session
-    return {"call_id": session.id, "greeting": greeting}
+    return {"call_id": session.id, "greeting": greeting, "voice_mode": mode, "voice_id": voice_id}
 
 
 @app.post("/api/calls/{call_id}/turn")
@@ -371,6 +414,41 @@ async def call_turn(call_id: str, body: Turn):
         raise HTTPException(400, "turn must contain 1-800 characters")
     reply, alert = await session.turn(body.text)
     return {"reply": reply, "alert": alert, "concern_score": session.concern_score}
+
+
+@app.post("/api/calls/{call_id}/audio-turn")
+async def call_audio_turn(call_id: str, request: Request):
+    session = SESSIONS.get(call_id)
+    if not session:
+        raise HTTPException(404, "unknown call")
+    if request.headers.get("content-type", "").split(";")[0] != "audio/wav":
+        raise HTTPException(415, "audio turn must use audio/wav")
+    payload = await request.body()
+    try:
+        transcript = await LOCAL_STT.transcribe(payload)
+    except ValueError as error:
+        raise HTTPException(400, str(error)) from error
+    except Exception as error:
+        raise HTTPException(503, f"local STT unavailable: {error}") from error
+    if not transcript["text"]:
+        raise HTTPException(422, "no speech detected in microphone audio")
+    store.record_audio_event(
+        session.resident_id,
+        call_id,
+        "transcribed",
+        {
+            "frame_count": transcript["frame_count"],
+            "duration_seconds": transcript["duration_seconds"],
+            "engine": transcript["engine"],
+        },
+    )
+    reply, alert = await session.turn(transcript["text"])
+    return {
+        "transcript": transcript,
+        "reply": reply,
+        "alert": alert,
+        "concern_score": session.concern_score,
+    }
 
 
 @app.post("/api/calls/{call_id}/end")
@@ -444,6 +522,24 @@ async def create_clinical_note(patient_id: str, body: ClinicalNoteCreate):
     return note
 
 
+@app.put("/api/clinic/patients/{patient_id}/voice-preference")
+async def update_voice_preference(patient_id: str, body: VoicePreferenceUpdate):
+    mode, voice_id = _voice_choice(body.mode, body.voice_id, body.consent_confirmed)
+    try:
+        patient = store.update_voice_preference(
+            patient_id, mode, voice_id, body.consent_confirmed, body.actor
+        )
+    except ValueError as error:
+        raise HTTPException(400, str(error)) from error
+    if not patient:
+        raise HTTPException(404, "unknown patient")
+    return {
+        "patient_id": patient_id,
+        "voice_mode": patient["voice_mode"],
+        "voice_id": patient.get("voice_id"),
+    }
+
+
 @app.post("/api/clinic/demo/reset")
 async def reset_clinic_demo():
     return store.reset_demo_data()
@@ -469,13 +565,15 @@ async def alerts():
 
 @app.post("/api/tts")
 async def synthesize(body: Turn):
-    if body.mode != "self" or not body.consent_confirmed:
-        raise HTTPException(400, "self-voice consent must be confirmed")
-    cached = TTS_CACHE.pop(body.text, None)
+    mode, voice_id = _voice_choice(body.mode, body.voice_id, body.consent_confirmed)
+    if mode == "text-only":
+        raise HTTPException(409, "text-only preference has no generated audio")
+    cache_key = (mode, voice_id or "personalized", body.text)
+    cached = TTS_CACHE.pop(cache_key, None)
     if cached:
-        return Response(content=cached, media_type="audio/wav")
+        return Response(content=cached, media_type="audio/wav", headers={"X-Anchor-Voice-Mode": mode, "X-Anchor-Voice-Id": voice_id or "personalized"})
     try:
-        wav = await CLONE_TTS.synthesize(body.text)
+        wav = await CLONE_TTS.synthesize(body.text, mode=mode, voice_id=voice_id)
     except Exception as e:
         raise HTTPException(503, f"tts backend unavailable: {e}")
-    return Response(content=wav, media_type="audio/wav")
+    return Response(content=wav, media_type="audio/wav", headers={"X-Anchor-Voice-Mode": mode, "X-Anchor-Voice-Id": voice_id or "personalized"})

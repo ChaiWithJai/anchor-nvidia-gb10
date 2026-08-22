@@ -1,0 +1,55 @@
+{
+  "catalog_version": "anchor-csm-catalog-2026-08-22",
+  "model": "Sesame CSM-1B",
+  "model_license": "Apache-2.0",
+  "voices": [
+    {
+      "voice_id": "anchor-grounded",
+      "display_name": "Grounded",
+      "description": "Calm, steady pacing for a focused check-in.",
+      "locale": "en-US",
+      "preview_text": "Hi, this is Anchor. I am here for a short check-in about today's plan.",
+      "generation_seed": 1103,
+      "reference_audio": null,
+      "reference_text": null,
+      "provenance": "Reference-free local Sesame CSM generation; no human voice is represented.",
+      "enabled": true
+    },
+    {
+      "voice_id": "anchor-warm",
+      "display_name": "Warm",
+      "description": "Conversational and encouraging without added urgency.",
+      "locale": "en-US",
+      "preview_text": "Hi, this is Anchor. We can take this check-in one step at a time.",
+      "generation_seed": 2217,
+      "reference_audio": null,
+      "reference_text": null,
+      "provenance": "Reference-free local Sesame CSM generation; no human voice is represented.",
+      "enabled": true
+    },
+    {
+      "voice_id": "anchor-clear",
+      "display_name": "Clear",
+      "description": "Direct phrasing and an even, practical delivery.",
+      "locale": "en-US",
+      "preview_text": "Hi, this is Anchor. Let us review the next action in your plan.",
+      "generation_seed": 3341,
+      "reference_audio": null,
+      "reference_text": null,
+      "provenance": "Reference-free local Sesame CSM generation; no human voice is represented.",
+      "enabled": true
+    },
+    {
+      "voice_id": "anchor-gentle",
+      "display_name": "Gentle",
+      "description": "Unhurried delivery with space between questions.",
+      "locale": "en-US",
+      "preview_text": "Hi, this is Anchor. There is time to pause before we talk about today.",
+      "generation_seed": 4489,
+      "reference_audio": null,
+      "reference_text": null,
+      "provenance": "Reference-free local Sesame CSM generation; no human voice is represented.",
+      "enabled": true
+    }
+  ]
+}

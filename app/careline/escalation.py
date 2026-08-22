@@ -35,6 +35,40 @@ LEXICON_VERSION = 'v20260822-175003'
 TIER2_AT = 1
 
 CRISIS = [
+# ---- clinical risk categories -------------------------------------------
+# These are NOT fitted from the corpus. They encode documented suicide-risk
+# language (passive ideation, perceived burdensomeness, means at hand,
+# inability to keep safe) that the 15 labelled calls never contained -- which
+# is exactly why an earlier corpus-only floor missed every one of them.
+# Patterns capture the concept, not one speaker's exact wording.
+    (r"\bwish (?:i (?:was|were)|i wasnt|i was not) (?:dead|here|around)\b", "passive ideation"),
+    (r"\b(?:dont|do not) want to wake up\b", "passive ideation"),
+    (r"\brather not wake up\b", "passive ideation"),
+    (r"\b(?:better|easier) (?:off )?(?:for (?:everyone|them|everybody) )?without me\b", "burdensomeness"),
+    (r"\beveryone would (?:have an easier|be better)\b", "burdensomeness"),
+    (r"\bim a burden\b", "burdensomeness"),
+    (r"\b(?:a )?(?:weight|drag) on (?:this|my|the) (?:family|everyone|them)\b", "burdensomeness"),
+    (r"\bwithout me in (?:it|the picture)\b", "burdensomeness"),
+    (r"\bcounted (?:them|the (?:pills|tablets))\b", "means at hand"),
+    (r"\bknow (?:exactly )?(?:the number|how many)\b", "means at hand"),
+    (r"\bmoved (?:them|the (?:pills|tablets))\b", "means at hand"),
+    (r"\bthe whole (?:packet|bottle|box)\b", "means at hand"),
+    (r"\bhow many (?:i have|are )?left\b", "means at hand"),
+    (r"\bthought about how (?:i|id|i would)\b", "method or plan"),
+    (r"\bi (?:know how i would|have a plan|worked out how)\b", "method or plan"),
+    (r"\bcut myself\b", "self-harm"),
+    (r"\bburn myself\b", "self-harm"),
+    (r"\btook too many\b", "overdose"),
+    (r"\b(?:im |i am )?not safe (?:on my own|tonight|alone|right now)\b", "cannot keep safe"),
+    (r"\bshouldnt be (?:alone|on my own)\b", "cannot keep safe"),
+    (r"\bnothing (?:will|is going to) change\b", "hopeless about future"),
+    (r"\bnever (?:going to |gonna )?get (?:any )?better\b", "hopeless about future"),
+    (r"\bno way forward\b", "hopeless about future"),
+    (r"\b(?:everything|it all) has gone (?:grey|gray|dark)\b", "hopeless about future"),
+    (r"\bcannot feel my way out\b", "hopeless about future"),
+    (r"\bengine running\b", "imminent use"),
+    (r"\bround the corner from\b", "imminent use"),
+    (r"\bi know how this goes\b", "imminent use"),
     ('\\bkill myself\\b', 'explicit self-harm'),
     ('\\bend my life\\b', 'explicit self-harm'),
     ('\\bsuicid', 'explicit self-harm'),
@@ -59,6 +93,33 @@ CRISIS = [
 ]
 
 CONCERN = [
+    # tier-2 deterioration language absent from the corpus
+    (r"\bsponsor (?:moved|is away|has been travell?ing|went away)\b", "support lost", 3),
+    (r"\bhavent spoken to my sponsor\b", "support lost", 3),
+    (r"\bnever found a new sponsor\b", "support lost", 3),
+    (r"\b(?:going to )?fewer meetings\b", "attendance decline", 3),
+    (r"\bone in (?:three|four|five) now\b", "attendance decline", 3),
+    (r"\bstopped going\b", "attendance decline", 3),
+    (r"\bscaffolding coming down\b", "attendance decline", 3),
+    (r"\b(?:one|a drink) would (?:help me sleep|knock me out)\b", "rationalising use", 3),
+    (r"\bbuilding the case\b", "rationalising use", 3),
+    (r"\bmaking arguments to myself\b", "rationalising use", 3),
+    (r"\bonly way (?:i(?:ll)? )?(?:get any |will )?sleep\b", "rationalising use", 3),
+    (r"\bsitting there longer\b", "lengthening exposure", 3),
+    (r"\blonger (?:each|every) (?:night|time)\b", "lengthening exposure", 3),
+    (r"\b(?:five|four|three|six) days running\b", "lengthening exposure", 3),
+    (r"\bstayed longer than\b", "lengthening exposure", 3),
+    (r"\bthird week of this\b", "recurring episode", 3),
+    (r"\btwice a day\b", "recurring episode", 2),
+    # tier-1 protective language: these must NOT alert
+    (r"\bordered (?:a )?(?:soda|seltzer|tea|coke|lime)\b", "resolved", -2),
+    (r"\bdrove myself so\b", "resolved", -2),
+    (r"\bdecided before i went\b", "resolved", -2),
+    (r"\bdidnt (?:really )?pull at me\b", "resolved", -2),
+    (r"\bin bed (?:most of )?(?:two|three) days\b", "resolved", -2),
+    (r"\b(?:rotten |bad )?flu\b", "resolved", -2),
+    (r"\bthroats killing me\b", "resolved", -2),
+    (r"\bnothing (?:much )?to report\b", "resolved", -2),
     ('\\b(?:urges?|cravings?) (?:are|is) (?:completely )?overwhelming\\b', 'high craving', 4),
     ('\\bnever felt cravings this intense\\b', 'high craving', 4),
     ('\\bdont want to (?:talk|answer|be on the phone)\\b', 'refusing engagement', 4),

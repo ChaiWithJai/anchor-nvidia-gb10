@@ -19,8 +19,27 @@ any tier-3 miss** — usable as a deploy gate.
 | | corpus (in-sample) | holdout (blind) |
 |---|---|---|
 | previous 8 patterns | **0/15** | — |
-| lexicon only | 15/15 | **33%, 0/4 tier-3** |
-| lexicon + Nemotron | — | run it and see |
+| lexicon, fitted from corpus only | 15/15 | 33%, **0/4 tier-3** |
+| \+ clinical risk categories | 15/15 | 75%, **2/4 tier-3** |
+| \+ Nemotron | — | **not yet measured** |
+
+Adding documented risk language (passive ideation, burdensomeness, means at
+hand) more than doubled blind accuracy and cost nothing in-sample — no
+regression, no over-alerts. It is worth having.
+
+It is still not a predictor. Two holdout callers describing wanting to die get
+no alert, and the reasons are one word each:
+
+- "a weight on **that** family" — the pattern lists `this|my|the`
+- "if I'm not in it" — the pattern wants `without me in it`
+- the coping tool "gone flat on me" — the pattern has `stopped working`
+- one refusal cue where the override needs two
+
+The phrase list and this holdout were written by the same author, sharing
+vocabulary. With every advantage, the lexicon still misses two at-risk callers.
+A real caller phrasing it their own way will do worse. Extending the list until
+these four pass would make the number green and teach us nothing about the
+fifth caller — that is why the list stops here and Nemotron runs.
 
 The lexicon on its own scores the same as always answering "tier 1", because
 unmatched text falls through to the tier-1 default. It works on phrasing it has

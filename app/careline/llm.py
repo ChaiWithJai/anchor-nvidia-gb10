@@ -5,6 +5,8 @@ import os
 
 import httpx
 
+from . import telemetry
+
 BASE_URL = os.environ.get("CARELINE_LLM_BASE_URL", "http://nemotron:8000/v1")
 MODEL = os.environ.get(
     "CARELINE_LLM_MODEL", "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4"
@@ -17,23 +19,32 @@ async def chat(
     temperature: float = 0.6,
     strong: bool = False,
     reasoning_budget: int | None = None,
+    max_tokens: int | None = None,
 ) -> str:
     del reasoning_budget
-    max_tokens = 240 if strong else TURN_MAX_TOKENS
+    token_limit = max_tokens or TURN_MAX_TOKENS
     payload = {
         "model": MODEL,
         "messages": messages,
         "temperature": temperature,
-        "max_tokens": max_tokens,
+        "max_tokens": token_limit,
         "chat_template_kwargs": {"enable_thinking": False},
     }
-    async with httpx.AsyncClient(timeout=180) as client:
-        response = await client.post(f"{BASE_URL}/chat/completions", json=payload)
-        response.raise_for_status()
-    content = response.json()["choices"][0]["message"].get("content")
-    if not content or not content.strip():
-        raise RuntimeError("Nemotron returned an empty spoken response")
-    return content.strip()
+    workload_id = telemetry.workload_started(
+        "nemotron", "Nemotron generation", f"{len(messages)} messages / {token_limit} max tokens"
+    )
+    try:
+        async with httpx.AsyncClient(timeout=180) as client:
+            response = await client.post(f"{BASE_URL}/chat/completions", json=payload)
+            response.raise_for_status()
+        content = response.json()["choices"][0]["message"].get("content")
+        if not content or not content.strip():
+            raise RuntimeError("Nemotron returned an empty spoken response")
+        telemetry.workload_finished(workload_id)
+        return content.strip()
+    except Exception:
+        telemetry.workload_finished(workload_id, "failed")
+        raise
 
 
 def _extract_json(raw: str) -> dict:
@@ -55,7 +66,9 @@ def _extract_json(raw: str) -> dict:
 
 
 async def chat_json(messages: list[dict], strong: bool = False) -> dict:
-    return _extract_json(await chat(messages, temperature=0.1, strong=strong))
+    return _extract_json(
+        await chat(messages, temperature=0.1, strong=strong, max_tokens=240 if strong else None)
+    )
 
 
 async def ready() -> bool:

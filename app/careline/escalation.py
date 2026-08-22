@@ -5,7 +5,7 @@ import re
 
 import httpx
 
-from . import memory
+from . import agent_wake, memory
 
 CRISIS_TERMS = (
     "kill myself",
@@ -58,6 +58,49 @@ async def check_and_alert(
     score, hits, crisis = score_utterance(text)
     running_score += score
     if score == 0 or (running_score < ALERT_THRESHOLD and not crisis):
+        patterns = memory.goal_miss_patterns(resident_id)
+        open_pattern_keys = {
+            item.get("pattern_key")
+            for item in memory.list_alerts(limit=100, status="open")
+            if item.get("patient_id") == resident_id
+        }
+        pattern = next(
+            (
+                item
+                for item in patterns
+                if f"goal-misses:{item['goal_id']}" not in open_pattern_keys
+            ),
+            None,
+        )
+        if pattern:
+            pattern_key = f"goal-misses:{pattern['goal_id']}"
+            reason = (
+                f"Recovery Plan pattern: {pattern['title']} missed "
+                f"{pattern['miss_count']} times in {pattern['tracking_window_days']} days"
+            )
+            alert_id = memory.save_alert(
+                resident_id,
+                call_id,
+                reason,
+                "medium",
+                alert_type="goal-pattern",
+                tier=2,
+                pattern_key=pattern_key,
+            )
+            alert = {
+                "alert_id": alert_id,
+                "resident_id": resident_id,
+                "call_id": call_id,
+                "reason": reason,
+                "severity": "medium",
+                "triage_tier": 2,
+                "alert_type": "goal-pattern",
+                "destination": "on-call clinician",
+            }
+            delivery = await agent_wake.notify(alert)
+            memory.set_alert_delivery(alert_id, delivery)
+            alert["agent_delivery"] = delivery
+            return running_score, "medium", alert
         return running_score, alerted_severity, None
 
     severity = "critical" if crisis else "high" if running_score >= 6 else "medium"
@@ -65,14 +108,20 @@ async def check_and_alert(
         return running_score, alerted_severity, None
 
     reason = f"Recovery safety signals: {', '.join(hits)} (score {running_score})"
-    memory.save_alert(resident_id, call_id, reason, severity)
+    alert_id = memory.save_alert(resident_id, call_id, reason, severity)
     alert = {
+        "alert_id": alert_id,
         "resident_id": resident_id,
         "call_id": call_id,
         "reason": reason,
         "severity": severity,
+        "triage_tier": 3,
+        "alert_type": "safety-escalation",
         "destination": "on-call clinician",
     }
+    delivery = await agent_wake.notify(alert)
+    memory.set_alert_delivery(alert_id, delivery)
+    alert["agent_delivery"] = delivery
     if WEBHOOK_URL:
         try:
             async with httpx.AsyncClient(timeout=10) as client:

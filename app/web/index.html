@@ -3,514 +3,73 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Anchor | NVIDIA GB10 Recovery Agent</title>
+<title>Anchor Clinic | Local Care Operations</title>
 <style>
-  :root {
-    --canvas: #f3f5f2;
-    --surface: #ffffff;
-    --ink: #17211d;
-    --muted: #66736d;
-    --line: #dce2dd;
-    --green: #1d6b4f;
-    --green-soft: #e5f2ec;
-    --lime: #76b900;
-    --red: #c23d37;
-    --red-soft: #f8e9e7;
-    --amber: #b36a00;
-    --shadow: 0 10px 28px rgba(19, 37, 29, .08);
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    min-height: 100vh;
-    background: var(--canvas);
-    color: var(--ink);
-    font-family: Inter, "Segoe UI", system-ui, sans-serif;
-  }
-  button, input { font: inherit; }
-  button { cursor: pointer; }
-  button:disabled { cursor: not-allowed; opacity: .45; }
-  .app-header {
-    height: 64px;
-    padding: 0 28px;
-    border-bottom: 1px solid var(--line);
-    background: var(--surface);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
-  .brand-mark {
-    width: 32px;
-    height: 32px;
-    border-radius: 6px;
-    display: grid;
-    place-items: center;
-    background: var(--ink);
-    color: white;
-    font-weight: 800;
-  }
-  .brand strong { display: block; font-size: 15px; }
-  .brand span { display: block; color: var(--muted); font-size: 12px; }
-  .runtime-status { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
-  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--amber); }
-  .status-dot.ready { background: var(--lime); box-shadow: 0 0 0 3px rgba(118,185,0,.14); }
-  .layout {
-    min-height: calc(100vh - 64px);
-    max-width: 1280px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 300px minmax(0, 1fr);
-  }
-  aside {
-    padding: 28px 24px;
-    border-right: 1px solid var(--line);
-    background: #eef1ee;
-  }
-  .eyebrow { margin: 0 0 14px; color: var(--muted); font-size: 11px; font-weight: 700; text-transform: uppercase; }
-  .contact { display: flex; gap: 13px; align-items: center; padding-bottom: 22px; border-bottom: 1px solid var(--line); }
-  .avatar {
-    flex: 0 0 auto;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    background: var(--green);
-    color: white;
-    font-size: 19px;
-    font-weight: 750;
-  }
-  .contact h2 { margin: 0 0 3px; font-size: 17px; }
-  .contact p { margin: 0; color: var(--muted); font-size: 13px; }
-  .specs { margin: 22px 0 28px; display: grid; gap: 13px; }
-  .spec { display: grid; grid-template-columns: 64px 1fr; gap: 8px; font-size: 12px; }
-  .spec dt { color: var(--muted); }
-  .spec dd { margin: 0; font-weight: 650; }
-  .memories { border-top: 1px solid var(--line); padding-top: 22px; }
-  .trigger { margin: 20px 0; padding: 13px; border: 1px solid #dfc38e; border-radius: 6px; background: #fff9ed; }
-  .trigger strong { display: block; color: #784900; font-size: 12px; }
-  .trigger span { display: block; margin-top: 5px; font-size: 12px; line-height: 1.4; }
-  .trigger small { display: block; margin-top: 7px; color: var(--muted); font-size: 10px; }
-  .plan-list { margin: 0 0 24px; padding: 0; list-style: none; display: grid; gap: 8px; }
-  .plan-list li { padding-left: 13px; position: relative; font-size: 12px; line-height: 1.4; }
-  .plan-list li::before { content: ""; position: absolute; left: 0; top: 6px; width: 5px; height: 5px; border-radius: 50%; background: var(--lime); }
-  .memory-list { display: grid; gap: 9px; }
-  .memory-item { padding-left: 12px; border-left: 2px solid #9eaaa3; color: #39463f; font-size: 12px; line-height: 1.45; }
-  .empty { color: var(--muted); font-size: 12px; }
-  .workspace { min-width: 0; padding: 28px; display: grid; place-items: center; }
-  .phone {
-    width: min(100%, 760px);
-    height: min(760px, calc(100vh - 120px));
-    min-height: 590px;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    box-shadow: var(--shadow);
-    display: grid;
-    grid-template-rows: auto minmax(0, 1fr) auto;
-    overflow: hidden;
-  }
-  .call-head { padding: 20px 22px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 12px; }
-  .call-head .avatar { width: 40px; height: 40px; font-size: 16px; }
-  .call-title { min-width: 0; flex: 1; }
-  .call-title strong { display: block; font-size: 14px; }
-  .call-title span { display: block; margin-top: 2px; color: var(--muted); font-size: 12px; }
-  .timer { width: 60px; text-align: right; color: var(--muted); font: 600 13px ui-monospace, monospace; }
-  .call-body { min-height: 0; position: relative; }
-  .idle-view, .ringing-view, .ended-view { height: 100%; padding: 42px; display: grid; align-content: center; justify-items: center; text-align: center; }
-  .hero-avatar { width: 92px; height: 92px; border-radius: 50%; display: grid; place-items: center; background: var(--green); color: white; font-size: 34px; font-weight: 750; box-shadow: 0 0 0 10px var(--green-soft); }
-  .idle-view h1, .ringing-view h1, .ended-view h1 { margin: 24px 0 7px; font-size: 28px; }
-  .idle-view > p, .ringing-view > p, .ended-view > p { max-width: 460px; margin: 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
-  .consent {
-    max-width: 500px;
-    margin: 28px 0 16px;
-    padding: 13px 14px;
-    border: 1px solid var(--line);
-    border-radius: 6px;
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    text-align: left;
-    color: #39463f;
-    font-size: 12px;
-  }
-  .consent input { margin-top: 2px; accent-color: var(--green); }
-  .audio-line { width: min(100%, 500px); margin: 0 0 16px; display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--muted); font-size: 11px; }
-  .audio-line.error { color: var(--red); }
-  .secondary { min-height: 34px; padding: 0 12px; border: 1px solid var(--line); border-radius: 6px; background: white; color: var(--ink); font-size: 12px; font-weight: 650; }
-  .secondary:hover { border-color: var(--green); color: var(--green); }
-  .primary {
-    min-height: 44px;
-    padding: 0 20px;
-    border: 0;
-    border-radius: 6px;
-    background: var(--green);
-    color: white;
-    font-weight: 700;
-  }
-  .primary:hover:not(:disabled) { background: #15553e; }
-  .ring { animation: ring 1.2s ease-in-out infinite; }
-  @keyframes ring { 50% { transform: scale(1.04); box-shadow: 0 0 0 17px var(--green-soft); } }
-  .wave { height: 40px; margin-top: 28px; display: flex; gap: 4px; align-items: center; }
-  .wave i { display: block; width: 4px; height: 10px; border-radius: 2px; background: var(--lime); animation: wave 1s ease-in-out infinite alternate; }
-  .wave i:nth-child(2n) { animation-delay: -.35s; }
-  .wave i:nth-child(3n) { animation-delay: -.7s; }
-  @keyframes wave { to { height: 34px; } }
-  .live-view { height: 100%; display: grid; grid-template-rows: auto minmax(0, 1fr); }
-  .live-banner { padding: 13px 22px; background: #f7faf8; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 11px; }
-  .live-banner strong { color: var(--green); }
-  .transcript { min-height: 0; overflow-y: auto; padding: 22px; display: flex; flex-direction: column; gap: 14px; }
-  .message { max-width: 78%; }
-  .message.self { align-self: flex-end; text-align: right; }
-  .message label { display: block; margin-bottom: 5px; color: var(--muted); font-size: 10px; font-weight: 700; text-transform: uppercase; }
-  .bubble { padding: 11px 13px; border-radius: 6px; background: var(--green-soft); font-size: 14px; line-height: 1.5; text-align: left; }
-  .message.self .bubble { background: #edf0f4; }
-  .thinking { color: var(--muted); font-size: 12px; }
-  .safety-alert { margin: 0 auto; width: min(100%, 520px); padding: 11px 13px; border-left: 3px solid var(--red); background: var(--red-soft); color: #70231f; font-size: 12px; line-height: 1.4; }
-  .call-controls { padding: 16px 20px; border-top: 1px solid var(--line); background: #fafbfa; }
-  .composer { display: grid; grid-template-columns: 42px minmax(0, 1fr) 72px 42px; gap: 8px; }
-  .composer input { width: 100%; min-width: 0; height: 42px; border: 1px solid var(--line); border-radius: 6px; padding: 0 12px; color: var(--ink); background: white; }
-  .composer input:focus { outline: 2px solid rgba(29,107,79,.2); border-color: var(--green); }
-  .icon-button { width: 42px; height: 42px; padding: 0; border: 1px solid var(--line); border-radius: 50%; background: white; color: var(--ink); font-weight: 750; }
-  .icon-button.listening { background: var(--red-soft); border-color: var(--red); color: var(--red); }
-  .icon-button.hangup { background: var(--red); border-color: var(--red); color: white; }
-  .send { height: 42px; padding: 0 14px; border: 0; border-radius: 6px; background: var(--green); color: white; font-weight: 700; }
-  .summary { margin: 20px 0 24px; max-width: 500px; padding: 15px; border-left: 3px solid var(--lime); background: #f4f8f2; text-align: left; font-size: 13px; line-height: 1.5; }
-  .hidden { display: none !important; }
-  @media (max-width: 820px) {
-    .app-header { padding: 0 16px; }
-    .runtime-status span:last-child { display: none; }
-    .layout { grid-template-columns: 1fr; }
-    aside { display: none; }
-    .workspace { padding: 12px; }
-    .phone { height: calc(100vh - 88px); min-height: 540px; }
-    .idle-view, .ringing-view, .ended-view { padding: 26px 20px; }
-    .composer { grid-template-columns: 42px minmax(0, 1fr) 42px; }
-    .send { width: 42px; padding: 0; font-size: 0; }
-    .send::after { content: "\2192"; font-size: 20px; }
-    .message { max-width: 90%; }
-  }
+:root{--canvas:#f3f5f2;--surface:#fff;--ink:#18211d;--muted:#66716b;--line:#d9dfda;--green:#176b4d;--green-soft:#e6f3ed;--lime:#76b900;--red:#b73531;--red-soft:#f8e8e6;--amber:#9a5b00;--amber-soft:#fff4db;--charcoal:#26312c}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--canvas);color:var(--ink);font-family:Inter,"Segoe UI",system-ui,sans-serif;font-size:14px}button,input,textarea,select{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.5}a{color:inherit;text-decoration:none}.hidden{display:none!important}
+.topbar{height:62px;padding:0 22px;border-bottom:1px solid var(--line);background:var(--surface);display:flex;align-items:center;justify-content:space-between;gap:16px}.brand{display:flex;align-items:center;gap:11px;min-width:0}.mark{width:34px;height:34px;border-radius:6px;background:var(--charcoal);color:#fff;display:grid;place-items:center;font-weight:800}.brand strong{display:block;font-size:15px}.brand small{display:block;color:var(--muted);font-size:11px;margin-top:1px}.runtime{display:flex;align-items:center;gap:8px;white-space:nowrap}.runtime i{width:8px;height:8px;border-radius:50%;background:var(--amber)}.runtime i.ready{background:var(--lime);box-shadow:0 0 0 3px rgba(118,185,0,.14)}.runtime span{font-size:11px;color:var(--muted)}.patient-link{height:34px;padding:0 12px;border:1px solid var(--line);border-radius:6px;display:flex;align-items:center;font-size:12px;font-weight:700;background:#fff}.patient-link:hover{border-color:var(--green);color:var(--green)}
+.shell{min-height:calc(100vh - 62px);display:grid;grid-template-columns:208px minmax(0,1fr)}.nav{padding:20px 14px;border-right:1px solid var(--line);background:#edf0ed}.nav-label{margin:0 8px 10px;color:var(--muted);font-size:10px;font-weight:800;text-transform:uppercase}.nav button{width:100%;height:38px;padding:0 10px;border:0;border-radius:5px;background:transparent;color:var(--muted);text-align:left;font-size:12px;font-weight:650}.nav button.active{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(20,36,28,.06)}.boundary{margin:24px 8px 0;padding-top:18px;border-top:1px solid var(--line);font-size:10px;line-height:1.5;color:var(--muted)}.boundary strong{display:block;color:var(--green);margin-bottom:4px}
+.main{min-width:0;padding:22px 26px 34px;max-width:1480px;width:100%;margin:0 auto}.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:18px}.page-head h1{margin:0 0 4px;font-size:22px;letter-spacing:0}.page-head p{margin:0;color:var(--muted);font-size:12px}.demo-flag{padding:6px 9px;border:1px solid #ddc17e;border-radius:5px;background:var(--amber-soft);color:#714500;font-size:10px;font-weight:750}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);background:var(--surface);margin-bottom:20px}.metric{min-width:0;padding:14px 16px;border-right:1px solid var(--line)}.metric:last-child{border-right:0}.metric span{display:block;color:var(--muted);font-size:10px;font-weight:750;text-transform:uppercase}.metric strong{display:block;margin-top:5px;font-size:24px}.metric small{display:block;margin-top:3px;color:var(--muted);font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.operations{display:grid;grid-template-columns:320px minmax(0,1fr);min-height:610px;border:1px solid var(--line);background:var(--surface)}.roster{border-right:1px solid var(--line);min-width:0}.section-head{height:52px;padding:0 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}.section-head strong{font-size:12px}.section-head span{font-size:10px;color:var(--muted)}.patient-list{padding:8px}.patient-row{width:100%;padding:12px;border:1px solid transparent;border-radius:6px;background:transparent;text-align:left;display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:10px;align-items:center}.patient-row:hover{background:#f7f9f7}.patient-row.active{border-color:#b9d8c9;background:var(--green-soft)}.avatar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--charcoal);color:#fff;font-weight:800}.patient-row strong{display:block;font-size:12px}.patient-row small{display:block;margin-top:3px;color:var(--muted);font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.risk{padding:4px 6px;border-radius:4px;background:#edf0ed;color:var(--muted);font-size:9px;font-weight:800;text-transform:uppercase}.risk.elevated{background:var(--red-soft);color:var(--red)}.risk.watch{background:var(--amber-soft);color:var(--amber)}.risk.stable{background:var(--green-soft);color:var(--green)}
+.detail{min-width:0}.detail-head{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:14px}.identity{display:flex;align-items:center;gap:12px;min-width:0}.identity .avatar{width:44px;height:44px;background:var(--green)}.identity h2{margin:0 0 3px;font-size:17px}.identity p{margin:0;color:var(--muted);font-size:11px}.detail-actions{display:flex;gap:8px}.button{min-height:34px;padding:0 12px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--ink);font-size:11px;font-weight:750}.button.primary{border-color:var(--green);background:var(--green);color:#fff}.button.danger{border-color:#e0aaa7;color:var(--red)}.tabs{height:43px;padding:0 18px;border-bottom:1px solid var(--line);display:flex;gap:22px}.tab{height:43px;padding:0;border:0;border-bottom:2px solid transparent;background:transparent;color:var(--muted);font-size:11px;font-weight:750}.tab.active{border-bottom-color:var(--green);color:var(--green)}.panel{padding:20px;min-width:0}.two-col{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,.8fr);gap:26px}.block{min-width:0;margin-bottom:24px}.block h3{margin:0 0 12px;font-size:12px}.facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--line);border-left:1px solid var(--line)}.fact{padding:11px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.fact label{display:block;color:var(--muted);font-size:9px;font-weight:750;text-transform:uppercase}.fact span{display:block;margin-top:4px;font-size:11px;font-weight:650}.plan-list{margin:0;padding:0;list-style:none;display:grid;gap:8px}.plan-list li{padding-left:14px;position:relative;font-size:11px;line-height:1.45}.plan-list li:before{content:"";position:absolute;left:0;top:6px;width:5px;height:5px;border-radius:50%;background:var(--lime)}.alert{padding:11px 12px;border-left:3px solid var(--red);background:var(--red-soft);margin-bottom:8px}.alert-head{display:flex;justify-content:space-between;gap:12px}.alert strong{font-size:10px;text-transform:uppercase;color:var(--red)}.alert time{font-size:9px;color:var(--muted)}.alert p{margin:6px 0 9px;font-size:10px;line-height:1.45}.empty{padding:24px;border:1px dashed var(--line);color:var(--muted);font-size:11px;text-align:center}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.field{display:grid;gap:5px}.field.full{grid-column:1/-1}.field label{font-size:9px;font-weight:800;color:var(--muted);text-transform:uppercase}.field input,.field textarea,.field select{width:100%;border:1px solid var(--line);border-radius:5px;background:#fff;color:var(--ink);padding:9px 10px;font-size:11px}.field textarea{min-height:90px;resize:vertical;line-height:1.5}.form-actions{margin-top:14px;display:flex;align-items:center;gap:10px}.save-state{font-size:10px;color:var(--green)}.timeline{display:grid}.event{padding:11px 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:118px minmax(0,1fr) auto;gap:12px}.event time{font-size:9px;color:var(--muted)}.event strong{display:block;font-size:10px}.event p{margin:3px 0 0;color:var(--muted);font-size:10px}.call{padding:13px 0;border-bottom:1px solid var(--line)}.call-headline{display:flex;justify-content:space-between;gap:12px}.call strong{font-size:11px}.call time{font-size:9px;color:var(--muted)}.call p{margin:6px 0;color:#3c4741;font-size:11px;line-height:1.45}.call details{font-size:10px;color:var(--muted)}.transcript-line{margin-top:7px;padding-left:10px;border-left:2px solid var(--line);line-height:1.45}.loading{padding:60px;text-align:center;color:var(--muted)}
+@media(max-width:980px){.shell{grid-template-columns:1fr}.nav{display:none}.main{padding:16px}.operations{grid-template-columns:260px minmax(0,1fr)}.metrics{grid-template-columns:repeat(2,1fr)}.metric:nth-child(2){border-right:0}.metric:nth-child(-n+2){border-bottom:1px solid var(--line)}.two-col{grid-template-columns:1fr}}
+@media(max-width:720px){.topbar{padding:0 12px}.runtime span{display:none}.patient-link{padding:0 8px}.page-head{align-items:flex-start;flex-direction:column}.operations{display:block}.roster{border-right:0;border-bottom:1px solid var(--line)}.patient-list{display:flex;overflow-x:auto}.patient-row{min-width:220px}.metrics{margin-bottom:12px}.detail-head{align-items:flex-start}.detail-actions{flex-direction:column}.tabs{overflow-x:auto}.panel{padding:15px}.form-grid,.facts{grid-template-columns:1fr}.field.full{grid-column:auto}.event{grid-template-columns:90px minmax(0,1fr)}}
 </style>
 </head>
 <body>
-<header class="app-header">
-  <div class="brand">
-    <div class="brand-mark">A</div>
-    <div><strong>Anchor</strong><span>Future-self recovery agent</span></div>
-  </div>
-  <div class="runtime-status"><i id="runtimeDot" class="status-dot"></i><span id="runtimeText">Checking runtime</span><span>NVIDIA GB10</span></div>
+<header class="topbar">
+  <div class="brand"><div class="mark">A</div><div><strong>Anchor Clinic</strong><small>Recovery care operations</small></div></div>
+  <div class="runtime"><i id="runtimeDot"></i><span id="runtimeText">Checking local stack</span><a class="patient-link" href="/goal">Live GB10</a><a class="patient-link" href="/patient">Open patient call</a></div>
 </header>
-<main class="layout">
-  <aside>
-    <p class="eyebrow">Ambient check-in</p>
-    <div class="contact"><div class="avatar">J</div><div><h2>Future Jai</h2><p>Consented cloned voice</p></div></div>
-    <section class="trigger"><strong>Why Anchor called</strong><span id="triggerReason">Loading ambient signals</span><small>Synthetic demo data</small></section>
-    <dl class="specs">
-      <div class="spec"><dt>Plan by</dt><dd id="planAuthor">Clinician</dd></div>
-      <div class="spec"><dt>Voice</dt><dd>Sesame CSM-1B</dd></div>
-      <div class="spec"><dt>Agent</dt><dd>Nemotron 3 Nano</dd></div>
-      <div class="spec"><dt>Compute</dt><dd>Dell Pro Max GB10</dd></div>
-      <div class="spec"><dt>Transport</dt><dd id="transportMode">Local network</dd></div>
-    </dl>
-    <p class="eyebrow">Today's plan</p>
-    <ul id="planList" class="plan-list"></ul>
-    <section class="memories">
-      <p class="eyebrow">Remembered</p>
-      <div id="memoryList" class="memory-list"><div class="empty">No calls logged yet.</div></div>
+<div class="shell">
+  <nav class="nav" aria-label="Clinic navigation">
+    <p class="nav-label">Workspace</p>
+    <button class="active" type="button">Patient roster</button>
+    <button type="button" id="alertsNav">Safety alerts</button>
+    <button type="button" id="activityNav">Audit activity</button>
+    <div class="boundary"><strong>Local care boundary</strong>Nemotron, cloned voice, and MongoDB run on this Dell Pro Max GB10.</div>
+  </nav>
+  <main class="main">
+    <header class="page-head"><div><h1>Care operations</h1><p>Clinician-authored plans, patient check-ins, and escalation review</p></div><span class="demo-flag">Synthetic clinic data</span></header>
+    <section class="metrics" aria-label="Clinic metrics">
+      <div class="metric"><span>Active patients</span><strong id="activePatients">-</strong><small>Enrolled in Anchor</small></div>
+      <div class="metric"><span>Check-ins today</span><strong id="checkIns">-</strong><small>MongoDB call records</small></div>
+      <div class="metric"><span>Open alerts</span><strong id="openAlerts">-</strong><small>Needs clinician review</small></div>
+      <div class="metric"><span>Local database</span><strong id="databaseState">-</strong><small id="databaseMeta">MongoDB on GB10</small></div>
     </section>
-  </aside>
-  <section class="workspace">
-    <div class="phone">
-      <div class="call-head">
-        <div class="avatar">J</div>
-        <div class="call-title"><strong>Future Jai / Anchor</strong><span id="callState">Ambient watch active</span></div>
-        <div id="timer" class="timer">00:00</div>
-      </div>
-      <div class="call-body">
-        <div id="idleView" class="idle-view">
-          <div class="hero-avatar">J</div>
-          <h1>Your future self is ready</h1>
-          <p>Anchor found a change in today's pattern and prepared a plan-grounded check-in.</p>
-          <label class="consent"><input id="consent" type="checkbox"><span>I understand this demonstration uses Jai's consented cloned voice.</span></label>
-          <div id="audioLine" class="audio-line" role="status"><span id="audioStatus">System audio not tested</span><button id="testAudio" class="secondary" type="button">Test output</button></div>
-          <button id="callButton" class="primary" type="button" disabled>Trigger check-in</button>
-        </div>
-        <div id="ringingView" class="ringing-view hidden">
-          <div class="hero-avatar ring">J</div><h1>Anchor is calling</h1><p>Your future self</p>
-          <div class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-        </div>
-        <div id="liveView" class="live-view hidden">
-          <div class="live-banner"><strong>Connected</strong><span>Clinician grounded / local NVIDIA inference</span></div>
-          <div id="transcript" class="transcript"></div>
-        </div>
-        <div id="endedView" class="ended-view hidden">
-          <div class="hero-avatar">J</div><h1>Call complete</h1><p id="endedMeta">Your check-in was saved.</p>
-          <div id="summary" class="summary"></div>
-          <button id="callAgain" class="primary" type="button">Call again</button>
-        </div>
-      </div>
-      <div id="controls" class="call-controls hidden">
-        <div class="composer">
-          <button id="micButton" class="icon-button" type="button" title="Speak" aria-label="Speak">M</button>
-          <input id="textInput" type="text" maxlength="800" autocomplete="off" placeholder="Say what is on your mind">
-          <button id="sendButton" class="send" type="button">Send</button>
-          <button id="endButton" class="icon-button hangup" type="button" title="End call" aria-label="End call">X</button>
-        </div>
-      </div>
-    </div>
-  </section>
-</main>
+    <section class="operations">
+      <aside class="roster"><div class="section-head"><strong>Patients</strong><span id="patientCount">0 records</span></div><div id="patientList" class="patient-list"><div class="loading">Loading roster</div></div></aside>
+      <article class="detail"><div id="detailRoot" class="loading">Loading patient chart</div></article>
+    </section>
+  </main>
+</div>
 <script>
-function attendeeId() {
-  const storageKey = "anchor-attendee-id";
-  try {
-    let value = localStorage.getItem(storageKey);
-    if (!/^[a-f0-9]{12}$/.test(value || "")) {
-      const bytes = new Uint8Array(6);
-      if (globalThis.crypto?.getRandomValues) crypto.getRandomValues(bytes);
-      else bytes.forEach((_, index) => { bytes[index] = Math.floor(Math.random() * 256); });
-      value = Array.from(bytes, byte => byte.toString(16).padStart(2, "0")).join("");
-      localStorage.setItem(storageKey, value);
-    }
-    return value;
-  } catch (_) {
-    return `${Date.now().toString(16)}${Math.random().toString(16).slice(2, 6)}`.slice(-12);
-  }
-}
-
-const resident = {resident_id: `demo-jai-${attendeeId()}`, name: "Jai", mode: "self", consent_confirmed: true};
-const $ = id => document.getElementById(id);
-let callId = null;
-let turnBusy = false;
-let startedAt = 0;
-let timerHandle = null;
-let recognition = null;
-
-function show(view) {
-  ["idleView", "ringingView", "liveView", "endedView"].forEach(id => $(id).classList.toggle("hidden", id !== view));
-  $("controls").classList.toggle("hidden", view !== "liveView");
-}
-
-function setState(text) { $("callState").textContent = text; }
-function delay(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
-
-async function api(path, options = {}) {
-  const response = await fetch(path, options);
-  if (!response.ok) {
-    let detail = `Request failed (${response.status})`;
-    try { detail = (await response.json()).detail || detail; } catch (_) {}
-    throw new Error(detail);
-  }
-  return response;
-}
-
-async function checkRuntime() {
-  try {
-    const status = await api("/api/status").then(r => r.json());
-    $("runtimeDot").classList.toggle("ready", status.ready);
-    $("runtimeText").textContent = status.ready ? "Runtime ready" : "Nemotron loading";
-    $("transportMode").textContent = status.shared_access ? "HTTPS team tunnel" : "Local network";
-  } catch (_) { $("runtimeText").textContent = "Runtime unavailable"; }
-}
-
-function renderMemories(facts) {
-  const list = $("memoryList");
-  list.replaceChildren();
-  if (!facts.length) {
-    const empty = document.createElement("div"); empty.className = "empty"; empty.textContent = "No calls logged yet."; list.append(empty); return;
-  }
-  facts.slice(0, 6).forEach(fact => {
-    const item = document.createElement("div"); item.className = "memory-item"; item.textContent = fact.fact; list.append(item);
-  });
-}
-
-async function refreshMemory() {
-  try {
-    const data = await api(`/api/residents/${resident.resident_id}/memory`).then(r => r.json());
-    renderMemories(data.facts || []);
-  } catch (_) {}
-}
-
-async function refreshContext() {
-  try {
-    const data = await api(`/api/context/${resident.resident_id}`).then(r => r.json());
-    $("triggerReason").textContent = data.trigger_reason;
-    $("planAuthor").textContent = data.plan.author;
-    const list = $("planList"); list.replaceChildren();
-    data.plan.today.forEach(text => { const item = document.createElement("li"); item.textContent = text; list.append(item); });
-  } catch (_) { $("triggerReason").textContent = "Scheduled check-in"; }
-}
-
-function addMessage(role, text) {
-  const wrap = document.createElement("div"); wrap.className = `message ${role}`;
-  const label = document.createElement("label"); label.textContent = role === "self" ? "You" : "Future you";
-  const bubble = document.createElement("div"); bubble.className = "bubble"; bubble.textContent = text;
-  wrap.append(label, bubble); $("transcript").append(wrap); $("transcript").scrollTop = $("transcript").scrollHeight;
-}
-
-function addSafetyAlert(alert) {
-  const notice = document.createElement("div"); notice.className = "safety-alert";
-  notice.textContent = `${alert.severity.toUpperCase()} / on-call clinician notified / ${alert.reason}`;
-  $("transcript").append(notice); $("transcript").scrollTop = $("transcript").scrollHeight;
-}
-
-function setAudioState(text, failed = false) {
-  $("audioStatus").textContent = text;
-  $("audioLine").classList.toggle("error", failed);
-}
-
-async function fetchWav(text) {
-  try {
-    const response = await api("/api/tts", {
-      method: "POST", headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({text, mode: "self", consent_confirmed: true})
-    });
-    const blob = await response.blob();
-    if (blob.size < 44) throw new Error("empty WAV response");
-    return URL.createObjectURL(blob);
-  } catch (error) {
-    setAudioState(`Voice fetch failed: ${error.message}`, true);
-    console.error("Anchor TTS fetch failed", error);
-    return null;
-  }
-}
-
-function offerTapToPlay(audio, url, resolve) {
-  let button = $("tapToHear");
-  if (!button) {
-    button = document.createElement("button");
-    button.id = "tapToHear";
-    button.className = "secondary";
-    $("audioLine").append(button);
-  }
-  button.textContent = "Tap to hear voice";
-  setAudioState("Safari blocked automatic playback", true);
-  button.onclick = () => {
-    audio.play().then(() => {
-      setAudioState("Playing cloned voice");
-      button.remove();
-    }).catch(error => {
-      setAudioState(`Playback failed: ${error.name}`, true);
-      console.error("Anchor tap-to-play failed", error);
-      URL.revokeObjectURL(url);
-      resolve(false);
-    });
-  };
-}
-
-function playUrl(url) {
-  return new Promise(resolve => {
-    const audio = new Audio(url);
-    audio.preload = "auto";
-    audio.setAttribute("playsinline", "");
-    audio.onended = () => {
-      URL.revokeObjectURL(url);
-      $("tapToHear")?.remove();
-      setAudioState("Cloned voice played");
-      resolve(true);
-    };
-    audio.onerror = () => {
-      URL.revokeObjectURL(url);
-      setAudioState("Safari could not decode the WAV", true);
-      resolve(false);
-    };
-    audio.play().then(() => setAudioState("Playing cloned voice"))
-      .catch(error => {
-        console.warn("Anchor autoplay blocked", error);
-        offerTapToPlay(audio, url, resolve);
-      });
-  });
-}
-
-async function speak(text) {
-  const url = await fetchWav(text);
-  if (url) return playUrl(url);
-  const fallback = new SpeechSynthesisUtterance(text);
-  fallback.rate = 0.95;
-  speechSynthesis.speak(fallback);
-  return false;
-}
-
-async function testAudio() {
-  $("testAudio").disabled = true;
-  setAudioState("Preparing cloned voice");
-  await speak("This is Anchor. Your cloned voice audio is ready.");
-  $("testAudio").disabled = false;
-}
-
-function startTimer() {
-  startedAt = Date.now();
-  clearInterval(timerHandle);
-  timerHandle = setInterval(() => {
-    const seconds = Math.floor((Date.now() - startedAt) / 1000);
-    $("timer").textContent = `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
-  }, 1000);
-}
-
-function stopTimer() { clearInterval(timerHandle); timerHandle = null; }
-
-async function beginCall() {
-  show("ringingView"); setState("Incoming check-in"); $("timer").textContent = "00:00";
-  await delay(900);
-  try {
-    const data = await api("/api/calls", {
-      method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(resident)
-    }).then(r => r.json());
-    callId = data.call_id; $("transcript").replaceChildren(); show("liveView"); setState("Connected"); startTimer();
-    addMessage("twin", data.greeting); await speak(data.greeting);
-  } catch (error) {
-    show("idleView"); setState(error.message); $("callButton").disabled = false;
-  }
-}
-
-async function sendTurn(text) {
-  text = text.trim();
-  if (!text || !callId || turnBusy) return;
-  turnBusy = true; $("sendButton").disabled = true; $("micButton").disabled = true; addMessage("self", text); $("textInput").value = ""; setState("Anchor is thinking");
-  try {
-    const data = await api(`/api/calls/${callId}/turn`, {
-      method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({text, mode: "self", consent_confirmed: true})
-    }).then(r => r.json());
-    if (data.alert) addSafetyAlert(data.alert);
-    addMessage("twin", data.reply); setState(data.alert ? "Clinician notified" : "Connected"); await speak(data.reply);
-  } catch (error) { setState(error.message); }
-  finally { turnBusy = false; if (callId) { $("sendButton").disabled = false; $("micButton").disabled = false; } }
-}
-
-async function endCall() {
-  if (!callId) return;
-  const endedId = callId; callId = null; stopTimer(); setState("Saving call"); $("controls").classList.add("hidden");
-  try {
-    const data = await api(`/api/calls/${endedId}/end`, {method: "POST"}).then(r => r.json());
-    $("summary").textContent = data.summary || "Call saved.";
-    const seconds = Math.max(1, Math.floor((Date.now() - startedAt) / 1000));
-    $("endedMeta").textContent = `${Math.floor(seconds / 60)}m ${seconds % 60}s / ${data.facts.length} memories saved`;
-    show("endedView"); setState("Completed"); refreshMemory();
-  } catch (error) { show("endedView"); $("summary").textContent = error.message; setState("Call ended"); }
-}
-
-function startRecognition() {
-  const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!Recognition) { $("textInput").focus(); setState("Microphone transcription unavailable"); return; }
-  if (recognition) { recognition.stop(); return; }
-  recognition = new Recognition(); recognition.lang = "en-US"; recognition.interimResults = false;
-  recognition.onstart = () => { $("micButton").classList.add("listening"); setState("Listening"); };
-  recognition.onresult = event => sendTurn(event.results[0][0].transcript);
-  recognition.onend = () => { recognition = null; $("micButton").classList.remove("listening"); if (callId && !turnBusy) setState("Connected"); };
-  recognition.onerror = () => { recognition = null; $("micButton").classList.remove("listening"); setState("Microphone unavailable"); };
-  recognition.start();
-}
-
-$("consent").onchange = () => { $("callButton").disabled = !$("consent").checked; };
-$("testAudio").onclick = testAudio;
-$("callButton").onclick = beginCall;
-$("callAgain").onclick = () => { show("idleView"); setState("Ambient watch active"); $("consent").checked = true; $("callButton").disabled = false; };
-$("sendButton").onclick = () => sendTurn($("textInput").value);
-$("textInput").onkeydown = event => { if (event.key === "Enter") sendTurn($("textInput").value); };
-$("micButton").onclick = startRecognition;
-$("endButton").onclick = endCall;
-checkRuntime(); refreshMemory(); refreshContext(); setInterval(checkRuntime, 15000);
+const $=id=>document.getElementById(id);let patients=[],activity=[],selectedId="demo-jai",activeTab="overview";
+async function api(path,options={}){const response=await fetch(path,options);if(!response.ok){let message=`Request failed (${response.status})`;try{message=(await response.json()).detail||message}catch(_){}throw new Error(message)}return response.json()}
+function node(tag,className,text){const element=document.createElement(tag);if(className)element.className=className;if(text!==undefined)element.textContent=text;return element}
+function formatTime(value){if(!value)return "Not recorded";const date=new Date(value);return Number.isNaN(date.valueOf())?value:date.toLocaleString([], {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})}
+function riskClass(value){return `risk ${value||"unknown"}`}
+function selected(){return patients.find(patient=>patient.patient_id===selectedId)||patients[0]}
+function renderMetrics(dashboard,status){$("activePatients").textContent=dashboard.active_patients;$("checkIns").textContent=dashboard.check_ins_today;$("openAlerts").textContent=dashboard.open_alerts;$("databaseState").textContent=dashboard.database.ready?"Online":"Offline";$("databaseMeta").textContent=`MongoDB ${dashboard.database.version||"8.0"} / ${dashboard.database.collections||0} collections`;$("runtimeDot").classList.toggle("ready",status.ready);$("runtimeText").textContent=status.ready?"GB10 stack ready":"Stack loading"}
+function renderRoster(){const list=$("patientList");list.replaceChildren();$("patientCount").textContent=`${patients.length} records`;patients.forEach(patient=>{const button=node("button",`patient-row${patient.patient_id===selectedId?" active":""}`);button.type="button";button.onclick=()=>{selectedId=patient.patient_id;activeTab="overview";renderRoster();renderDetail()};button.append(node("span","avatar",patient.display_name.slice(0,1).toUpperCase()));const copy=node("span");copy.append(node("strong","",patient.display_name),node("small","",`${patient.program} / ${patient.next_check_in||"No check-in scheduled"}`));button.append(copy,node("span",riskClass(patient.risk_band),patient.risk_band));list.append(button)})}
+function detailShell(patient){const root=$("detailRoot");root.className="";root.replaceChildren();const head=node("header","detail-head");const identity=node("div","identity");identity.append(node("span","avatar",patient.display_name.slice(0,1).toUpperCase()));const copy=node("div");copy.append(node("h2","",patient.display_name),node("p","",`${patient.patient_id} / ${patient.program}`));identity.append(copy);const actions=node("div","detail-actions");const patientLink=node("a","button primary","Open patient view");patientLink.href="/patient";actions.append(patientLink);head.append(identity,actions);const tabs=node("nav","tabs");[["overview","Overview"],["plan","Care plan"],["calls","Call history"],["audit","Audit"]].forEach(([id,label])=>{const button=node("button",`tab${activeTab===id?" active":""}`,label);button.type="button";button.onclick=()=>{activeTab=id;renderDetail()};tabs.append(button)});root.append(head,tabs,node("section","panel"));return root.querySelector(".panel")}
+function field(label,value,id,type="input"){const wrap=node("div","field");wrap.append(node("label","",label));let control;if(type==="select"){control=node("select");["stable","watch","elevated"].forEach(option=>{const item=node("option","",option);item.value=option;item.selected=option===value;control.append(item)})}else{control=node("input");control.value=value||""}control.id=id;wrap.append(control);return wrap}
+function renderOverview(panel,patient){const layout=node("div","two-col");const left=node("div");const details=node("section","block");details.append(node("h3","","Patient record"));const facts=node("div","facts");[["Status",patient.status],["Risk band",patient.risk_band],["Voice enrollment",patient.voice_enrollment],["Last check-in",formatTime(patient.last_check_in_at)]].forEach(([label,value])=>{const item=node("div","fact");item.append(node("label","",label),node("span","",value||"Not recorded"));facts.append(item)});details.append(facts);const form=node("div","form-grid");form.append(field("Program",patient.program,"patientProgram"),field("Next check-in",patient.next_check_in,"patientNext"),field("Risk band",patient.risk_band,"patientRisk","select"));const actions=node("div","form-actions");const save=node("button","button","Save patient details");save.type="button";save.onclick=savePatient;actions.append(save,node("span","save-state",""));details.append(form,actions);left.append(details);const plan=node("section","block");plan.append(node("h3","",`Today's plan / ${patient.plan.author}`));const list=node("ul","plan-list");(patient.plan.today||[]).forEach(item=>list.append(node("li","",item)));plan.append(list);left.append(plan);const right=node("div");const alerts=node("section","block");alerts.append(node("h3","",`Safety alerts / ${(patient.alerts||[]).filter(item=>item.status==="open").length} open`));renderAlerts(alerts,patient);right.append(alerts);const memories=node("section","block");memories.append(node("h3","","Anchor memory"));const memoryList=node("ul","plan-list");(patient.memories||[]).slice(0,6).forEach(item=>memoryList.append(node("li","",item.fact)));memories.append((patient.memories||[]).length?memoryList:node("div","empty","No completed check-in memories yet."));right.append(memories);layout.append(left,right);panel.append(layout)}
+function renderAlerts(container,patient){const alerts=(patient.alerts||[]).filter(item=>item.status==="open");if(!alerts.length){container.append(node("div","empty","No open safety alerts."));return}alerts.forEach(item=>{const alert=node("div","alert");const head=node("div","alert-head");head.append(node("strong","",`${item.severity} alert`),node("time","",formatTime(item.created_at)));alert.append(head,node("p","",item.reason));const resolve=node("button","button danger","Mark reviewed");resolve.type="button";resolve.onclick=()=>resolveAlert(item.id);alert.append(resolve);container.append(alert)})}
+function textareaField(label,items,id){const wrap=node("div","field full");wrap.append(node("label","",label));const control=node("textarea");control.id=id;control.value=(items||[]).join("\n");wrap.append(control);return wrap}
+function renderPlan(panel,patient){const form=node("section","block");form.append(node("h3","",`Clinician-controlled care plan / version ${patient.plan.version||1}`));const grid=node("div","form-grid");grid.append(field("Plan author",patient.plan.author,"planAuthor"),field("Program",patient.plan.program,"planProgram"),textareaField("Today's commitments / one per line",patient.plan.today,"planToday"),textareaField("Check-in topics / one per line",patient.plan.check_in,"planCheckin"),textareaField("Allowed self-directed options / one per line",patient.plan.options,"planOptions"),field("On-call destination",patient.plan.on_call,"planOnCall"));const actions=node("div","form-actions");const save=node("button","button primary","Publish care plan");save.type="button";save.onclick=savePlan;actions.append(save,node("span","save-state",""));form.append(grid,actions);panel.append(form)}
+function renderCalls(panel,patient){const section=node("section","block");section.append(node("h3","",`Completed Anchor calls / ${(patient.recent_calls||[]).length}`));if(!(patient.recent_calls||[]).length){section.append(node("div","empty","No completed calls for this patient."))}else patient.recent_calls.forEach(item=>{const call=node("article","call");const head=node("div","call-headline");head.append(node("strong","",`Concern score ${item.concern_score||0}`),node("time","",formatTime(item.started_at)));call.append(head,node("p","",item.summary||"No summary extracted."));if((item.transcript||[]).length){const details=node("details");details.append(node("summary","","View local transcript"));item.transcript.forEach(line=>details.append(node("div","transcript-line",`${line.role}: ${line.text}`)));call.append(details)}section.append(call)});panel.append(section)}
+function renderAudit(panel,patient){const events=activity.filter(item=>!item.patient_id||item.patient_id===patient.patient_id);const section=node("section","block");section.append(node("h3","",`MongoDB audit activity / ${events.length} events`));const timeline=node("div","timeline");events.forEach(item=>{const event=node("div","event");event.append(node("time","",formatTime(item.created_at)));const copy=node("div");copy.append(node("strong","",item.action),node("p","",item.detail||item.patient_id||"System event"));event.append(copy,node("span","risk",item.actor));timeline.append(event)});section.append(events.length?timeline:node("div","empty","No audit events for this patient."));panel.append(section)}
+function renderDetail(){const patient=selected();if(!patient)return;const panel=detailShell(patient);if(activeTab==="overview")renderOverview(panel,patient);if(activeTab==="plan")renderPlan(panel,patient);if(activeTab==="calls")renderCalls(panel,patient);if(activeTab==="audit")renderAudit(panel,patient)}
+async function refreshData(keepTab=true){try{const [dashboard,roster,events,status]=await Promise.all([api("/api/clinic/dashboard"),api("/api/clinic/patients"),api("/api/clinic/activity"),api("/api/status")]);patients=roster.patients;activity=events.events;if(!patients.some(item=>item.patient_id===selectedId))selectedId=patients[0]?.patient_id;if(!keepTab)activeTab="overview";renderMetrics(dashboard,status);renderRoster();renderDetail()}catch(error){$("detailRoot").textContent=error.message;$("runtimeText").textContent="Stack unavailable"}}
+async function savePatient(){const state=document.querySelector(".save-state");state.textContent="Saving";try{await api(`/api/clinic/patients/${selectedId}`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({program:$("patientProgram").value,next_check_in:$("patientNext").value,risk_band:$("patientRisk").value})});await refreshData();state.textContent="Saved to MongoDB"}catch(error){state.textContent=error.message}}
+function lines(id){return $(id).value.split("\n").map(item=>item.trim()).filter(Boolean)}
+async function savePlan(){const state=document.querySelector(".save-state");state.textContent="Publishing";try{await api(`/api/clinic/patients/${selectedId}/plan`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({author:$("planAuthor").value,program:$("planProgram").value,today:lines("planToday"),check_in:lines("planCheckin"),options:lines("planOptions"),on_call:$("planOnCall").value})});await refreshData();state.textContent="Plan published"}catch(error){state.textContent=error.message}}
+async function resolveAlert(id){await api(`/api/clinic/alerts/${id}/resolve`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({resolved_by:"Dr. Maya Chen",note:"Reviewed in Anchor Clinic demo"})});await refreshData()}
+$("alertsNav").onclick=()=>{selectedId=patients.find(item=>(item.alerts||[]).some(alert=>alert.status==="open"))?.patient_id||selectedId;activeTab="overview";renderRoster();renderDetail()};$("activityNav").onclick=()=>{activeTab="audit";renderDetail()};refreshData();setInterval(()=>refreshData(true),15000);
 </script>
+<script src="/goal-client.js"></script>
 </body>
 </html>

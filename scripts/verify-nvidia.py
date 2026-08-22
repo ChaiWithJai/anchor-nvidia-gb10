@@ -48,7 +48,12 @@ def main() -> int:
     status_code, status = request("/api/status")
     assert status_code == 200 and status["ready"] is True
     assert status["runtime"] == "NVIDIA GB10"
-    print("PASS runtime: Nemotron 3 Nano NVFP4 on NVIDIA GB10")
+    assert status["database_ready"] is True
+    assert status["database"]["engine"] == "MongoDB"
+    assert status["database"]["version"].startswith("8.")
+    print(f"PASS local stack: Nemotron + CSM + MongoDB {status['database']['version']} on NVIDIA GB10")
+    assert status["agent_runtime"]["name"] == "OpenClaw in NVIDIA OpenShell"
+    agent_configured = status["agent_runtime"]["configured"]
 
     if ACCESS_KEY:
         auth_body = urllib.parse.urlencode({"access_code": ACCESS_KEY}).encode()
@@ -62,7 +67,74 @@ def main() -> int:
             assert response.geturl().rstrip("/") == BASE.rstrip("/")
         print("PASS shared access: signed session cookie accepted")
 
-    _, recovery_context = request("/api/context/self-jai")
+    _, admin_page = request("/")
+    _, patient_page = request("/patient")
+    _, goal_page = request("/goal")
+    assert b"Care operations" in admin_page
+    assert b"Answer check-in" in patient_page
+    assert b"GB10 live operations" in goal_page
+    print("PASS interfaces: clinician console + patient phone call + live GB10 view")
+
+    client_id = f"verify-{uuid.uuid4().hex}"
+    request(
+        "/api/goal/heartbeat",
+        {"client_id": client_id, "surface": "verification", "connected": True},
+    )
+    _, live = request("/api/goal/snapshot")
+    assert live["gpu"]["ready"] is True
+    assert "GB10" in live["gpu"]["name"]
+    assert any(item["client_id"] == client_id[:12] for item in live["clients"])
+    assert "request_counts" in live and "average_latency_ms" in live
+    print(
+        "PASS live operations: masked client + "
+        f"{live['gpu']['utilization_gpu']}% GPU at {live['gpu']['temperature_c']}C"
+    )
+
+    _, dashboard = request("/api/clinic/dashboard")
+    _, roster = request("/api/clinic/patients")
+    assert dashboard["database"]["ready"] is True
+    assert dashboard["active_patients"] >= 3
+    demo_patient = next(
+        patient for patient in roster["patients"] if patient["patient_id"] == "demo-jai"
+    )
+    assert len(demo_patient["care_team"]["clinician_ids"]) == 2
+    assert demo_patient["conditions"] and demo_patient["goals"]
+    _, references = request("/api/reference-library")
+    reference_ids = {item["reference_id"] for item in references["references"]}
+    assert {
+        "ref-coping-box-breathing",
+        "ref-coping-urge-surfing",
+        "ref-psychoed-craving-curve",
+        "ref-crisis-988",
+        "ref-crisis-ndvh",
+    } <= reference_ids
+    goal_id = demo_patient["goals"][0]["goal_id"]
+    request(
+        f"/api/clinic/patients/demo-jai/goals/{goal_id}/observations",
+        {"status": "missed", "value": "missed", "source": "verification"},
+    )
+    _, observed = request(
+        f"/api/clinic/patients/demo-jai/goals/{goal_id}/observations",
+        {"status": "missed", "value": "missed", "source": "verification"},
+    )
+    assert any(item["goal_id"] == goal_id for item in observed["patterns"])
+    print("PASS clinical graph: two-person team, condition, goals, references, and tracking window")
+    plan = demo_patient["plan"]
+    plan_payload = {
+        "author": plan["author"],
+        "program": plan["program"],
+        "today": plan["today"],
+        "check_in": plan["check_in"],
+        "options": plan["options"],
+        "on_call": plan["on_call"],
+    }
+    _, updated_plan = request("/api/clinic/patients/demo-jai/plan", plan_payload, method="PUT")
+    assert updated_plan["version"] == plan["version"] + 1
+    _, audit = request("/api/clinic/activity")
+    assert any(event["action"] == "care_plan.updated" for event in audit["events"])
+    print("PASS clinic workflow: roster, dashboard, care-plan publish, and MongoDB audit")
+
+    _, recovery_context = request("/api/context/demo-jai")
     assert recovery_context["synthetic_demo_data"] is True
     assert recovery_context["triggered"] is True
     assert len(recovery_context["plan"]["today"]) >= 3
@@ -119,9 +191,19 @@ def main() -> int:
     )
     reply = turn["reply"].strip()
     assert reply and len(reply) < 500
+    assert len(reply.split()) <= 65
+    notification_claims = ("clinician has been notified", "notifying the on-call")
+    assert not any(claim in reply.lower() for claim in notification_claims)
+    assert "review" in reply.lower() or "flagged" in reply.lower()
     assert turn["alert"] and turn["alert"]["destination"] == "on-call clinician"
     assert turn["alert"]["severity"] in {"medium", "high", "critical"}
     print(f"PASS clinician escalation ({turn['alert']['severity']}): {reply}")
+    assert turn["alert"]["alert_id"]
+    expected_delivery = "delivered" if agent_configured else "not-configured"
+    assert turn["alert"]["agent_delivery"]["status"] == expected_delivery
+    print(
+        f"PASS agent handoff: OpenClaw delivery is {expected_delivery}"
+    )
 
     _, reply_wav = request(
         "/api/tts",
@@ -135,13 +217,20 @@ def main() -> int:
     _, memory = request(f"/api/residents/{resident_id}/memory")
     assert memory["facts"] and memory["calls"]
     print(f"PASS hangup + memory: {ended['summary']}")
+    assert memory["calls"][0]["transcript"]
 
     _, next_call = request("/api/calls", call_body)
     assert next_call["greeting"].strip()
     _, next_end = request(f"/api/calls/{next_call['call_id']}/end", method="POST")
     assert next_end["summary"].strip()
     print("PASS next call: persisted memory supplied to Nemotron")
-    print("Anchor NVIDIA GB10 workload passed end to end")
+    _, alerts = request("/api/alerts")
+    persisted_alert = next(
+        alert for alert in alerts["alerts"] if alert["patient_id"] == resident_id
+    )
+    assert persisted_alert["agent_delivery"]["status"] == expected_delivery
+    print("PASS MongoDB evidence: transcript, memories, call record, alert, and audit event")
+    print("Anchor clinic + patient NVIDIA GB10 workload passed end to end")
     return 0
 
 

@@ -15,6 +15,11 @@ RUN PIP_CONSTRAINT=/dev/null pip install --no-cache-dir --no-index \
     && python -c 'import torch, transformers, soundfile; from transformers import CsmForConditionalGeneration; assert torch.version.cuda; print(torch.__version__, torch.version.cuda, transformers.__version__)' \
     && rm -rf /wheelhouse
 
+
+# MongoDB is the on-box clinical system of record. These small pinned wheels are
+# fetched only while building the image; the running workload makes no cloud API calls.
+RUN pip install --no-cache-dir pymongo==4.17.0 dnspython==2.8.0 \
+    && python -c 'import pymongo; print(pymongo.__version__)'
 COPY careline ./careline
 COPY web ./web
 

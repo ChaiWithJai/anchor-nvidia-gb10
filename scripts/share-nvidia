@@ -21,6 +21,7 @@ cd "$root"
 docker compose -f compose.nvidia.yml config --quiet
 docker compose -f compose.nvidia.yml up -d --build --no-deps --force-recreate digital-twin
 
+docker compose -f compose.nvidia.yml up -d --wait mongodb
 base_url="http://127.0.0.1:$CARELINE_PORT"
 ready=0
 for _ in {1..90}; do
@@ -41,6 +42,10 @@ fi
 
 docker compose -f compose.nvidia.yml --profile share up -d --no-deps share-proxy
 
+if ! curl --fail --silent "$base_url/api/status" | grep -q '"database_ready":true'; then
+  printf 'Anchor restarted without local MongoDB ready.\n' >&2
+  exit 1
+fi
 share_url=""
 for _ in {1..60}; do
   share_url="$(

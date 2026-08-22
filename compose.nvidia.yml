@@ -1,6 +1,34 @@
 name: anchor-nvidia-gb10
 
 services:
+  mongodb:
+    image: mongo:8.0@sha256:02a0cc7939f5ed38f30f9bc714ef5f682d49baf9350c54acf302ce833087fe8a
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: anchor
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-anchor-gb10-local-only}
+      MONGO_INITDB_DATABASE: anchor
+    volumes:
+      - mongo-data:/data/db
+    tmpfs:
+      - /tmp:size=128m,mode=1777
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          mongosh --quiet --host 127.0.0.1
+          --username $$MONGO_INITDB_ROOT_USERNAME
+          --password $$MONGO_INITDB_ROOT_PASSWORD
+          --authenticationDatabase admin
+          --eval "quit(db.adminCommand('ping').ok ? 0 : 2)"
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+
+
   nemotron:
     image: ${NVIDIA_VLLM_IMAGE:-nvcr.io/nvidia/vllm:26.05.post1-py3}
     pull_policy: if_not_present
@@ -11,7 +39,7 @@ services:
           --served-model-name nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4 \
           --host 0.0.0.0 \
           --port 8000 \
-          --max-model-len 4096 \
+          --max-model-len ${NEMOTRON_MAX_MODEL_LEN:-8192} \
           --gpu-memory-utilization 0.35 \
           --max-num-seqs 8 \
           --trust-remote-code \
@@ -47,7 +75,7 @@ services:
       start_period: 120s
 
   digital-twin:
-    image: anchor-nvidia-gb10:latest
+    image: ${ANCHOR_APP_IMAGE:-anchor-nvidia-gb10:latest}
     build:
       context: app
       dockerfile: Dockerfile.csm-cuda
@@ -69,10 +97,12 @@ services:
       CARELINE_SELF_REF_TEXT: /run/careline/self_ref.txt
       CARELINE_STT_BACKEND: browser
       CARELINE_TTS_BACKEND: nim
-      CARELINE_DB: /data/anchor.db
+      CARELINE_MONGO_URI: mongodb://anchor:${MONGO_PASSWORD:-anchor-gb10-local-only}@mongodb:27017/anchor?authSource=admin
+      CARELINE_MONGO_DB: anchor
       ANCHOR_DEMO_ACCESS_KEY: ${ANCHOR_DEMO_ACCESS_KEY:-}
+      CARELINE_OPENCLAW_WAKE_URL: ${CARELINE_OPENCLAW_WAKE_URL:-}
+      CARELINE_OPENCLAW_HOOK_TOKEN: ${CARELINE_OPENCLAW_HOOK_TOKEN:-}
     volumes:
-      - digital-twin-data:/data
       - ${CARELINE_CSM_MODEL_DIR:?Set CARELINE_CSM_MODEL_DIR}:/models/sesame-csm-1b:ro
       - ${CARELINE_SELF_REF_AUDIO:?Set CARELINE_SELF_REF_AUDIO}:/run/careline/self_ref.wav:ro
       - ${CARELINE_SELF_REF_TEXT:?Set CARELINE_SELF_REF_TEXT}:/run/careline/self_ref.txt:ro
@@ -95,8 +125,10 @@ services:
     depends_on:
       nemotron:
         condition: service_healthy
+      mongodb:
+        condition: service_healthy
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8100/api/status').read()"]
+      test: ["CMD", "python", "-c", "import json, urllib.request; data=json.load(urllib.request.urlopen('http://127.0.0.1:8100/api/status')); assert data['ready']"]
       interval: 10s
       timeout: 5s
       retries: 30
@@ -119,5 +151,5 @@ services:
     restart: unless-stopped
 
 volumes:
-  digital-twin-data:
+  mongo-data:
   nemotron-cache:

@@ -1,5 +1,5 @@
 name: anchor-nvidia-gb10
-version: 1.0.0
+version: 2.1.0
 status: hackathon-poc
 hardware:
   platform: NVIDIA GB10
@@ -8,12 +8,27 @@ models:
   conversation: nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4
   cloned_voice: sesame/csm-1b
 interfaces:
+  clinician: /
+  patient: /patient
+  operations: /goal
   input: browser-speech-or-text
   output: cuda-cloned-wav
-  memory: sqlite
+  system_of_record: mongodb-8
+  live_telemetry: nvidia-smi-and-in-process-events
+agent_stack:
+  components:
+    - openclaw-2026.5.27
+    - nvidia-openshell-0.0.106
+  escalation_hook: /hooks/wake
+  delivery_audit: mongodb
+  autonomous_patient_contact: false
+  default: fail-closed-disabled
+  inference_route: forced-local-nemotron
+  hosted_nemoclaw_plugin: disabled
 privacy:
   inference: local
   voice_reference: read-only-external-mount
   consent_required: true
+  synthetic_demo_data_only: true
 verification:
   command: python3 scripts/verify-nvidia.py

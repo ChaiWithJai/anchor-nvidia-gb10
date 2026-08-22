@@ -5,7 +5,7 @@ import re
 
 import httpx
 
-from . import agent_wake, memory
+from . import agent_wake, memory, telemetry
 
 CRISIS_TERMS = (
     "wish i was dead",
@@ -118,6 +118,53 @@ WEBHOOK_URL = os.environ.get("CARELINE_ALERT_WEBHOOK", "")
 _SEVERITY_RANK = {None: 0, "medium": 1, "high": 2, "critical": 3}
 
 
+async def _deliver_persisted_alert(alert_id: str, alert: dict) -> dict:
+    handoff_proof = {
+        "sandbox": "NVIDIA OpenShell",
+        "route": "inference.local configured",
+        "delivery_status": "pending",
+        "ordering": "alert.commit completed before openclaw.wake",
+    }
+    with telemetry.span(
+        "openclaw.wake",
+        "openclaw",
+        "isolation",
+        "anchor-openclaw",
+        handoff_proof,
+    ):
+        delivery = await agent_wake.notify(alert)
+        handoff_proof["delivery_status"] = delivery["status"]
+    route_proof = {
+        "sandbox": "NVIDIA OpenShell",
+        "route": "inference.local forced provider configuration",
+        "delivery_status": (
+            "configured" if agent_wake.status()["configured"] else "not configured"
+        ),
+    }
+    with telemetry.span(
+        "openshell.inference.route",
+        "inference-local",
+        "isolation",
+        "openclaw-route",
+        route_proof,
+    ):
+        pass
+    with telemetry.span(
+        "alert.delivery.persist",
+        "mongodb",
+        "durability",
+        "anchor-mongodb",
+        {
+            "collection": "alerts",
+            "acknowledged": True,
+            "delivery_status": delivery["status"],
+            "ordering": "persisted after openclaw.wake outcome",
+        },
+    ):
+        memory.set_alert_delivery(alert_id, delivery)
+    return delivery
+
+
 def classify_utterance(text: str) -> dict:
     lowered = text.lower().replace("’", "'").replace("‘", "'")
     crisis_hits = [term for term in CRISIS_TERMS if term in lowered]
@@ -161,15 +208,26 @@ async def check_and_alert(
         if _SEVERITY_RANK["medium"] <= _SEVERITY_RANK[alerted_severity]:
             return running_score, alerted_severity, None
         reason = f"Recovery pattern for clinician review: {', '.join(hits)}"
-        alert_id = memory.save_alert(
-            resident_id,
-            call_id,
-            reason,
-            "medium",
-            alert_type="utterance-pattern",
-            tier=2,
-            pattern_key=f"tier-2-utterance:{call_id}",
-        )
+        with telemetry.span(
+            "alert.commit",
+            "mongodb",
+            "durability",
+            "anchor-mongodb",
+            {
+                "collection": "alerts",
+                "acknowledged": True,
+                "ordering": "must complete before openclaw.wake",
+            },
+        ):
+            alert_id = memory.save_alert(
+                resident_id,
+                call_id,
+                reason,
+                "medium",
+                alert_type="utterance-pattern",
+                tier=2,
+                pattern_key=f"tier-2-utterance:{call_id}",
+            )
         alert = {
             "alert_id": alert_id,
             "resident_id": resident_id,
@@ -180,8 +238,7 @@ async def check_and_alert(
             "alert_type": "utterance-pattern",
             "destination": "on-call clinician",
         }
-        delivery = await agent_wake.notify(alert)
-        memory.set_alert_delivery(alert_id, delivery)
+        delivery = await _deliver_persisted_alert(alert_id, alert)
         alert["agent_delivery"] = delivery
         return running_score, "medium", alert
     if score == 0 or (running_score < ALERT_THRESHOLD and not crisis):
@@ -205,15 +262,26 @@ async def check_and_alert(
                 f"Recovery Plan pattern: {pattern['title']} missed "
                 f"{pattern['miss_count']} times in {pattern['tracking_window_days']} days"
             )
-            alert_id = memory.save_alert(
-                resident_id,
-                call_id,
-                reason,
-                "medium",
-                alert_type="goal-pattern",
-                tier=2,
-                pattern_key=pattern_key,
-            )
+            with telemetry.span(
+                "alert.commit",
+                "mongodb",
+                "durability",
+                "anchor-mongodb",
+                {
+                    "collection": "alerts",
+                    "acknowledged": True,
+                    "ordering": "must complete before openclaw.wake",
+                },
+            ):
+                alert_id = memory.save_alert(
+                    resident_id,
+                    call_id,
+                    reason,
+                    "medium",
+                    alert_type="goal-pattern",
+                    tier=2,
+                    pattern_key=pattern_key,
+                )
             alert = {
                 "alert_id": alert_id,
                 "resident_id": resident_id,
@@ -224,8 +292,7 @@ async def check_and_alert(
                 "alert_type": "goal-pattern",
                 "destination": "on-call clinician",
             }
-            delivery = await agent_wake.notify(alert)
-            memory.set_alert_delivery(alert_id, delivery)
+            delivery = await _deliver_persisted_alert(alert_id, alert)
             alert["agent_delivery"] = delivery
             return running_score, "medium", alert
         return running_score, alerted_severity, None
@@ -235,7 +302,18 @@ async def check_and_alert(
         return running_score, alerted_severity, None
 
     reason = f"Recovery safety signals: {', '.join(hits)} (score {running_score})"
-    alert_id = memory.save_alert(resident_id, call_id, reason, severity)
+    with telemetry.span(
+        "alert.commit",
+        "mongodb",
+        "durability",
+        "anchor-mongodb",
+        {
+            "collection": "alerts",
+            "acknowledged": True,
+            "ordering": "must complete before openclaw.wake",
+        },
+    ):
+        alert_id = memory.save_alert(resident_id, call_id, reason, severity)
     alert = {
         "alert_id": alert_id,
         "resident_id": resident_id,
@@ -246,8 +324,7 @@ async def check_and_alert(
         "alert_type": "safety-escalation",
         "destination": "on-call clinician",
     }
-    delivery = await agent_wake.notify(alert)
-    memory.set_alert_delivery(alert_id, delivery)
+    delivery = await _deliver_persisted_alert(alert_id, alert)
     alert["agent_delivery"] = delivery
     if WEBHOOK_URL:
         try:

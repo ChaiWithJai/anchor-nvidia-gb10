@@ -18,6 +18,7 @@ flowchart LR
             api[Anchor FastAPI<br/>workflow + deterministic safety]
             mongo[(MongoDB 8<br/>durable system of record)]
             csm[Sesame CSM-1B<br/>CUDA BF16 voice]
+            whisper[Whisper tiny.en<br/>CUDA microphone STT]
             goal[/goal<br/>private live telemetry]
         end
         subgraph models[Private model boundary]
@@ -35,11 +36,13 @@ flowchart LR
     api -->|plans, calls, alerts, audit| mongo
     api -->|OpenAI-compatible prompt| vllm
     api -->|text + consented enrollment| csm
+    api -->|mono PCM WAV| whisper
     api -->|authenticated /hooks/wake| claw
     claw --> route --> vllm
     api --> goal
     vllm --> goal
     csm --> goal
+    whisper --> goal
     gpu --> goal
     goal -->|one-second SSE| browser
 ```
@@ -56,7 +59,8 @@ APIs require the access-code session when shared mode is enabled.
 | Anchor FastAPI | Workflow, deterministic risk scoring, consent checks, prompt assembly, audit writes, UI/API access | Durable model memory or autonomous treatment decisions |
 | MongoDB 8 | Patients, plans/revisions, signals, calls, transcripts, memories, alerts, delivery results, audit | Model execution or agent capabilities |
 | Nemotron on NVIDIA vLLM | Local conversational text from the bounded prompt | Safety classification, persistence, or care-plan authority |
-| Sesame CSM-1B | Local synthesis with consented, read-only voice enrollment | Consent decisions or patient records |
+| Sesame CSM-1B | Local catalog and consented personalized synthesis | Consent decisions or patient records |
+| Whisper tiny.en | Local microphone transcription with in-memory audio | Raw-audio retention or clinical interpretation |
 | OpenClaw in OpenShell | Narrow clinician-review handoff after a durable alert | Patient contact, plan edits, shell/browser access, or record custody |
 | `/goal` telemetry | Masked clients, requests, active work, latency, and GB10 counters | Clinical decisions or a historical telemetry store |
 
@@ -109,14 +113,33 @@ immutable revision and changes the next call; the model cannot publish a plan.
 - Shared mode is synthetic-data demo infrastructure, not a production clinical
   security boundary.
 
-## Live GB10 operations view
+## Live architecture and GB10 operations
 
-`/goal` is the single real-time view for the machine. Browsers send heartbeats
+`/goal` has separate Architecture and Performance tabs. Browsers send heartbeats
 with ephemeral masked IDs. A private server-sent-event snapshot emits every
-second with connected clients, request volume, active/completed Nemotron and CSM
+second with connected clients, request volume, bounded trace summaries, and
+active/completed Nemotron, CSM, and Whisper
 work, latency, readiness, and GPU utilization, memory, temperature, power, and
 clocks from `nvidia-smi`. GPU sampling is cached across viewers, and clinical
 payloads are not copied into telemetry.
+
+The canonical node and edge IDs live in
+`app/careline/architecture-topology.json`; the Architecture tab and trace
+instrumentation consume that same manifest. A call receives an ephemeral
+16-character trace ID. Safe spans cover context reads, durable call and alert
+writes, Nemotron generation, Whisper transcription, CSM synthesis, the
+OpenClaw wake, the configured OpenShell local route, and persisted delivery
+state. The buffer retains at most 40 in-process traces and is lost on
+application restart. Full detail is fetched only after selecting a trace.
+
+Trace metadata permits only coarse collection, acknowledgement, delivery,
+route, ordering, and machine-sample fields. It excludes names, patient and call
+IDs, transcript or plan text, alert reasons, facts, tokens, credential-bearing
+URLs, and private paths. The forced-route span proves the configured
+`inference.local` policy and hook delivery state; it does not claim a
+successful agent inference without runtime evidence. GPU values are
+timestamp-correlated whole-machine samples, not exclusive per-request
+attribution.
 
 ## Deployment and worktrees
 

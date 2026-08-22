@@ -82,6 +82,7 @@ class Turn(BaseModel):
     mode: str = "catalog"
     voice_id: str | None = "anchor-grounded"
     consent_confirmed: bool = False
+    trace_id: str | None = Field(default=None, pattern=r"^[a-f0-9]{16}$")
 
 
 class VoicePreferenceUpdate(BaseModel):
@@ -283,6 +284,38 @@ def goal_snapshot():
     return telemetry.snapshot()
 
 
+@app.get("/api/goal/architecture")
+async def goal_architecture():
+    topology = telemetry.architecture()
+    database = store.health()
+    agent = agent_wake.status()
+    states = {
+        "browser": "healthy",
+        "cloudflare": "configured" if ACCESS_KEY else "not configured",
+        "anchor-api": "healthy",
+        "mongodb": "healthy" if database["ready"] else "failed",
+        "nemotron": "healthy" if await llm.ready() else "failed",
+        "sesame-csm": "healthy" if VOICE_READY else "failed",
+        "whisper": "healthy" if LOCAL_STT.status()["ready"] else "failed",
+        "openclaw": "configured" if agent["configured"] else "not configured",
+        "inference-local": "configured" if agent["configured"] else "evidence unavailable",
+        "gb10": "healthy" if telemetry.gpu_sample()["ready"] else "failed",
+    }
+    for node in topology["nodes"]:
+        node["status"] = states.get(node["node_id"], "evidence unavailable")
+    return topology
+
+
+@app.get("/api/goal/traces/{trace_id}")
+async def goal_trace(trace_id: str):
+    if not len(trace_id) == 16 or any(char not in "0123456789abcdef" for char in trace_id):
+        raise HTTPException(400, "invalid trace ID")
+    trace = telemetry.trace_detail(trace_id)
+    if not trace:
+        raise HTTPException(404, "trace not found")
+    return trace
+
+
 @app.get("/api/goal/events")
 async def goal_events(request: Request):
     async def stream():
@@ -374,22 +407,42 @@ TTS_CACHE: dict[tuple[str, str, str], bytes] = {}
 @app.post("/api/calls/prepare")
 async def prepare_call(body: StartCall):
     mode, voice_id = _voice_choice(body.mode, body.voice_id, body.consent_confirmed)
-    session = CallSession(body.resident_id, body.name, mode=mode, voice_id=voice_id)
-    greeting = await session.open_call()
-    if mode != "text-only":
-        try:
-            cache_key = (mode, voice_id or "personalized", greeting)
-            TTS_CACHE[cache_key] = await CLONE_TTS.synthesize(
-                greeting, mode=mode, voice_id=voice_id
+    trace_id = telemetry.start_trace("patient-call")
+    try:
+        with telemetry.trace_scope(trace_id):
+            with telemetry.span(
+                "call.prepare",
+                "anchor-api",
+                "durability",
+                "browser-anchor",
+                {"correlation": "inbound patient-call workflow"},
+            ):
+                pass
+            session = CallSession(
+                body.resident_id,
+                body.name,
+                mode=mode,
+                voice_id=voice_id,
+                trace_id=trace_id,
             )
-            while len(TTS_CACHE) > 32:
-                TTS_CACHE.pop(next(iter(TTS_CACHE)))
-        except Exception:
-            import logging
+            greeting = await session.open_call()
+            if mode != "text-only":
+                try:
+                    cache_key = (mode, voice_id or "personalized", greeting)
+                    TTS_CACHE[cache_key] = await CLONE_TTS.synthesize(
+                        greeting, mode=mode, voice_id=voice_id
+                    )
+                    while len(TTS_CACHE) > 32:
+                        TTS_CACHE.pop(next(iter(TTS_CACHE)))
+                except Exception:
+                    import logging
 
-            logging.getLogger("careline").exception("prepare: greeting TTS failed")
+                    logging.getLogger("careline").exception("prepare: greeting TTS failed")
+    except Exception:
+        telemetry.finish_trace(trace_id, "failed")
+        raise
     PREPARED[body.resident_id] = (session, greeting)
-    return {"prepared": True, "voice_mode": mode, "voice_id": voice_id}
+    return {"prepared": True, "voice_mode": mode, "voice_id": voice_id, "trace_id": trace_id}
 
 
 @app.post("/api/calls")
@@ -399,10 +452,32 @@ async def start_call(body: StartCall):
     if prepared and prepared[0].mode == mode and prepared[0].voice_id == voice_id:
         session, greeting = prepared
     else:
-        session = CallSession(body.resident_id, body.name, mode=mode, voice_id=voice_id)
-        greeting = await session.open_call()
+        if prepared:
+            telemetry.finish_trace(prepared[0].trace_id, "replaced")
+        trace_id = telemetry.start_trace("patient-call")
+        try:
+            with telemetry.trace_scope(trace_id):
+                with telemetry.span(
+                    "call.accept",
+                    "anchor-api",
+                    "durability",
+                    "browser-anchor",
+                    {"correlation": "inbound patient-call workflow"},
+                ):
+                    pass
+                session = CallSession(
+                    body.resident_id,
+                    body.name,
+                    mode=mode,
+                    voice_id=voice_id,
+                    trace_id=trace_id,
+                )
+                greeting = await session.open_call()
+        except Exception:
+            telemetry.finish_trace(trace_id, "failed")
+            raise
     SESSIONS[session.id] = session
-    return {"call_id": session.id, "greeting": greeting, "voice_mode": mode, "voice_id": voice_id}
+    return {"call_id": session.id, "greeting": greeting, "voice_mode": mode, "voice_id": voice_id, "trace_id": session.trace_id}
 
 
 @app.post("/api/calls/{call_id}/turn")
@@ -412,7 +487,15 @@ async def call_turn(call_id: str, body: Turn):
         raise HTTPException(404, "unknown call")
     if not body.text.strip() or len(body.text) > 800:
         raise HTTPException(400, "turn must contain 1-800 characters")
-    reply, alert = await session.turn(body.text)
+    with telemetry.trace_scope(session.trace_id):
+        with telemetry.span(
+            "call.turn",
+            "anchor-api",
+            "durability",
+            "browser-anchor",
+            {"correlation": "authenticated call turn"},
+        ):
+            reply, alert = await session.turn(body.text)
     return {"reply": reply, "alert": alert, "concern_score": session.concern_score}
 
 
@@ -425,24 +508,33 @@ async def call_audio_turn(call_id: str, request: Request):
         raise HTTPException(415, "audio turn must use audio/wav")
     payload = await request.body()
     try:
-        transcript = await LOCAL_STT.transcribe(payload)
+        with telemetry.trace_scope(session.trace_id):
+            transcript = await LOCAL_STT.transcribe(payload)
     except ValueError as error:
         raise HTTPException(400, str(error)) from error
     except Exception as error:
         raise HTTPException(503, f"local STT unavailable: {error}") from error
     if not transcript["text"]:
         raise HTTPException(422, "no speech detected in microphone audio")
-    store.record_audio_event(
-        session.resident_id,
-        call_id,
-        "transcribed",
-        {
-            "frame_count": transcript["frame_count"],
-            "duration_seconds": transcript["duration_seconds"],
-            "engine": transcript["engine"],
-        },
-    )
-    reply, alert = await session.turn(transcript["text"])
+    with telemetry.trace_scope(session.trace_id):
+        with telemetry.span(
+            "audio_event.commit",
+            "mongodb",
+            "durability",
+            "anchor-mongodb",
+            {"collection": "audio_session_events", "acknowledged": True},
+        ):
+            store.record_audio_event(
+                session.resident_id,
+                call_id,
+                "transcribed",
+                {
+                    "frame_count": transcript["frame_count"],
+                    "duration_seconds": transcript["duration_seconds"],
+                    "engine": transcript["engine"],
+                },
+            )
+        reply, alert = await session.turn(transcript["text"])
     return {
         "transcript": transcript,
         "reply": reply,
@@ -456,7 +548,21 @@ async def call_end(call_id: str):
     session = SESSIONS.pop(call_id, None)
     if not session:
         raise HTTPException(404, "unknown call")
-    return await session.end()
+    try:
+        with telemetry.trace_scope(session.trace_id):
+            with telemetry.span(
+                "call.end",
+                "anchor-api",
+                "durability",
+                "browser-anchor",
+                {"correlation": "authenticated call completion"},
+            ):
+                result = await session.end()
+    except Exception:
+        telemetry.finish_trace(session.trace_id, "failed")
+        raise
+    telemetry.finish_trace(session.trace_id)
+    return result
 
 
 @app.get("/api/residents/{resident_id}/memory")
@@ -573,7 +679,8 @@ async def synthesize(body: Turn):
     if cached:
         return Response(content=cached, media_type="audio/wav", headers={"X-Anchor-Voice-Mode": mode, "X-Anchor-Voice-Id": voice_id or "personalized"})
     try:
-        wav = await CLONE_TTS.synthesize(body.text, mode=mode, voice_id=voice_id)
+        with telemetry.trace_scope(body.trace_id):
+            wav = await CLONE_TTS.synthesize(body.text, mode=mode, voice_id=voice_id)
     except Exception as e:
         raise HTTPException(503, f"tts backend unavailable: {e}")
     return Response(content=wav, media_type="audio/wav", headers={"X-Anchor-Voice-Mode": mode, "X-Anchor-Voice-Id": voice_id or "personalized"})

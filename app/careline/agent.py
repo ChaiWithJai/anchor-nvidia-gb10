@@ -3,7 +3,7 @@
 import uuid
 from datetime import datetime, timezone
 
-from . import context, escalation, llm, memory
+from . import context, escalation, llm, memory, telemetry
 
 ANCHOR_TEMPLATE = """You are Anchor: {identity}. They know this is a digital check-in. This is recovery-plan support, not therapy or medical care. Today is {today}.
 
@@ -62,32 +62,48 @@ class CallSession:
         name: str,
         mode: str = "catalog",
         voice_id: str | None = "anchor-grounded",
+        trace_id: str | None = None,
     ):
         self.id = uuid.uuid4().hex[:12]
         self.resident_id = resident_id
         self.name = name
         self.mode = mode
         self.voice_id = voice_id
+        self.trace_id = trace_id
         self.concern_score = 0
         self.alerted_severity: str | None = None
         today = datetime.now(timezone.utc).strftime("%A, %B %d")
-        self.is_first_call = not memory.recall(resident_id, limit=1)
-        self.messages: list[dict] = [
-            {
-                "role": "system",
-                "content": ANCHOR_TEMPLATE.format(
-                    identity=(
-                        f"{name}'s steadier future self speaking in their explicitly consented personalized voice"
-                        if mode == "personalized"
-                        else f"a synthetic recovery check-in voice selected by {name}"
+        with telemetry.span(
+            "care_plan.read",
+            "mongodb",
+            "durability",
+            "anchor-mongodb",
+            {"collection": "care_plans + memories", "acknowledged": True},
+        ):
+            self.is_first_call = not memory.recall(resident_id, limit=1)
+            self.messages: list[dict] = [
+                {
+                    "role": "system",
+                    "content": ANCHOR_TEMPLATE.format(
+                        identity=(
+                            f"{name}'s steadier future self speaking in their explicitly consented personalized voice"
+                            if mode == "personalized"
+                            else f"a synthetic recovery check-in voice selected by {name}"
+                        ),
+                        today=today,
+                        plan_block=context.prompt_block(resident_id),
+                        memory_block=_memory_block(resident_id),
                     ),
-                    today=today,
-                    plan_block=context.prompt_block(resident_id),
-                    memory_block=_memory_block(resident_id),
-                ),
-            }
-        ]
-        memory.start_call(self.id, resident_id, name)
+                }
+            ]
+        with telemetry.span(
+            "call.commit",
+            "mongodb",
+            "durability",
+            "anchor-mongodb",
+            {"collection": "calls", "acknowledged": True},
+        ):
+            memory.start_call(self.id, resident_id, name)
 
     async def open_call(self) -> str:
         if self.is_first_call:
@@ -151,11 +167,25 @@ class CallSession:
         facts = extraction.get("facts", []) if isinstance(extraction, dict) else []
         summary = extraction.get("summary", "") if isinstance(extraction, dict) else ""
         if facts:
-            memory.save_facts(self.resident_id, self.id, facts)
+            with telemetry.span(
+                "memory.commit",
+                "mongodb",
+                "durability",
+                "anchor-mongodb",
+                {"collection": "memories", "acknowledged": True},
+            ):
+                memory.save_facts(self.resident_id, self.id, facts)
         persisted_transcript = [
             {"role": message["role"], "text": message["content"]}
             for message in self.messages
             if message["role"] in {"user", "assistant"}
         ]
-        memory.end_call(self.id, summary, self.concern_score, persisted_transcript)
+        with telemetry.span(
+            "call.complete",
+            "mongodb",
+            "durability",
+            "anchor-mongodb",
+            {"collection": "calls + voice_analyses", "acknowledged": True},
+        ):
+            memory.end_call(self.id, summary, self.concern_score, persisted_transcript)
         return {"facts": facts, "summary": summary, "concern_score": self.concern_score}

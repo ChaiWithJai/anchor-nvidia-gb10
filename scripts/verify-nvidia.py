@@ -254,7 +254,12 @@ def main() -> int:
 
     _, greeting_wav = request(
         "/api/tts",
-        {"text": greeting, "mode": "self", "consent_confirmed": True},
+        {
+            "text": greeting,
+            "mode": "self",
+            "consent_confirmed": True,
+            "trace_id": call["trace_id"],
+        },
     )
     greeting_duration = assert_wav(greeting_wav)
     print(f"PASS cloned greeting: {greeting_duration:.2f}s WAV")
@@ -303,7 +308,12 @@ def main() -> int:
 
     _, reply_wav = request(
         "/api/tts",
-        {"text": reply, "mode": "self", "consent_confirmed": True},
+        {
+            "text": reply,
+            "mode": "self",
+            "consent_confirmed": True,
+            "trace_id": call["trace_id"],
+        },
     )
     print(f"PASS cloned, plan-grounded reply: {assert_wav(reply_wav):.2f}s WAV")
 
@@ -314,6 +324,32 @@ def main() -> int:
     assert memory["facts"] and memory["calls"]
     print(f"PASS hangup + memory: {ended['summary']}")
     assert memory["calls"][0]["transcript"]
+    _, topology = request("/api/goal/architecture")
+    node_ids = {node["node_id"] for node in topology["nodes"]}
+    edge_ids = {edge["edge_id"] for edge in topology["edges"]}
+    assert {
+        "anchor-api", "mongodb", "nemotron", "sesame-csm", "whisper",
+        "openclaw", "inference-local", "gb10",
+    } <= node_ids
+    assert {"anchor-mongodb", "anchor-openclaw", "openclaw-route"} <= edge_ids
+    _, trace = request(f"/api/goal/traces/{call['trace_id']}")
+    operations = [span["operation"] for span in trace["spans"]]
+    assert operations.index("alert.commit") < operations.index("openclaw.wake")
+    assert "alert.delivery.persist" in operations
+    assert "nemotron.generate" in operations and "csm.synthesize" in operations
+    assert "whisper.transcribe" in operations
+    assert "openshell.inference.route" in operations
+    serialized_trace = json.dumps(trace).lower()
+    assert resident_id.lower() not in serialized_trace
+    assert risk_text.lower() not in serialized_trace
+    assert "237d30d8" not in serialized_trace
+    _, traced_snapshot = request("/api/goal/snapshot")
+    assert traced_snapshot["trace_buffer"]["count"] <= traced_snapshot["trace_buffer"]["limit"]
+    assert any(item["trace_id"] == call["trace_id"] for item in traced_snapshot["traces"])
+    print(
+        "PASS architecture trace: bounded, payload-free, alert commit precedes "
+        "OpenClaw wake, and GB10 model spans are correlated"
+    )
 
     _, next_call = request("/api/calls", call_body)
     assert next_call["greeting"].strip()

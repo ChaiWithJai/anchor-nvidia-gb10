@@ -1,17 +1,23 @@
 #!/usr/bin/env python3
 """End-to-end proof for Anchor's NVIDIA recovery check-in path."""
 
+import http.cookiejar
 import io
 import json
 import os
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 import uuid
 import wave
 
 BASE = os.environ.get("CARELINE_BASE_URL", "http://127.0.0.1:8100")
+ACCESS_KEY = os.environ.get("ANCHOR_DEMO_ACCESS_KEY", "").strip()
+OPENER = urllib.request.build_opener(
+    urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar())
+)
 
 
 def request(path: str, body: dict | None = None, method: str | None = None):
@@ -22,7 +28,7 @@ def request(path: str, body: dict | None = None, method: str | None = None):
         method=method or ("POST" if body is not None else "GET"),
         headers={"Content-Type": "application/json"},
     )
-    with urllib.request.urlopen(req, timeout=180) as response:
+    with OPENER.open(req, timeout=180) as response:
         payload = response.read()
         if response.headers.get_content_type() == "application/json":
             return response.status, json.loads(payload)
@@ -43,6 +49,18 @@ def main() -> int:
     assert status_code == 200 and status["ready"] is True
     assert status["runtime"] == "NVIDIA GB10"
     print("PASS runtime: Nemotron 3 Nano NVFP4 on NVIDIA GB10")
+
+    if ACCESS_KEY:
+        auth_body = urllib.parse.urlencode({"access_code": ACCESS_KEY}).encode()
+        auth_request = urllib.request.Request(
+            f"{BASE}/auth",
+            data=auth_body,
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+        )
+        with OPENER.open(auth_request, timeout=30) as response:
+            assert response.status == 200
+            assert response.geturl().rstrip("/") == BASE.rstrip("/")
+        print("PASS shared access: signed session cookie accepted")
 
     _, recovery_context = request("/api/context/self-jai")
     assert recovery_context["synthetic_demo_data"] is True

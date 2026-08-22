@@ -75,7 +75,7 @@ services:
       start_period: 120s
 
   digital-twin:
-    image: anchor-nvidia-gb10:latest
+    image: ${ANCHOR_APP_IMAGE:-anchor-nvidia-gb10:latest}
     build:
       context: app
       dockerfile: Dockerfile.csm-cuda

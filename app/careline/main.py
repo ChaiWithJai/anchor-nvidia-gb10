@@ -1,15 +1,18 @@
 """CareLine API + demo UI server."""
 
+import asyncio
 import hashlib
 import hmac
+import json
 import os
+import time
 from urllib.parse import parse_qs
 
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse, Response
+from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse, Response, StreamingResponse
 from pydantic import BaseModel, Field
 
-from . import agent_wake, context, llm, memory, store, tts
+from . import agent_wake, context, llm, memory, store, telemetry, tts
 from .agent import CallSession
 
 from contextlib import asynccontextmanager
@@ -28,7 +31,7 @@ async def lifespan(app):
     VOICE_READY = False
 
 
-app = FastAPI(title="Anchor NVIDIA GB10", version="2.0.0", lifespan=lifespan)
+app = FastAPI(title="Anchor NVIDIA GB10", version="2.1.0", lifespan=lifespan)
 
 SESSIONS: dict[str, CallSession] = {}
 WEB_DIR = os.path.join(os.path.dirname(__file__), "..", "web")
@@ -80,12 +83,19 @@ class Turn(BaseModel):
 
 class AmbientSignal(BaseModel):
     resident_id: str
+    goal_id: str | None = Field(default=None, max_length=80)
     type: str
     label: str
     value: int | float | str
     baseline: int | float | str
     unit: str = ""
     status: str
+
+
+class GoalObservation(BaseModel):
+    status: str = Field(min_length=3, max_length=12)
+    value: int | float | str
+    source: str = Field(default="clinician-console", min_length=2, max_length=40)
 
 class PatientUpdate(BaseModel):
 
@@ -108,8 +118,15 @@ class CarePlanUpdate(BaseModel):
 
 
 class AlertResolution(BaseModel):
+    clinician_id: str = Field(default="clinician-maya", min_length=2, max_length=80)
     resolved_by: str = Field(default="Dr. Maya Chen", min_length=2, max_length=80)
     note: str = Field(min_length=2, max_length=300)
+
+
+class GoalClientHeartbeat(BaseModel):
+    client_id: str = Field(min_length=8, max_length=80, pattern=r"^[A-Za-z0-9-]+$")
+    surface: str = Field(min_length=1, max_length=40)
+    connected: bool = True
 
 
 def _validate_plan(body: CarePlanUpdate) -> None:
@@ -128,7 +145,7 @@ async def require_demo_access(request: Request, call_next):
     supplied = request.cookies.get(ACCESS_COOKIE, "")
     if hmac.compare_digest(supplied, _access_cookie_value()):
         return await call_next(request)
-    if request.method == "GET" and request.url.path in {"/", "/patient"}:
+    if request.method == "GET" and request.url.path in {"/", "/patient", "/goal"}:
         return _login_page()
     return Response(
         "Authentication required",
@@ -136,6 +153,20 @@ async def require_demo_access(request: Request, call_next):
         media_type="text/plain",
         headers={"Cache-Control": "no-store, max-age=0"},
     )
+
+
+@app.middleware("http")
+async def record_live_request(request: Request, call_next):
+    started = time.monotonic()
+    try:
+        response = await call_next(request)
+    except Exception:
+        telemetry.request_finished(request.url.path, 500, (time.monotonic() - started) * 1000)
+        raise
+    telemetry.request_finished(
+        request.url.path, response.status_code, (time.monotonic() - started) * 1000
+    )
+    return response
 
 
 @app.post("/auth")
@@ -182,6 +213,58 @@ async def patient_experience():
 
 
 
+@app.get("/goal")
+async def goal_operations():
+    return FileResponse(
+        os.path.join(WEB_DIR, "goal.html"),
+        headers={"Cache-Control": "no-store, max-age=0"},
+    )
+
+
+@app.get("/goal-client.js")
+async def goal_client_script():
+    return FileResponse(
+        os.path.join(WEB_DIR, "goal-client.js"),
+        media_type="text/javascript",
+        headers={"Cache-Control": "no-store, max-age=0"},
+    )
+
+
+@app.post("/api/goal/heartbeat")
+async def goal_heartbeat(body: GoalClientHeartbeat, request: Request):
+    telemetry.heartbeat(
+        body.client_id,
+        body.surface,
+        request.client.host if request.client else None,
+        request.headers.get("user-agent", ""),
+        body.connected,
+    )
+    return {"accepted": True}
+
+
+@app.get("/api/goal/snapshot")
+def goal_snapshot():
+    return telemetry.snapshot()
+
+
+@app.get("/api/goal/events")
+async def goal_events(request: Request):
+    async def stream():
+        while not await request.is_disconnected():
+            snapshot = await asyncio.to_thread(telemetry.snapshot)
+            yield f"data: {json.dumps(snapshot, separators=(',', ':'))}\n\n"
+            await asyncio.sleep(1)
+
+    return StreamingResponse(
+        stream(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-store, no-cache, must-revalidate",
+            "X-Accel-Buffering": "no",
+        },
+    )
+
+
 @app.get("/api/status")
 async def status():
     nemotron_ready = await llm.ready()
@@ -209,6 +292,29 @@ async def recovery_context(resident_id: str):
 async def record_ambient_signal(body: AmbientSignal):
     signals = context.set_signal(body.resident_id, body.model_dump(exclude={"resident_id"}))
     return {"signals": signals, "synthetic_demo_data": True}
+
+
+@app.get("/api/reference-library")
+async def reference_library():
+    return {
+        "references": store.reference_library(),
+        "synthetic_demo_data": True,
+    }
+
+
+@app.post("/api/clinic/patients/{patient_id}/goals/{goal_id}/observations")
+async def observe_goal(patient_id: str, goal_id: str, body: GoalObservation):
+    if body.status not in {"met", "missed"}:
+        raise HTTPException(400, "goal status must be met or missed")
+    observation = store.record_goal_observation(
+        patient_id, goal_id, body.status, body.value, body.source
+    )
+    if not observation:
+        raise HTTPException(404, "active goal not found")
+    return {
+        "observation": observation,
+        "patterns": store.goal_miss_patterns(patient_id),
+    }
 
 
 # Pre-opened sessions keyed by resident: the UI calls /api/calls/prepare on
@@ -316,7 +422,9 @@ async def update_clinic_plan(patient_id: str, body: CarePlanUpdate):
 
 @app.post("/api/clinic/alerts/{alert_id}/resolve")
 async def resolve_clinic_alert(alert_id: str, body: AlertResolution):
-    alert = store.resolve_alert(alert_id, body.resolved_by, body.note)
+    alert = store.resolve_alert(
+        alert_id, body.resolved_by, body.note, body.clinician_id
+    )
     if not alert:
         raise HTTPException(404, "open alert not found")
     return alert

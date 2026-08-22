@@ -21,7 +21,7 @@
 <body>
 <header class="topbar">
   <div class="brand"><div class="mark">A</div><div><strong>Anchor Clinic</strong><small>Recovery care operations</small></div></div>
-  <div class="runtime"><i id="runtimeDot"></i><span id="runtimeText">Checking local stack</span><a class="patient-link" href="/patient">Open patient call</a></div>
+  <div class="runtime"><i id="runtimeDot"></i><span id="runtimeText">Checking local stack</span><a class="patient-link" href="/goal">Live GB10</a><a class="patient-link" href="/patient">Open patient call</a></div>
 </header>
 <div class="shell">
   <nav class="nav" aria-label="Clinic navigation">
@@ -70,5 +70,6 @@ async function savePlan(){const state=document.querySelector(".save-state");stat
 async function resolveAlert(id){await api(`/api/clinic/alerts/${id}/resolve`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({resolved_by:"Dr. Maya Chen",note:"Reviewed in Anchor Clinic demo"})});await refreshData()}
 $("alertsNav").onclick=()=>{selectedId=patients.find(item=>(item.alerts||[]).some(alert=>alert.status==="open"))?.patient_id||selectedId;activeTab="overview";renderRoster();renderDetail()};$("activityNav").onclick=()=>{activeTab="audit";renderDetail()};refreshData();setInterval(()=>refreshData(true),15000);
 </script>
+<script src="/goal-client.js"></script>
 </body>
 </html>

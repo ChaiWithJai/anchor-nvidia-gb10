@@ -1,5 +1,5 @@
 name: anchor-nvidia-gb10
-version: 2.0.0
+version: 2.1.0
 status: hackathon-poc
 hardware:
   platform: NVIDIA GB10
@@ -10,9 +10,11 @@ models:
 interfaces:
   clinician: /
   patient: /patient
+  operations: /goal
   input: browser-speech-or-text
   output: cuda-cloned-wav
   system_of_record: mongodb-8
+  live_telemetry: nvidia-smi-and-in-process-events
 agent_stack:
   components:
     - openclaw-2026.5.27

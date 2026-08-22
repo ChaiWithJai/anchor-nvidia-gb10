@@ -2,6 +2,7 @@
 
 from .store import (
     end_call,
+    goal_miss_patterns,
     list_alerts,
     recall,
     recent_calls,
@@ -13,6 +14,7 @@ from .store import (
 
 __all__ = [
     "end_call",
+    "goal_miss_patterns",
     "list_alerts",
     "recall",
     "recent_calls",

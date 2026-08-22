@@ -24,6 +24,17 @@
   transcripts, alerts, resolution controls, and audit activity.
 - `/patient` is the focused phone surface: consent, ring, answer, voice/text
   turns, cloned playback, escalation disclosure, and hangup.
+- `/goal` is the live GB10 control room: masked browser connections, one-second
+  NVIDIA telemetry, active Nemotron and CSM work, request counts, and latency.
+
+## Persisted clinical graph
+
+MongoDB stores two-clinician care teams, conditions, goals and timestamped goal
+observations, an active care plan plus immutable revisions, calls, voice
+analyses, risk tiers, memories, alerts, and audit events. The clinician-reviewed
+reference library is ID-addressable. Relevant Tier 1 entries can be surfaced in
+conversation, while repeated misses inside a goal's tracking window create one
+deduplicated Tier 2 pattern alert. See `DATA-MODEL.md` for the ERD.
 
 ## Runtime boundaries
 

@@ -201,7 +201,7 @@
     <div class="brand-mark">A</div>
     <div><strong>Anchor</strong><span>Private future-self check-in</span></div>
   </div>
-  <div class="runtime-status"><i id="runtimeDot" class="status-dot"></i><span id="runtimeText">Checking runtime</span><a class="clinic-link" href="/">Clinic console</a></div>
+  <div class="runtime-status"><i id="runtimeDot" class="status-dot"></i><span id="runtimeText">Checking runtime</span><a class="clinic-link" href="/goal">Live GB10</a><a class="clinic-link" href="/">Clinic console</a></div>
 </header>
 <main class="layout">
   <aside>
@@ -498,5 +498,6 @@ $("micButton").onclick = startRecognition;
 $("endButton").onclick = endCall;
 checkRuntime(); refreshMemory(); refreshContext(); setInterval(checkRuntime, 15000);
 </script>
+<script src="/goal-client.js"></script>
 </body>
 </html>

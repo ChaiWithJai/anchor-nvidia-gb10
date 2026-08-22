@@ -31,6 +31,10 @@ clinician-authored options rather than improvised advice.
 
 OpenClaw never contacts a patient or changes a care plan autonomously.
 
+The canonical component, trust-boundary, data-flow, and failure-mode overview
+is [SYSTEM-ARCHITECTURE.md](SYSTEM-ARCHITECTURE.md). It also defines the
+`/goal` telemetry path and the Agent's Last Exam used to validate the design.
+
 The base workload runs fail-closed without a hook. [OPENSHLL.md](OPENSHLL.md)
 documents the validated optional OpenShell + OpenClaw handoff and its private
 network boundary.

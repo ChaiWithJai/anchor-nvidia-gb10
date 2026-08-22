@@ -1,0 +1,19 @@
+name: anchor-nvidia-gb10
+version: 1.0.0
+status: hackathon-poc
+hardware:
+  platform: NVIDIA GB10
+  architecture: arm64
+models:
+  conversation: nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4
+  cloned_voice: sesame/csm-1b
+interfaces:
+  input: browser-speech-or-text
+  output: cuda-cloned-wav
+  memory: sqlite
+privacy:
+  inference: local
+  voice_reference: read-only-external-mount
+  consent_required: true
+verification:
+  command: python3 scripts/verify-nvidia.py

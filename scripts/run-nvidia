@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+: "${HACKATHON_BUNDLE:?Set HACKATHON_BUNDLE to the mounted T7 hackathon bundle}"
+
+root="$(cd "$(dirname "$0")/.." && pwd)"
+export NVIDIA_VLLM_IMAGE="${NVIDIA_VLLM_IMAGE:-nvcr.io/nvidia/vllm:26.05.post1-py3}"
+export NEMOTRON_MODEL_DIR="${NEMOTRON_MODEL_DIR:-$HACKATHON_BUNDLE/models/nemotron/NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4}"
+export CARELINE_CSM_MODEL_DIR="${CARELINE_CSM_MODEL_DIR:-$HACKATHON_BUNDLE/models/voice-clone/sesame-csm-1b}"
+export CARELINE_CSM_WHEELHOUSE="${CARELINE_CSM_WHEELHOUSE:-$HACKATHON_BUNDLE/installers/python/csm-cuda-py312-aarch64}"
+export CARELINE_SELF_REF_AUDIO="${CARELINE_SELF_REF_AUDIO:-$HACKATHON_BUNDLE/private/voice/self_ref_5s.wav}"
+export CARELINE_SELF_REF_TEXT="${CARELINE_SELF_REF_TEXT:-$HACKATHON_BUNDLE/private/voice/self_ref.txt}"
+export CARELINE_PORT="${CARELINE_PORT:-8100}"
+
+test "$(uname -m)" = "aarch64" || { printf 'NVIDIA GB10 ARM64 host required.\n' >&2; exit 1; }
+for command_name in docker nvidia-smi curl python3; do
+  command -v "$command_name" >/dev/null || { printf 'Missing command: %s\n' "$command_name" >&2; exit 1; }
+done
+nvidia-smi >/dev/null
+for required in \
+  "$NEMOTRON_MODEL_DIR/model.safetensors.index.json" \
+  "$NEMOTRON_MODEL_DIR/model-00001-of-00005.safetensors" \
+  "$NEMOTRON_MODEL_DIR/model-00005-of-00005.safetensors" \
+  "$CARELINE_CSM_MODEL_DIR/config.json" \
+  "$CARELINE_CSM_MODEL_DIR/transformers.safetensors.index.json" \
+  "$CARELINE_CSM_WHEELHOUSE/transformers-5.2.0-py3-none-any.whl" \
+  "$CARELINE_SELF_REF_AUDIO" \
+  "$CARELINE_SELF_REF_TEXT"; do
+  test -s "$required" || { printf 'Missing required artifact: %s\n' "$required" >&2; exit 1; }
+done
+
+cd "$root"
+docker compose -f compose.nvidia.yml up -d --build
+
+base_url="http://127.0.0.1:$CARELINE_PORT"
+ready=0
+for _ in {1..180}; do
+  if curl --fail --silent "$base_url/api/status" | grep -q '"ready":true'; then
+    ready=1
+    break
+  fi
+  sleep 5
+done
+test "$ready" = "1" || { docker compose -f compose.nvidia.yml logs --tail 150; exit 1; }
+
+CARELINE_BASE_URL="$base_url" python3 scripts/verify-nvidia.py
+printf 'Anchor NVIDIA GB10 ready: %s/\n' "$base_url"

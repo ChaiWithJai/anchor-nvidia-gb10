@@ -1,0 +1,22 @@
+FROM nvcr.io/nvidia/pytorch:26.05-py3@sha256:222d8b18e671be5c3ef91cb41727a2572a0b23f59ded6c39f373a96946f6f2ba
+
+WORKDIR /app
+
+COPY --from=csm_wheels . /wheelhouse
+
+# Keep NVIDIA's GB10 CUDA-enabled torch and torchaudio. Native Transformers
+# support means the Sesame checkpoint needs no Apple MLX conversion on GB10.
+# The wheelhouse intentionally excludes the PyPI CPU torch wheel. NVIDIA's
+# image uses Python 3.12 and supplies its own CUDA 13.2 PyTorch build.
+RUN PIP_CONSTRAINT=/dev/null pip install --no-cache-dir --no-index \
+      --find-links=/wheelhouse \
+      'fastapi>=0.115' 'uvicorn>=0.30' 'httpx>=0.27' \
+      transformers==5.2.0 accelerate safetensors sentencepiece soundfile \
+    && python -c 'import torch, transformers, soundfile; from transformers import CsmForConditionalGeneration; assert torch.version.cuda; print(torch.__version__, torch.version.cuda, transformers.__version__)' \
+    && rm -rf /wheelhouse
+
+COPY careline ./careline
+COPY web ./web
+
+EXPOSE 8100
+CMD ["uvicorn", "careline.main:app", "--host", "0.0.0.0", "--port", "8100"]

@@ -1,0 +1,8 @@
+id: openai
+display_name: OpenAI-compatible gateway route
+description: Endpointless profile for credentials consumed by the OpenShell inference gateway
+category: inference
+credentials: []
+endpoints: []
+binaries: []
+inference_capable: true

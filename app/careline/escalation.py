@@ -5,7 +5,7 @@ import re
 
 import httpx
 
-from . import memory
+from . import agent_wake, memory
 
 CRISIS_TERMS = (
     "kill myself",
@@ -74,6 +74,9 @@ async def check_and_alert(
         "severity": severity,
         "destination": "on-call clinician",
     }
+    delivery = await agent_wake.notify(alert)
+    memory.set_alert_delivery(alert_id, delivery)
+    alert["agent_delivery"] = delivery
     if WEBHOOK_URL:
         try:
             async with httpx.AsyncClient(timeout=10) as client:

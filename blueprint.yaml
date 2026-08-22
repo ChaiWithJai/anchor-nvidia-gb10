@@ -14,8 +14,15 @@ interfaces:
   output: cuda-cloned-wav
   system_of_record: mongodb-8
 agent_stack:
-  - openclaw-2026.7.1
-  - nvidia-openshell-0.0.106
+  components:
+    - openclaw-2026.5.27
+    - nvidia-openshell-0.0.106
+  escalation_hook: /hooks/wake
+  delivery_audit: mongodb
+  autonomous_patient_contact: false
+  default: fail-closed-disabled
+  inference_route: forced-local-nemotron
+  hosted_nemoclaw_plugin: disabled
 privacy:
   inference: local
   voice_reference: read-only-external-mount

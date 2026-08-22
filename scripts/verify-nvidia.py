@@ -52,6 +52,8 @@ def main() -> int:
     assert status["database"]["engine"] == "MongoDB"
     assert status["database"]["version"].startswith("8.")
     print(f"PASS local stack: Nemotron + CSM + MongoDB {status['database']['version']} on NVIDIA GB10")
+    assert status["agent_runtime"]["name"] == "OpenClaw in NVIDIA OpenShell"
+    agent_configured = status["agent_runtime"]["configured"]
 
     if ACCESS_KEY:
         auth_body = urllib.parse.urlencode({"access_code": ACCESS_KEY}).encode()
@@ -151,10 +153,18 @@ def main() -> int:
     reply = turn["reply"].strip()
     assert reply and len(reply) < 500
     assert len(reply.split()) <= 65
+    notification_claims = ("clinician has been notified", "notifying the on-call")
+    assert not any(claim in reply.lower() for claim in notification_claims)
+    assert "review" in reply.lower() or "flagged" in reply.lower()
     assert turn["alert"] and turn["alert"]["destination"] == "on-call clinician"
     assert turn["alert"]["severity"] in {"medium", "high", "critical"}
     print(f"PASS clinician escalation ({turn['alert']['severity']}): {reply}")
     assert turn["alert"]["alert_id"]
+    expected_delivery = "delivered" if agent_configured else "not-configured"
+    assert turn["alert"]["agent_delivery"]["status"] == expected_delivery
+    print(
+        f"PASS agent handoff: OpenClaw delivery is {expected_delivery}"
+    )
 
     _, reply_wav = request(
         "/api/tts",
@@ -176,7 +186,10 @@ def main() -> int:
     assert next_end["summary"].strip()
     print("PASS next call: persisted memory supplied to Nemotron")
     _, alerts = request("/api/alerts")
-    assert any(alert["patient_id"] == resident_id for alert in alerts["alerts"])
+    persisted_alert = next(
+        alert for alert in alerts["alerts"] if alert["patient_id"] == resident_id
+    )
+    assert persisted_alert["agent_delivery"]["status"] == expected_delivery
     print("PASS MongoDB evidence: transcript, memories, call record, alert, and audit event")
     print("Anchor clinic + patient NVIDIA GB10 workload passed end to end")
     return 0

@@ -203,6 +203,17 @@ def save_alert(patient_id: str, call_id: str, reason: str, severity: str) -> str
     audit("alert.created", "anchor-agent", patient_id, f"{severity}: {reason}")
     return str(result.inserted_id)
 
+def set_alert_delivery(alert_id: str, delivery: dict) -> None:
+    try:
+        object_id = ObjectId(alert_id)
+    except Exception:
+        return
+    _db().alerts.update_one(
+        {"_id": object_id},
+        {"$set": {"agent_delivery": delivery, "updated_at": now()}},
+    )
+
+
 
 def list_alerts(limit: int = 20, status: str | None = None) -> list[dict]:
     rows = _db().alerts.find({"status": status} if status else {}).sort("created_at", DESCENDING).limit(limit)

@@ -9,7 +9,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse, Response
 from pydantic import BaseModel, Field
 
-from . import context, llm, memory, store, tts
+from . import agent_wake, context, llm, memory, store, tts
 from .agent import CallSession
 
 from contextlib import asynccontextmanager
@@ -193,6 +193,7 @@ async def status():
         "voice": "Sesame CSM-1B CUDA",
         "nemotron_ready": nemotron_ready,
         "voice_ready": VOICE_READY,
+        "agent_runtime": agent_wake.status(),
         "database_ready": database["ready"],
         "database": database,
         "shared_access": bool(ACCESS_KEY),

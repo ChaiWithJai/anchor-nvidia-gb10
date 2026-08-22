@@ -97,6 +97,12 @@ class GoalObservation(BaseModel):
     value: int | float | str
     source: str = Field(default="clinician-console", min_length=2, max_length=40)
 
+
+class ClinicalNoteCreate(BaseModel):
+    title: str = Field(min_length=2, max_length=120)
+    body: str = Field(min_length=2, max_length=2000)
+    author: str = Field(default="Dr. Maya Chen", min_length=2, max_length=80)
+
 class PatientUpdate(BaseModel):
 
     display_name: str | None = Field(default=None, max_length=80)
@@ -391,8 +397,18 @@ async def clinic_dashboard():
 
 
 @app.get("/api/clinic/patients")
-async def clinic_patients():
-    return {"patients": store.list_patients(), "synthetic_demo_data": True}
+async def clinic_patients(
+    tier: str | None = None,
+    needs_action: bool = False,
+    overdue: bool = False,
+    clinician_id: str | None = None,
+    search: str | None = None,
+):
+    return {
+        "patients": store.list_patients(tier, needs_action, overdue, clinician_id, search),
+        "queue": store.queue_metadata(),
+        "synthetic_demo_data": True,
+    }
 
 
 @app.get("/api/clinic/patients/{patient_id}")
@@ -418,6 +434,19 @@ async def update_clinic_plan(patient_id: str, body: CarePlanUpdate):
     if not plan:
         raise HTTPException(404, "unknown clinic patient")
     return plan
+
+
+@app.post("/api/clinic/patients/{patient_id}/notes")
+async def create_clinical_note(patient_id: str, body: ClinicalNoteCreate):
+    note = store.add_note(patient_id, body.title, body.body, body.author)
+    if not note:
+        raise HTTPException(404, "unknown clinic patient")
+    return note
+
+
+@app.post("/api/clinic/demo/reset")
+async def reset_clinic_demo():
+    return store.reset_demo_data()
 
 
 @app.post("/api/clinic/alerts/{alert_id}/resolve")

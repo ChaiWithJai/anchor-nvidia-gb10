@@ -9,7 +9,7 @@ from pymongo import ASCENDING, DESCENDING, MongoClient, ReturnDocument
 from pymongo.database import Database
 from pymongo.errors import PyMongoError
 
-from . import clinical_model
+from . import clinical_model, fixtures
 
 
 MONGO_URI = os.environ.get(
@@ -71,6 +71,11 @@ DEMO_PATIENTS = [
     },
 ]
 
+# The original three records remain above as migration context. The active
+# fixture is generated from one versioned, validated population contract.
+DEMO_PATIENTS = fixtures.build_patients(fixtures.dataset_anchor())
+fixtures.validate_population(DEMO_PATIENTS)
+
 
 def now() -> datetime:
     return datetime.now(timezone.utc)
@@ -98,7 +103,7 @@ def _public(value: Any) -> Any:
     return value
 
 
-def initialize() -> None:
+def initialize(force_reseed: bool = False) -> None:
     db = _db()
     db.command("ping")
     db.patients.create_index("patient_id", unique=True)
@@ -112,12 +117,44 @@ def initialize() -> None:
     db.signals.create_index([("patient_id", ASCENDING), ("type", ASCENDING)], unique=True)
     db.audit_events.create_index([("created_at", DESCENDING)])
     db.audit_events.create_index("event_key", unique=True, sparse=True)
+    db.fixture_metadata.create_index("dataset_version", unique=True)
 
-    timestamp = now()
-    for patient in DEMO_PATIENTS:
+    current_fixture = db.fixture_metadata.find_one({"active": True})
+    reseed = force_reseed or not current_fixture or current_fixture.get("dataset_version") != fixtures.DATASET_VERSION
+    timestamp = fixtures.dataset_anchor(now()) if reseed else current_fixture["anchor_at"]
+    patients = fixtures.build_patients(timestamp)
+    fixtures.validate_population(patients)
+    patient_ids = [patient["patient_id"] for patient in patients]
+    if reseed:
+        for collection_name in (
+            "patients",
+            "conditions",
+            "care_plans",
+            "care_plan_revisions",
+            "goals",
+            "goal_observations",
+            "signals",
+            "calls",
+            "memories",
+            "alerts",
+            "voice_analyses",
+            "clinical_notes",
+            "labs",
+        ):
+            db[collection_name].delete_many(
+                {"patient_id": {"$in": patient_ids}, "synthetic_demo_data": True}
+            )
+        db.patients.update_many(
+            {"synthetic_demo_data": True, "visible_in_clinic": True, "patient_id": {"$nin": patient_ids}},
+            {"$set": {"visible_in_clinic": False, "updated_at": timestamp}},
+        )
+    for patient in patients:
+        update = {"$setOnInsert": {**patient, "created_at": timestamp}, "$set": {"updated_at": timestamp}}
+        if reseed:
+            update["$set"] = {**patient, "updated_at": timestamp}
         db.patients.update_one(
             {"patient_id": patient["patient_id"]},
-            {"$setOnInsert": {**patient, "created_at": timestamp}, "$set": {"updated_at": timestamp}},
+            update,
             upsert=True,
         )
     db.clinicians.update_one(
@@ -133,20 +170,44 @@ def initialize() -> None:
     clinical_model.initialize(
         db,
         timestamp,
-        DEMO_PATIENTS,
+        patients,
         DEMO_PLAN,
     )
-    for signal in DEMO_SIGNALS:
+    for patient in patients:
+        tier_id = patient["risk_tier_id"]
+        goal_id = fixtures.goal_for(patient, patient_ids.index(patient["patient_id"]))["goal_id"]
+        signal = {
+            "type": "engagement",
+            "label": "Recovery-plan engagement",
+            "value": "missed" if tier_id in {"tier-2", "tier-3"} else "changed" if tier_id == "tier-1" else "expected",
+            "baseline": "expected",
+            "unit": "",
+            "status": "missed" if tier_id in {"tier-2", "tier-3"} else "below-baseline" if tier_id == "tier-1" else "normal",
+            "goal_id": goal_id,
+            "synthetic_demo_data": True,
+            "dataset_version": fixtures.DATASET_VERSION,
+        }
         db.signals.update_one(
-            {"patient_id": "demo-jai", "type": signal["type"]},
-            {"$setOnInsert": {**signal, "patient_id": "demo-jai", "created_at": timestamp}, "$set": {"updated_at": timestamp}},
+            {"patient_id": patient["patient_id"], "type": signal["type"]},
+            {"$setOnInsert": {**signal, "patient_id": patient["patient_id"], "created_at": timestamp}, "$set": {"updated_at": timestamp}},
             upsert=True,
         )
-    db.audit_events.update_one(
-        {"event_key": "seed:clinic-demo-v1"},
-        {"$setOnInsert": {"event_key": "seed:clinic-demo-v1", "action": "clinic.demo_seeded", "actor": "system", "patient_id": None, "detail": "Synthetic clinic fixtures initialized", "created_at": timestamp, "synthetic_demo_data": True}},
+    db.fixture_metadata.update_many({"active": True}, {"$set": {"active": False}})
+    db.fixture_metadata.update_one(
+        {"dataset_version": fixtures.DATASET_VERSION},
+        {"$set": {"dataset_version": fixtures.DATASET_VERSION, "anchor_at": timestamp, "active": True, "patient_count": len(patients), "updated_at": now()}, "$setOnInsert": {"created_at": now()}},
         upsert=True,
     )
+    db.audit_events.update_one(
+        {"event_key": f"seed:{fixtures.DATASET_VERSION}"},
+        {"$setOnInsert": {"event_key": f"seed:{fixtures.DATASET_VERSION}", "action": "clinic.demo_seeded", "actor": "system", "patient_id": None, "detail": f"{fixtures.DATASET_VERSION}: 30 synthetic patients", "created_at": timestamp, "synthetic_demo_data": True}},
+        upsert=True,
+    )
+
+
+def reset_demo_data() -> dict:
+    initialize(force_reseed=True)
+    return {"dataset_version": fixtures.DATASET_VERSION, "patient_count": 30, "reset_at": now().isoformat()}
 
 
 def health() -> dict:
@@ -265,6 +326,14 @@ def resolve_alert(
         clinical_model.resolve_voice_analysis(
             _db(), alert["call_id"], clinician_id, note
         )
+        remaining = _db().alerts.count_documents(
+            {"patient_id": alert["patient_id"], "status": "open"}
+        )
+        if remaining == 0:
+            _db().patients.update_one(
+                {"patient_id": alert["patient_id"]},
+                {"$set": {"risk_tier_id": "tier-1", "risk_priority": 3, "risk_label": "Watch", "risk_band": "watch", "risk_reason": "Escalation reviewed; monitor next check-in", "next_action": "Review at next team huddle", "unreviewed": False, "overdue": False, "tier_updated_at": now(), "updated_at": now()}},
+            )
         audit("alert.resolved", actor, alert["patient_id"], note)
     return _public(alert) if alert else None
 
@@ -332,9 +401,52 @@ def _patient_view(patient: dict) -> dict:
     return result
 
 
-def list_patients() -> list[dict]:
-    rows = _db().patients.find({"visible_in_clinic": True}).sort("display_name", ASCENDING)
+def list_patients(
+    tier: str | None = None,
+    needs_action: bool = False,
+    overdue: bool = False,
+    clinician_id: str | None = None,
+    search: str | None = None,
+) -> list[dict]:
+    query: dict = {"visible_in_clinic": True}
+    if tier:
+        query["risk_tier_id"] = tier
+    if needs_action:
+        query["risk_priority"] = {"$lte": 3}
+    if overdue:
+        query["overdue"] = True
+    if clinician_id:
+        query["clinician_id"] = clinician_id
+    if search:
+        query["$or"] = [
+            {"display_name": {"$regex": search, "$options": "i"}},
+            {"program": {"$regex": search, "$options": "i"}},
+        ]
+    rows = _db().patients.find(query).sort(
+        [("risk_priority", ASCENDING), ("overdue", DESCENDING), ("action_due_at", ASCENDING), ("display_name", ASCENDING)]
+    )
     return [_patient_view(row) for row in rows]
+
+
+def queue_metadata() -> dict:
+    db = _db()
+    base = {"visible_in_clinic": True}
+    tiers = {
+        item["risk_tier_id"]: {
+            **_public(item),
+            "count": db.patients.count_documents({**base, "risk_tier_id": item["risk_tier_id"]}),
+        }
+        for item in db.voice_risk_tiers.find().sort("priority", ASCENDING)
+    }
+    return {
+        "tiers": list(tiers.values()),
+        "counts": {
+            "all": db.patients.count_documents(base),
+            "needs_action": db.patients.count_documents({**base, "risk_priority": {"$lte": 3}}),
+            "unreviewed": db.patients.count_documents({**base, "unreviewed": True}),
+            "overdue": db.patients.count_documents({**base, "overdue": True}),
+        },
+    }
 
 
 def get_patient(patient_id: str) -> dict | None:
@@ -343,7 +455,7 @@ def get_patient(patient_id: str) -> dict | None:
 
 
 def update_patient(patient_id: str, updates: dict, actor: str) -> dict | None:
-    allowed = {"display_name", "age_band", "program", "status", "risk_band", "next_check_in", "clinician_name"}
+    allowed = {"display_name", "age_band", "program", "status", "next_check_in", "clinician_name"}
     payload = {key: value for key, value in updates.items() if key in allowed and value is not None}
     if not payload:
         return get_patient(patient_id)
@@ -378,10 +490,32 @@ def clinic_dashboard() -> dict:
         "active_patients": db.patients.count_documents({"visible_in_clinic": True, "status": "active"}),
         "check_ins_today": db.calls.count_documents({"patient_id": {"$in": patient_ids}, "started_at": {"$gte": today}}),
         "open_alerts": db.alerts.count_documents({"patient_id": {"$in": patient_ids}, "status": "open"}),
+        "immediate": db.patients.count_documents({"visible_in_clinic": True, "risk_tier_id": "tier-3"}),
+        "elevated": db.patients.count_documents({"visible_in_clinic": True, "risk_tier_id": "tier-2"}),
+        "overdue": db.patients.count_documents({"visible_in_clinic": True, "overdue": True}),
         "plans_under_clinician_control": db.care_plans.count_documents({"patient_id": {"$in": patient_ids}}),
+        "dataset_version": fixtures.DATASET_VERSION,
         "database": health(), "synthetic_demo_data": True,
     }
 
 
 def recent_activity(limit: int = 30) -> list[dict]:
     return [_public(row) for row in _db().audit_events.find().sort("created_at", DESCENDING).limit(limit)]
+
+
+def add_note(patient_id: str, title: str, body: str, author: str) -> dict | None:
+    if not _db().patients.find_one({"patient_id": patient_id, "visible_in_clinic": True}):
+        return None
+    note = {
+        "note_id": f"note-{patient_id}-{ObjectId()}",
+        "patient_id": patient_id,
+        "title": title,
+        "body": body,
+        "author": author,
+        "source": "Clinician-authored canonical note",
+        "authored_at": now(),
+        "synthetic_demo_data": True,
+    }
+    _db().clinical_notes.insert_one(note)
+    audit("clinical_note.created", author, patient_id, title)
+    return _public(note)

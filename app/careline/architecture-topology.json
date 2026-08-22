@@ -1,0 +1,28 @@
+{
+  "version": "anchor-architecture-2026-08-22",
+  "nodes": [
+    {"node_id": "browser", "label": "Clinician / patient browser", "kind": "surface"},
+    {"node_id": "cloudflare", "label": "Optional Cloudflare transport", "kind": "transport"},
+    {"node_id": "anchor-api", "label": "Anchor FastAPI", "kind": "application"},
+    {"node_id": "mongodb", "label": "MongoDB 8", "kind": "durability"},
+    {"node_id": "nemotron", "label": "Nemotron via NVIDIA vLLM", "kind": "inference"},
+    {"node_id": "sesame-csm", "label": "Sesame CSM", "kind": "inference"},
+    {"node_id": "whisper", "label": "Whisper tiny.en", "kind": "inference"},
+    {"node_id": "openclaw", "label": "OpenClaw in NVIDIA OpenShell", "kind": "sandbox"},
+    {"node_id": "inference-local", "label": "inference.local forced route", "kind": "route"},
+    {"node_id": "gb10", "label": "Dell Pro Max GB10 / CUDA", "kind": "hardware"}
+  ],
+  "edges": [
+    {"edge_id": "browser-anchor", "source": "browser", "target": "anchor-api", "label": "private HTTPS / HTTP"},
+    {"edge_id": "cloudflare-anchor", "source": "cloudflare", "target": "anchor-api", "label": "optional demo transport"},
+    {"edge_id": "anchor-mongodb", "source": "anchor-api", "target": "mongodb", "label": "acknowledged local writes"},
+    {"edge_id": "anchor-nemotron", "source": "anchor-api", "target": "nemotron", "label": "OpenAI-compatible local request"},
+    {"edge_id": "anchor-csm", "source": "anchor-api", "target": "sesame-csm", "label": "local CUDA synthesis"},
+    {"edge_id": "anchor-whisper", "source": "anchor-api", "target": "whisper", "label": "local CUDA transcription"},
+    {"edge_id": "anchor-openclaw", "source": "anchor-api", "target": "openclaw", "label": "bounded local hook"},
+    {"edge_id": "openclaw-route", "source": "openclaw", "target": "inference-local", "label": "forced provider route"},
+    {"edge_id": "nemotron-gb10", "source": "nemotron", "target": "gb10", "label": "CUDA inference"},
+    {"edge_id": "csm-gb10", "source": "sesame-csm", "target": "gb10", "label": "CUDA inference"},
+    {"edge_id": "whisper-gb10", "source": "whisper", "target": "gb10", "label": "CUDA inference"}
+  ]
+}

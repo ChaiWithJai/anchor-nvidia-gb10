@@ -1,0 +1,51 @@
+{
+  "catalog_version": "anchor-bh-2026-08-22",
+  "synthetic_demo_data": true,
+  "references": [
+    {
+      "reference_id": "ref-coping-box-breathing",
+      "category": "coping",
+      "title": "Box breathing",
+      "spoken_copy": "Try four slow rounds: breathe in for four, hold for four, out for four, and hold for four.",
+      "keywords": ["anxious", "panic", "overwhelmed", "sleep", "missed meeting"],
+      "source": "Clinician-reviewed Anchor demonstration content",
+      "review_status": "reviewed"
+    },
+    {
+      "reference_id": "ref-coping-urge-surfing",
+      "category": "coping",
+      "title": "Urge surfing",
+      "spoken_copy": "Notice where the urge sits in your body and watch it rise and fall for ten minutes without acting on it.",
+      "keywords": ["craving", "urge", "use", "relapse"],
+      "source": "Clinician-reviewed Anchor demonstration content",
+      "review_status": "reviewed"
+    },
+    {
+      "reference_id": "ref-psychoed-craving-curve",
+      "category": "psychoeducation",
+      "title": "Craving curve",
+      "spoken_copy": "A craving can change in intensity over time; check the number again after a short coping step.",
+      "keywords": ["craving", "urge", "strong", "intensity"],
+      "source": "Clinician-reviewed Anchor demonstration content",
+      "review_status": "reviewed"
+    },
+    {
+      "reference_id": "ref-crisis-988",
+      "category": "crisis",
+      "title": "988 Suicide & Crisis Lifeline",
+      "spoken_copy": "In the United States, call or text 988 for immediate crisis support; call emergency services for immediate danger.",
+      "keywords": ["suicide", "kill myself", "hurt myself", "cannot stay safe", "crisis"],
+      "source": "https://988lifeline.org/get-help/",
+      "review_status": "reviewed"
+    },
+    {
+      "reference_id": "ref-crisis-ndvh",
+      "category": "crisis",
+      "title": "National Domestic Violence Hotline",
+      "spoken_copy": "If it is safe to do so, call 800-799-7233 or text START to 88788 to reach a live advocate.",
+      "keywords": ["domestic violence", "partner hurt", "abuse", "unsafe at home"],
+      "source": "https://www.thehotline.org/get-help/",
+      "review_status": "reviewed"
+    }
+  ]
+}

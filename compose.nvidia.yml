@@ -95,7 +95,8 @@ services:
       CARELINE_CSM_MODEL_DIR: /models/sesame-csm-1b
       CARELINE_SELF_REF_AUDIO: /run/careline/self_ref.wav
       CARELINE_SELF_REF_TEXT: /run/careline/self_ref.txt
-      CARELINE_STT_BACKEND: browser
+      CARELINE_STT_BACKEND: local-whisper
+      CARELINE_STT_MODEL_DIR: /models/whisper-tiny-en
       CARELINE_TTS_BACKEND: nim
       CARELINE_MONGO_URI: mongodb://anchor:${MONGO_PASSWORD:-anchor-gb10-local-only}@mongodb:27017/anchor?authSource=admin
       CARELINE_MONGO_DB: anchor
@@ -104,6 +105,7 @@ services:
       CARELINE_OPENCLAW_HOOK_TOKEN: ${CARELINE_OPENCLAW_HOOK_TOKEN:-}
     volumes:
       - ${CARELINE_CSM_MODEL_DIR:?Set CARELINE_CSM_MODEL_DIR}:/models/sesame-csm-1b:ro
+      - ${CARELINE_STT_MODEL_DIR:?Set CARELINE_STT_MODEL_DIR}:/models/whisper-tiny-en:ro
       - ${CARELINE_SELF_REF_AUDIO:?Set CARELINE_SELF_REF_AUDIO}:/run/careline/self_ref.wav:ro
       - ${CARELINE_SELF_REF_TEXT:?Set CARELINE_SELF_REF_TEXT}:/run/careline/self_ref.txt:ro
     deploy:

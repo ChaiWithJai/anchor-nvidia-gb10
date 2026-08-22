@@ -16,11 +16,24 @@ check-in.
 - Sesame CSM-1B native Transformers inference on CUDA BF16
 - MongoDB 8 stores patients, plans, signals, calls, memories, alerts, and audit events
 - OpenClaw 2026.5.27 in NVIDIA OpenShell 0.0.106 from the offline T7 bundle
-- Browser SpeechRecognition for microphone input; no cloud inference
+- Whisper tiny.en for microphone transcription on the GB10; no browser or cloud STT
 
 The POC simulates the outbound phone lifecycle in the browser. It deliberately
 does not dial the public telephone network, so no carrier credentials or call
 charges are required for judging.
+
+The clinician console opens on a server-sorted 30-patient action queue using
+canonical Tier 3, Tier 2, Tier 1, and routine states. Search and filters preserve
+the clinical priority order, and each patient panel exposes the chart, notes,
+call history, labs, plan revisions, alerts, and audit history without leaving the
+work surface. The patient surface behaves like a phone call: it requests the
+microphone, detects an utterance boundary, sends a mono PCM WAV to the GB10,
+transcribes it with local Whisper, and speaks the local model response. Raw
+microphone audio is processed in memory and is not stored by Anchor.
+
+Patients may choose one of four deterministic, reference-free CSM catalog voices,
+a consented personalized enrollment, or text only. Catalog generation never uses
+the private personalized reference audio.
 
 Safety alerts are written to MongoDB before any agent handoff. When a local
 OpenClaw hook is configured, Anchor wakes the OpenClaw agent inside NVIDIA
@@ -86,7 +99,7 @@ starts a pinned Cloudflare quick-tunnel container, verifies that private APIs
 reject anonymous requests, and prints the temporary `trycloudflare.com` URL.
 Share the access code separately from the URL. Use synthetic records only.
 
-Nemotron, CSM, deterministic escalation, and MongoDB remain on the GB10. Remote
+Nemotron, CSM, Whisper, deterministic escalation, and MongoDB remain on the GB10. Remote
 HTTP traffic is transported through Cloudflare, so do not describe shared mode
 as network-free or use it with real patient data. Quick tunnels are ephemeral,
 best-effort demo infrastructure, not a clinical deployment boundary.

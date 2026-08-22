@@ -28,6 +28,28 @@ services:
       retries: 20
       start_period: 20s
 
+  mongo-express:
+    image: mongo-express:1.0.2-20@sha256:30fc6333779340217c6a2bc0bc3cd53aa46028ab8fc6caef41bd00bf0faacf53
+    profiles: [inspect]
+    ports:
+      - "127.0.0.1:${MONGO_EXPRESS_PORT:-8081}:8081"
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://anchor:${MONGO_PASSWORD:-anchor-gb10-local-only}@mongodb:27017/?authSource=admin
+      ME_CONFIG_BASICAUTH_ENABLED: "true"
+      ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_EXPRESS_USERNAME:-anchor-inspector}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_EXPRESS_PASSWORD:-anchor-gb10-inspect-local-only}
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,mode=1777
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    restart: unless-stopped
+
 
   nemotron:
     image: ${NVIDIA_VLLM_IMAGE:-nvcr.io/nvidia/vllm:26.05.post1-py3}

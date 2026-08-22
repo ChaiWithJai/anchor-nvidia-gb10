@@ -11,8 +11,15 @@
 
     PYTHONPATH=app python3 tools/evaluate.py eval/holdout.json --llm
 
-Scores the lexicon, Nemotron, and combined separately, and **exits non-zero on
-any tier-3 miss** — usable as a deploy gate.
+Scores the lexicon, Nemotron and combined separately.
+
+Exit codes: `0` every call classified and no at-risk misses · `1` at-risk miss
+or any classifier failure · `2` every classifier call failed, no score possible.
+
+**Failed classifier calls are excluded from the matrices and force a non-zero
+exit.** An earlier version scored a failure as a tier-3 prediction, so a run
+where 11 of 12 calls failed reported perfect tier-3 recall and exited 0. A gate
+that passes while the classifier is broken is worse than no gate.
 
 ## What the numbers say
 

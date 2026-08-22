@@ -13,12 +13,14 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse, Response, StreamingResponse
 from pydantic import BaseModel, Field
 
-from . import agent_wake, context, escalation, llm, memory, store, telemetry, tts
+from . import agent_wake, context, escalation, llm, memory, store, stt, telemetry, tts, voice
 from .agent import CallSession
 
 from contextlib import asynccontextmanager
 
-CLONE_TTS = tts.get_clone_backend()
+# Selectable TTS. CARELINE_TTS_BACKEND defaults to "csm", which delegates to
+# tts.get_clone_backend() -- so the default path is byte-for-byte what it was.
+CLONE_TTS = voice.get_tts_backend()
 VOICE_READY = False
 
 
@@ -311,6 +313,8 @@ async def status():
         "agent_runtime": agent_wake.status(),
         "database_ready": database["ready"],
         "database": database,
+        "stt_backend": stt.BACKEND,
+        "tts_backend": voice.BACKEND,
         "shared_access": bool(ACCESS_KEY),
     }
 
@@ -408,6 +412,32 @@ class EndCall(BaseModel):
     # since a complete tier-1 check-in in our corpus runs as few as 3 turns.
     # When the agent knows its questions went unanswered, send reason="abrupt".
     reason: str = "completed"
+
+
+@app.post("/api/calls/{call_id}/turn/audio")
+async def call_turn_audio(call_id: str, request: Request):
+    """Server-side transcription, then the ordinary turn path.
+
+    This is what makes CARELINE_STT_BACKEND meaningful. The existing text route
+    stays for the browser front end; with backend=local or riva the audio never
+    leaves the box, which the browser SpeechRecognition path cannot promise.
+    """
+    session = SESSIONS.get(call_id)
+    if not session:
+        raise HTTPException(404, "unknown call")
+    audio = await request.body()
+    if not audio:
+        raise HTTPException(400, "empty audio body")
+    try:
+        text = await stt.transcribe(audio)
+    except stt.STTError as exc:
+        raise HTTPException(400, str(exc)) from exc
+    if not text.strip():
+        raise HTTPException(422, "no speech detected")
+    LAST_SEEN[call_id] = time.monotonic()
+    reply, alert = await session.turn(text)
+    return {"transcript": text, "reply": reply, "alert": alert,
+            "concern_score": session.concern_score, "stt_backend": stt.BACKEND}
 
 
 @app.post("/api/calls/{call_id}/end")

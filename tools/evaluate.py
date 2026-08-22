@@ -65,14 +65,17 @@ async def main():
     if a.llm:
         print(f"{DIM}querying {escalation.LLM_MODEL} at {escalation.LLM_BASE_URL}{RST}")
         async def _one(t):
-            tier, why = await escalation.llm_tier(t)
-            return {"tier": tier, "rationale": why, "ok": "unavailable" not in why}
+            tier, why, ok = await escalation.llm_tier(t)
+            return {"tier": tier, "rationale": why, "ok": ok}
         results = await asyncio.gather(*[_one(d["text"]) for d in data])
         llm_res = {d["id"]: r for d, r in zip(data, results)}
         failed = sum(1 for r in llm_res.values() if not r["ok"])
         if failed:
-            print(f"  {COL[3]}warning: {failed}/{len(data)} LLM calls failed "
-                  f"(failed safe to tier 3 — inflates recall, ignore that number){RST}")
+            print(f"  {COL[3]}{failed}/{len(data)} classifier calls FAILED{RST} — "
+                  f"excluded from the matrices below and forcing a non-zero exit")
+            for cid, res in llm_res.items():
+                if not res["ok"]:
+                    print(f"    {DIM}{cid}: {res['rationale']}{RST}")
 
     lex_rows, llm_rows, comb_rows = [], [], []
     print(f"\n{'id':<5}{'true':>5}{'lex':>5}" + (f"{'llm':>5}{'max':>5}" if a.llm else "") + "   note")
@@ -83,20 +86,44 @@ async def main():
         line = f"{d['id']:<5}{d['tier']:>5}{COL[lt]}{lt:>5}{RST}"
         if a.llm:
             r = llm_res[d["id"]]
-            ct = max(lt, r["tier"])
-            llm_rows.append((d["tier"], r["tier"]))
-            comb_rows.append((d["tier"], ct))
-            line += f"{COL[r['tier']]}{r['tier']:>5}{RST}{COL[ct]}{ct:>5}{RST}"
-        miss = "  " + COL[3] + "MISS" + RST if (comb_rows[-1][1] if a.llm else lt) != d["tier"] else ""
+            if not r["ok"]:
+                # A failed classifier is not a prediction. Scoring it as one is
+                # how a broken gate reports perfect recall.
+                line += f"{COL[3]}{'FAIL':>5}{RST}{COL[3]}{'--':>5}{RST}"
+            else:
+                ct = max(lt, r["tier"])
+                llm_rows.append((d["tier"], r["tier"]))
+                comb_rows.append((d["tier"], ct))
+                line += f"{COL[r['tier']]}{r['tier']:>5}{RST}{COL[ct]}{ct:>5}{RST}"
+        ok_row = llm_res.get(d["id"], {}).get("ok", True) if a.llm else True
+        shown = (comb_rows[-1][1] if (a.llm and ok_row and comb_rows) else lt)
+        miss = "  " + COL[3] + "MISS" + RST if (ok_row and shown != d["tier"]) else ""
         print(line + f"   {DIM}{d.get('note','')[:52]}{RST}{miss}")
 
     matrix(lex_rows, "LEXICON ONLY")
     if a.llm:
-        matrix(llm_rows, "NEMOTRON ONLY")
-        acc, t3r, t3n = matrix(comb_rows, "COMBINED  max(lexicon, llm) — escalate-only")
-        print(f"\n{DIM}A tier-3 miss here is an at-risk caller who got no alert. "
-              f"Treat any non-zero count as blocking.{RST}")
-        return 1 if t3r < t3n else 0
+        if not llm_rows:
+            print(f"\n{COL[3]}{BOLD}EVERY classifier call failed. No Nemotron or combined "
+                  f"score can be computed.{RST}")
+            print(f"{DIM}Fix the endpoint or the response parser and re-run.{RST}")
+            return 2
+        matrix(llm_rows, f"NEMOTRON ONLY  ({len(llm_rows)}/{len(data)} calls succeeded)")
+        acc, t3r, t3n = matrix(comb_rows,
+                               f"COMBINED  max(lexicon, llm) — escalate-only  "
+                               f"({len(comb_rows)}/{len(data)} calls succeeded)")
+        print()
+        blocking = []
+        if failed:
+            blocking.append(f"{failed}/{len(data)} classifier calls failed")
+        if t3r < t3n:
+            blocking.append(f"{t3n - t3r} at-risk caller(s) missed")
+        if blocking:
+            print(f"{COL[3]}{BOLD}BLOCKING: {'; '.join(blocking)}{RST}")
+            print(f"{DIM}A gate that passes while the classifier is failing is worse than "
+                  f"no gate. Both conditions must be clean to exit 0.{RST}")
+            return 1
+        print(f"{COL[1]}{BOLD}PASS{RST} — all {len(data)} calls classified, no at-risk misses")
+        return 0
     print(f"\n{DIM}Run with --llm once vLLM is reachable to score the full stack.{RST}")
     return 0
 

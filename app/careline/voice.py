@@ -18,8 +18,10 @@ import asyncio, hashlib, io, logging, os, wave
 
 log = logging.getLogger("careline.voice")
 
-BACKEND      = os.environ.get("CARELINE_TTS_BACKEND", "kokoro")
-FALLBACK     = os.environ.get("CARELINE_TTS_FALLBACK", "kokoro")
+# Default is "csm": the deployed GB10 runs Sesame CSM-1B and the cloned voice
+# is the demo. Defaulting to kokoro here would silently swap the voice on stage.
+BACKEND      = os.environ.get("CARELINE_TTS_BACKEND", "csm")
+FALLBACK     = os.environ.get("CARELINE_TTS_FALLBACK", "csm")
 KOKORO_VOICE = os.environ.get("CARELINE_KOKORO_VOICE", "af_heart")
 KOKORO_LANG  = os.environ.get("CARELINE_KOKORO_LANG", "a")     # 'a' = en-US
 KOKORO_SPEED = float(os.environ.get("CARELINE_KOKORO_SPEED", "1.0"))
@@ -152,10 +154,23 @@ _BACKENDS = {"kokoro": KokoroBackend, "csm": CsmCloneBackend,
 _instance = None
 
 
+# compose.nvidia.yml ships CARELINE_TTS_BACKEND=nim, which predates this module
+# and was never implemented. Treat it -- and anything else unrecognised -- as
+# the CSM path that is actually running, with a loud warning. Raising here would
+# take the whole app down at import time over a config value that has been
+# harmless until now.
+_ALIASES = {"nim": "csm", "": "csm"}
+
+
 def _make(name: str):
-    cls = _BACKENDS.get(name)
+    resolved = _ALIASES.get(name, name)
+    cls = _BACKENDS.get(resolved)
     if cls is None:
-        raise TTSError(f"unknown TTS backend {name!r}; expected one of {sorted(_BACKENDS)}")
+        log.warning("unknown CARELINE_TTS_BACKEND=%r; falling back to csm "
+                    "(expected one of %s)", name, sorted(_BACKENDS))
+        resolved, cls = "csm", CsmCloneBackend
+    elif resolved != name:
+        log.warning("CARELINE_TTS_BACKEND=%r is not implemented; using %r", name, resolved)
     return cls()
 
 

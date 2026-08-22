@@ -209,6 +209,7 @@ DISENGAGEMENT_MIN = int(os.environ.get("ANCHOR_DISENGAGE_MIN", "2"))
 _CRISIS = [(re.compile(p), l) for p, l in CRISIS]
 _CONCERN = [(re.compile(p), l, w) for p, l, w in CONCERN]
 _CALL_CUES: dict[str, set[str]] = {}
+_CALL_DEGRADED: set[str] = set()   # calls that have already raised a classifier fault
 
 # tier -> the running_score the rest of this module already reasons about
 TIER_TO_SCORE = {1: 0, 2: 5, 3: 10}
@@ -288,24 +289,61 @@ def disengagement_cues(text: str) -> list[str]:
     return [p.pattern for p in DISENGAGEMENT if p.search(n)]
 
 
-async def llm_tier(text: str) -> tuple[int, str]:
-    """Nemotron. Fails safe to tier 3 -- never marks a call safe on error."""
-    body = {"model": LLM_MODEL, "temperature": 0, "max_tokens": 200,
+def _message_text(message: dict) -> str:
+    """Pull the assistant text out of a chat completion message.
+
+    vLLM serving Nemotron with --reasoning-parser nemotron_v3 puts the model's
+    output in `reasoning_content` and may leave `content` null. Some builds
+    return `content` as a list of parts. Assuming a plain string silently
+    turned every live call into a parse failure.
+    """
+    for key in ("content", "reasoning_content", "text"):
+        val = message.get(key)
+        if isinstance(val, str) and val.strip():
+            return val
+        if isinstance(val, list):                       # [{"type":"text","text":...}]
+            joined = " ".join(
+                part.get("text", "") for part in val
+                if isinstance(part, dict) and isinstance(part.get("text"), str))
+            if joined.strip():
+                return joined
+    return ""
+
+
+async def llm_tier(text: str) -> tuple[int | None, str, bool]:
+    """Nemotron. Returns (tier, rationale, ok).
+
+    On any failure ok is False and tier is None. A failed classifier is an
+    OPERATIONAL fault, not a clinical finding -- returning tier 3 here would
+    label the patient's own words critical because our inference layer broke,
+    which is both wrong and unusable (it produced 7 over-alerts in 12 calls on
+    the GB10). The caller decides what to do with a degraded classifier.
+    """
+    body = {"model": LLM_MODEL, "temperature": 0, "max_tokens": 400,
             "messages": [{"role": "system", "content": RUBRIC},
                          {"role": "user", "content": text}]}
     try:
         async with httpx.AsyncClient(timeout=LLM_TIMEOUT) as c:
             r = await c.post(f"{LLM_BASE_URL}/chat/completions", json=body)
             r.raise_for_status()
-            raw = r.json()["choices"][0]["message"]["content"]
+            payload = r.json()
+        message = (payload.get("choices") or [{}])[0].get("message") or {}
+        raw = _message_text(message)
+        if not raw:
+            log.warning("empty classification; message keys=%s", sorted(message))
+            return None, "classifier returned no text", False
         m = re.search(r"\{.*\}", raw, re.S)
-        d = json.loads(m.group(0)) if m else {}
-        if d.get("tier") in (1, 2, 3):
-            return int(d["tier"]), str(d.get("rationale", ""))[:300]
-        log.warning("unparseable classification: %r", raw[:200])
+        if not m:
+            log.warning("no JSON in classification: %r", raw[:300])
+            return None, "classifier returned no JSON", False
+        d = json.loads(m.group(0))
+        if d.get("tier") not in (1, 2, 3):
+            log.warning("classification missing a valid tier: %r", raw[:300])
+            return None, "classifier returned no valid tier", False
+        return int(d["tier"]), str(d.get("rationale", ""))[:300], True
     except Exception as exc:
         log.warning("LLM classify failed: %s", exc)
-    return 3, "classifier unavailable - failing safe for human review"
+        return None, f"classifier unreachable: {type(exc).__name__}", False
 
 
 async def check_and_alert(
@@ -325,11 +363,34 @@ async def check_and_alert(
         tier, hits, crisis = 3, [f"refused engagement ({len(seen)} cues across call)"], True
 
     # Nemotron may only raise the tier, never lower it
+    classifier_ok = True
     if USE_LLM and tier < 3 and len(text.strip()) >= LLM_MIN_CHARS:
-        llm_t, why = await llm_tier(text)
-        if llm_t > tier:
+        llm_t, why, classifier_ok = await llm_tier(text)
+        if classifier_ok and llm_t > tier:
             tier, crisis = llm_t, llm_t == 3
             hits = [f"Nemotron: {why}"]
+        elif not classifier_ok and call_id not in _CALL_DEGRADED:
+            # Operational fault, raised once per call, and NOT a tier-3 clinical
+            # claim. The lexicon still stands, but a human must know the
+            # generalising layer was not running for this call.
+            _CALL_DEGRADED.add(call_id)
+            fault = f"Severity classifier unavailable ({why}) - lexicon only for this call"
+            fault_id = memory.save_alert(resident_id, call_id, fault, "medium",
+                                         alert_type="classifier-unavailable", tier=tier)
+            fault_alert = {
+                "alert_id": fault_id,
+                "resident_id": resident_id,
+                "call_id": call_id,
+                "reason": fault,
+                "severity": "medium",
+                "triage_tier": tier,
+                "alert_type": "classifier-unavailable",
+                "classifier_available": False,
+                "destination": "on-call clinician",
+            }
+            delivery = await agent_wake.notify(fault_alert)
+            memory.set_alert_delivery(fault_id, delivery)
+            log.error("severity classifier unavailable on call %s: %s", call_id, why)
 
     score = TIER_TO_SCORE[tier]
     running_score = max(running_score, score)
@@ -423,6 +484,7 @@ async def end_call(
     recorded so a clinician can dismiss a connectivity blip in seconds.
     """
     _CALL_CUES.pop(call_id, None)
+    _CALL_DEGRADED.discard(call_id)
     if reason == END_COMPLETED:
         return running_score, alerted_severity, None
 

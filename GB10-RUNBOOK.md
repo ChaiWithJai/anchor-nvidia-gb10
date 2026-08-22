@@ -38,6 +38,35 @@ nvidia-smi
 `/api/status` is ready only when Nemotron lists the pinned model and CSM has
 already generated a valid 24 kHz WAV on CUDA.
 
+## Temporary team URL
+
+```bash
+export HACKATHON_BUNDLE=/media/dell/T7/hackathon-2026-08-22
+export ANCHOR_DEMO_ACCESS_KEY='choose-a-private-team-code'
+./scripts/share-nvidia
+```
+
+The access code must contain at least 12 characters. The root URL presents a
+login form; all private API routes require the resulting signed, HttpOnly
+cookie. `/api/status` remains public for health checks and contains no call or
+resident data. The raw Nemotron port is loopback-only.
+
+Verification performed by the launcher:
+
+- Local CSM and Nemotron readiness is true.
+- Shared mode is enabled.
+- The HTTPS login page is reachable.
+- An anonymous private API request returns HTTP 401.
+
+The public URL changes whenever the proxy container is recreated. Stop it with:
+
+```bash
+docker compose -f compose.nvidia.yml --profile share stop share-proxy
+```
+
+Cloudflare transports remote browser traffic. Inference and persistence stay
+on the GB10, but request content is no longer confined to the local network.
+
 ## Stop
 
 ```bash

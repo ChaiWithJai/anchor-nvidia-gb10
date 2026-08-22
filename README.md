@@ -40,6 +40,33 @@ Repeat verification without rebuilding:
 CARELINE_BASE_URL=http://127.0.0.1:8100 python3 scripts/verify-nvidia.py
 ```
 
+## Share across segmented Wi-Fi
+
+Use the temporary HTTPS profile only for a staffed hackathon demonstration:
+
+```bash
+export HACKATHON_BUNDLE=/media/dell/T7/hackathon-2026-08-22
+export ANCHOR_DEMO_ACCESS_KEY='choose-a-private-team-code'
+./scripts/share-nvidia
+```
+
+The launcher restarts only the application with signed-cookie access enabled,
+starts a pinned Cloudflare quick-tunnel container, verifies that private APIs
+reject anonymous requests, and prints the temporary `trycloudflare.com` URL.
+Share the access code separately from the URL. Each browser receives a distinct
+resident ID so attendee memories do not mix.
+
+Nemotron, CSM, deterministic escalation, and SQLite remain on the GB10. Remote
+HTTP traffic is transported through Cloudflare, so do not describe shared mode
+as network-free or use it with real patient data. Quick tunnels are ephemeral,
+best-effort demo infrastructure, not a clinical deployment boundary.
+
+Stop public access immediately after judging:
+
+```bash
+docker compose -f compose.nvidia.yml --profile share stop share-proxy
+```
+
 ## Provenance
 
 Anchor extends the canonical CareLine blueprint in

@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+: "${HACKATHON_BUNDLE:?Set HACKATHON_BUNDLE to the mounted T7 hackathon bundle}"
+: "${ANCHOR_DEMO_ACCESS_KEY:?Set ANCHOR_DEMO_ACCESS_KEY to a private team code}"
+if (( ${#ANCHOR_DEMO_ACCESS_KEY} < 12 )); then
+  printf 'ANCHOR_DEMO_ACCESS_KEY must contain at least 12 characters.\n' >&2
+  exit 1
+fi
+
+root="$(cd "$(dirname "$0")/.." && pwd)"
+export NVIDIA_VLLM_IMAGE="${NVIDIA_VLLM_IMAGE:-nvcr.io/nvidia/vllm:26.05.post1-py3}"
+export NEMOTRON_MODEL_DIR="${NEMOTRON_MODEL_DIR:-$HACKATHON_BUNDLE/models/nemotron/NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4}"
+export CARELINE_CSM_MODEL_DIR="${CARELINE_CSM_MODEL_DIR:-$HACKATHON_BUNDLE/models/voice-clone/sesame-csm-1b}"
+export CARELINE_CSM_WHEELHOUSE="${CARELINE_CSM_WHEELHOUSE:-$HACKATHON_BUNDLE/installers/python/csm-cuda-py312-aarch64}"
+export CARELINE_SELF_REF_AUDIO="${CARELINE_SELF_REF_AUDIO:-$HACKATHON_BUNDLE/private/voice/self_ref_5s.wav}"
+export CARELINE_SELF_REF_TEXT="${CARELINE_SELF_REF_TEXT:-$HACKATHON_BUNDLE/private/voice/self_ref.txt}"
+export CARELINE_PORT="${CARELINE_PORT:-8100}"
+
+cd "$root"
+docker compose -f compose.nvidia.yml config --quiet
+docker compose -f compose.nvidia.yml up -d --build --no-deps --force-recreate digital-twin
+
+base_url="http://127.0.0.1:$CARELINE_PORT"
+ready=0
+for _ in {1..90}; do
+  if curl --fail --silent "$base_url/api/status" | grep -q '"ready":true'; then
+    ready=1
+    break
+  fi
+  sleep 2
+done
+if [[ "$ready" != "1" ]]; then
+  docker compose -f compose.nvidia.yml logs --tail 120 digital-twin
+  exit 1
+fi
+if ! curl --fail --silent "$base_url/api/status" | grep -q '"shared_access":true'; then
+  printf 'Anchor restarted without shared access enabled.\n' >&2
+  exit 1
+fi
+
+docker compose -f compose.nvidia.yml --profile share up -d --no-deps share-proxy
+
+share_url=""
+for _ in {1..60}; do
+  share_url="$(
+    docker compose -f compose.nvidia.yml --profile share logs --no-color share-proxy 2>&1 \
+      | sed -nE 's#.*(https://[a-z0-9-]+\.trycloudflare\.com).*#\1#p' \
+      | tail -n 1
+  )"
+  [[ -n "$share_url" ]] && break
+  sleep 1
+done
+if [[ -z "$share_url" ]]; then
+  docker compose -f compose.nvidia.yml --profile share logs --tail 120 share-proxy
+  exit 1
+fi
+
+for _ in {1..30}; do
+  if curl --fail --silent "$share_url/api/status" | grep -q '"ready":true'; then
+    break
+  fi
+  sleep 1
+done
+
+root_status="$(curl --silent --output /tmp/anchor-share-root.html --write-out '%{http_code}' "$share_url/")"
+api_status="$(curl --silent --output /dev/null --write-out '%{http_code}' "$share_url/api/context/demo-probe")"
+[[ "$root_status" == "200" ]] || { printf 'Shared login returned HTTP %s.\n' "$root_status" >&2; exit 1; }
+[[ "$api_status" == "401" ]] || { printf 'Private API returned HTTP %s without a cookie.\n' "$api_status" >&2; exit 1; }
+grep -q 'Team access code' /tmp/anchor-share-root.html
+
+printf 'Anchor team URL: %s/\n' "$share_url"
+printf 'Share the access code separately. Stop with: docker compose -f compose.nvidia.yml --profile share stop share-proxy\n'

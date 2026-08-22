@@ -24,7 +24,7 @@ services:
     environment:
       FLASHINFER_DISABLE_VERSION_CHECK: "1"
     ports:
-      - "${NEMOTRON_PORT:-18000}:8000"
+      - "127.0.0.1:${NEMOTRON_PORT:-18000}:8000"
     volumes:
       - ${NEMOTRON_MODEL_DIR:?Set NEMOTRON_MODEL_DIR}:/models/nemotron:ro
       - nemotron-cache:/root/.cache/vllm
@@ -70,6 +70,7 @@ services:
       CARELINE_STT_BACKEND: browser
       CARELINE_TTS_BACKEND: nim
       CARELINE_DB: /data/anchor.db
+      ANCHOR_DEMO_ACCESS_KEY: ${ANCHOR_DEMO_ACCESS_KEY:-}
     volumes:
       - digital-twin-data:/data
       - ${CARELINE_CSM_MODEL_DIR:?Set CARELINE_CSM_MODEL_DIR}:/models/sesame-csm-1b:ro
@@ -100,6 +101,22 @@ services:
       timeout: 5s
       retries: 30
       start_period: 30s
+
+  share-proxy:
+    image: cloudflare/cloudflared:2026.8.2@sha256:0aa26e284f05e6c77ae375b8c9c11d9eb6a448fb7bcd8d40f31cb6176189eb38
+    profiles: [share]
+    command: tunnel --no-autoupdate --url http://digital-twin:8100
+    depends_on:
+      digital-twin:
+        condition: service_healthy
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    restart: unless-stopped
 
 volumes:
   digital-twin-data:

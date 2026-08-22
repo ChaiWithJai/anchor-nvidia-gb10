@@ -1,0 +1,39 @@
+# Severity classification — corpus, holdout, harness
+
+    corpus.json         15 clinician-labelled calls (5 per tier). The lexicon
+                        was fitted from these, so scores here are IN-SAMPLE.
+    holdout.json        12 calls written to a clinical rubric and never shown
+                        to the fitter. This is the honest number.
+    coverage_gaps.json  risk presentations named in the rubric that appear
+                        NOWHERE in the corpus. The recording brief.
+
+## Run it
+
+    PYTHONPATH=app python3 tools/evaluate.py eval/holdout.json --llm
+
+Scores the lexicon, Nemotron, and combined separately, and **exits non-zero on
+any tier-3 miss** — usable as a deploy gate.
+
+## What the numbers say
+
+| | corpus (in-sample) | holdout (blind) |
+|---|---|---|
+| previous 8 patterns | **0/15** | — |
+| lexicon only | 15/15 | **33%, 0/4 tier-3** |
+| lexicon + Nemotron | — | run it and see |
+
+The lexicon on its own scores the same as always answering "tier 1", because
+unmatched text falls through to the tier-1 default. It works on phrasing it has
+seen. It is a fast floor and a fallback, **not** the classifier — Nemotron is.
+
+The Nemotron path has never made a real inference call. It has only been
+exercised against a stub and a dead endpoint (to prove it fails safe). The
+first genuine test is the command above, on the GB10.
+
+## Regenerating
+
+    python3 tools/transcribe.py    # wav -> transcripts (needs the audio archive)
+    python3 tools/fit_lexicon.py   # refits weights, writes a new INACTIVE version
+
+Fitting never touches the crisis floor. New lexicon versions are inactive until
+a human activates them.

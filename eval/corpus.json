@@ -1,0 +1,92 @@
+[
+  {
+    "id": "tier1_01_steve_routine_ontrack.wav",
+    "tier": 1,
+    "text": "Hi, this is Steve calling in for my daily check-in. Just wanted to let you guys know that today went pretty well. Work was busy, but I stuck to my routine, had lunch with my brother, and made it through the evening without any cravings. I feel good, staying on track with the recovery plan, and I am ready to get some sleep and tackle tomorrow. Talk to you soon.",
+    "note": "routine ontrack"
+  },
+  {
+    "id": "tier1_02_sarah_stressful_resisted.wav",
+    "tier": 1,
+    "text": "Hey, hello, this is Sarah calling, I am checking in as scheduled, today was honestly kind of a stressful day at the office, my manager was on my case, and on the drive home I had a moment where I felt really tempted and wanted a glass of wine to take the edge off, but I remembered what we discussed, pulled over at the park, took a walk, and took some deep breaths, the urge was manageable and passed after about 20 minutes, I am back home now, drinking tea, and And feeling fine. Just wanted to log that. Thanks.",
+    "note": "stressful resisted"
+  },
+  {
+    "id": "tier1_03_marcus_tired_manageable.wav",
+    "tier": 1,
+    "text": "Hello there. This is Marcus calling in for my evening check-in. It has been a long shift, and I am definitely feeling pretty tired tonight and slightly on edge from all the commotion at work. But everything is completely manageable. I do not have any desire to drink or break my streak. I am just planning on making dinner, watching a movie, and heading to bed early. All is okay on my end. Have a good evening.",
+    "note": "tired manageable"
+  },
+  {
+    "id": "tier1_04_elena_social_event_handled.wav",
+    "tier": 1,
+    "text": "Hi, this is Eleanor calling. I wanted to check-in after attending my friend birthday dinner tonight. Going in, I was a little anxious about everyone else having cocktails around me. But I ordered seltzer with lime, stayed mindful of my boundaries, and stuck to my goals the whole night. It felt great leaving the dinner sober and in control. I feel empowered and wanted to share that today was a solid win. Good night.",
+    "note": "social event handled"
+  },
+  {
+    "id": "tier1_05_james_weekend_boredom.wav",
+    "tier": 1,
+    "text": "Hey team, this is James. Just calling in for my Saturday check-in. I have got a lot of unstructured downtime this weekend, which used to be a major trigger for me in the past. I noticed a little bit of boredom creeping in around 5 o'clock and felt that old familiar urge, but I recognized the craving curve and decided to work on my woodworking project in the garage instead. dead. Everything is under control and I am sticking to the plan. Bye for now.",
+    "note": "weekend boredom"
+  },
+  {
+    "id": "tier2_01_david_recurring_afterwork_craving.wav",
+    "tier": 2,
+    "text": "Hi, this is David calling. I am checking in again, but honestly, I am starting to notice a pattern that is worrying me. It is the same thing again today. Every time 5 o'clock rolls around and I leave the job site, I get this intense urge to stop at the liquor store. That is the third time this week it has happened. I have not caved yet, but it is becoming a daily battle on my drive home and it keeps happening every single afternoon. I think we need to adjust my commute plan or look at something different because it is getting harder to ignore. Let me know what you think.",
+    "note": "recurring afterwork craving"
+  },
+  {
+    "id": "tier2_02_rachel_missed_counseling_sessions.wav",
+    "tier": 2,
+    "text": "Hello, this is Rachel calling in for my check-in. I am doing okay overall, but I wanted to be transparent about something. I keep missing my Tuesday group counseling sessions. I missed last week because of my shift, and then I missed again this past Tuesday. That is two weeks in a row now. It is not that I do not want to go, but my work schedule is making it really difficult to get across town in time, and I can feel myself slipping into old isolation habits. I really think I need help rescheduling to a weekend group or finding a virtual option before I fall behind.",
+    "note": "missed counseling sessions"
+  },
+  {
+    "id": "tier2_03_brian_breathing_technique_failing.wav",
+    "tier": 2,
+    "text": "Hey, this is Brian. I am calling for the daily check-in. Look, to be completely frank, I have not been doing the box breathing exercises you recommended. I tried them a couple of times when the stress spiked at home, but it just does not feel like it is working for me. When my anxiety gets that high, the breathing just makes me more hyper-focused on the physical panic and I get frustrated with the whole thing. I want to stay committed to my sobriety, but I need a different coping technique because this one is just not cutting it for me.",
+    "note": "breathing technique failing"
+  },
+  {
+    "id": "tier2_04_lisa_escalating_family_stress.wav",
+    "tier": 2,
+    "text": "Hi, this is Lisa checking in. I am having a really tough week. My family situation has been escalating over the past few days, and every evening has turned into an argument. The stress is compounding day after day, and I have felt that nagging urge to drink every night since Wednesday. I managed to hold on today, but my resilience is wearing down and I am scared that if this friction continues over the weekend, I might not be able to hold the line by myself. I would appreciate it if the team could review this and give me some extra support.",
+    "note": "escalating family stress"
+  },
+  {
+    "id": "tier2_05_carlos_insomnia_slipping_willpower.wav",
+    "tier": 2,
+    "text": "Hello, it is Carlos calling. I am calling into check-in, but I am really struggling with exhaustion. I have not been sleeping more than two or three hours a night for four days straight now. When I am this drained, my defenses are completely down and my willpower feels like it is slipping away by nightfall. I have not had a drink, but my brain keeps telling me that alcohol is the only way I will get any sleep. I know that is a dangerous trap, but the exhaustion is relentless. I think my care team needs to know this is becoming a serious barrier.",
+    "note": "insomnia slipping willpower"
+  },
+  {
+    "id": "tier3_01_steve_hopelessness_apathy.wav",
+    "tier": 3,
+    "text": "Hello yeah. Hi. This is Steve. I guess I am calling in because the phone reminded me to book. But honestly, I do not really know why I am bothering anymore. Nothing seems to get any better no matter how hard I try. I just feel completely exhausted and hopeless today. It feels like none of this even matters anymore. I do not know what to say. I am just sitting here in the dark and I do not see the point in continuing with this whole recovery plan. Just, whatever",
+    "note": "hopelessness apathy"
+  },
+  {
+    "id": "tier3_02_maria_withdrawn_nonresponsive.wav",
+    "tier": 3,
+    "text": "Hi, this is Maria. Look, I know you want me to do this daily check-in, but I really do not want to talk about today. I do not want to answer questions about how I am feeling or what happened earlier. I cannot get into it right now. Please do not ask me to explain or log anything. I am just. I am not in a good place to talk and I do not want to be on the phone. I am hanging up now.",
+    "note": "withdrawn nonresponsive"
+  },
+  {
+    "id": "tier3_03_kevin_acute_fear_unsafe.wav",
+    "tier": 3,
+    "text": "Hi, this is Kevin calling. I am really not doing well right now. I had a massive blowout earlier with my partner. And my head is spinning out of control. I have never felt cravings this intense before in my life. The urges are completely overwhelming. And to be honest, I am scared of myself right now. I do not know what I am going to do if I am left alone tonight. And I do not trust myself to keep myself safe. I need someone to help me right now. Please have my doctor or clinician get in touch immediately.",
+    "note": "acute fear unsafe"
+  },
+  {
+    "id": "tier3_04_amanda_giving_up_crisis.wav",
+    "tier": 3,
+    "text": "Hello, this is Amanda. I am calling in, but I am done. I am done trying to fight this every single day. It hurts too much, and I cannot do this anymore. I have let everybody down and there is no way out of this hole. I just want the pain to stop and I want everything to go quiet. I do not think I can make it through tonight. I am sorry.",
+    "note": "giving up crisis"
+  },
+  {
+    "id": "tier3_05_robert_overwhelming_relapse_distress.wav",
+    "tier": 3,
+    "text": "Hey, this is Robert. I am in serious trouble tonight. I am sitting in my car outside my old neighborhood spot, and I am seconds away from throwing everything away. My heart is pounding, I am shaking, and I cannot get the thoughts out of my head. I know I should not be here, but I feel totally out of control and I cannot pull myself back from the edge on my own. I need immediate intervention before I do something I cannot take back. Please reach out to me.",
+    "note": "overwhelming relapse distress"
+  }
+]

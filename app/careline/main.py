@@ -4,6 +4,7 @@ import asyncio
 import hashlib
 import hmac
 import json
+import logging
 import os
 import time
 from urllib.parse import parse_qs
@@ -12,7 +13,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse, Response, StreamingResponse
 from pydantic import BaseModel, Field
 
-from . import agent_wake, context, llm, memory, store, telemetry, tts
+from . import agent_wake, context, escalation, llm, memory, store, telemetry, tts
 from .agent import CallSession
 
 from contextlib import asynccontextmanager
@@ -27,13 +28,44 @@ async def lifespan(app):
     store.initialize()
     await CLONE_TTS.synthesize("Your digital twin is ready.")
     VOICE_READY = True
+    sweeper = asyncio.create_task(_sweep_abandoned())
     yield
+    sweeper.cancel()
     VOICE_READY = False
 
 
 app = FastAPI(title="Anchor NVIDIA GB10", version="2.1.0", lifespan=lifespan)
 
 SESSIONS: dict[str, CallSession] = {}
+
+# A call that is never closed is the real "abrupt" case: closed tab, crashed
+# page, dead battery, lost signal. The browser cannot tell us -- it is gone.
+# Without this sweep the escalation is inert and a caller who walks away
+# mid-crisis stays filed as tier 1.
+IDLE_TIMEOUT = float(os.environ.get("CARELINE_SESSION_IDLE_TIMEOUT", "180"))
+SWEEP_EVERY = float(os.environ.get("CARELINE_SESSION_SWEEP_INTERVAL", "30"))
+LAST_SEEN: dict[str, float] = {}
+
+
+async def _sweep_abandoned() -> None:
+    while True:
+        await asyncio.sleep(SWEEP_EVERY)
+        now = time.monotonic()
+        for call_id in [c for c, t in list(LAST_SEEN.items()) if now - t > IDLE_TIMEOUT]:
+            session = SESSIONS.pop(call_id, None)
+            LAST_SEEN.pop(call_id, None)
+            if not session:
+                continue
+            try:
+                await escalation.end_call(
+                    session.resident_id, call_id, escalation.END_TIMEOUT,
+                    session.concern_score, session.alerted_severity)
+                logging.getLogger("careline").warning(
+                    "swept abandoned call %s after %.0fs idle -> tier 3",
+                    call_id, IDLE_TIMEOUT)
+                await session.end()
+            except Exception:
+                logging.getLogger("careline").exception("sweep failed for %s", call_id)
 WEB_DIR = os.path.join(os.path.dirname(__file__), "..", "web")
 ACCESS_KEY = os.environ.get("ANCHOR_DEMO_ACCESS_KEY", "").strip()
 ACCESS_COOKIE = "anchor_demo_access"
@@ -353,6 +385,7 @@ async def start_call(body: StartCall):
         session = CallSession(body.resident_id, body.name, mode=body.mode)
         greeting = await session.open_call()
     SESSIONS[session.id] = session
+    LAST_SEEN[session.id] = time.monotonic()
     return {"call_id": session.id, "greeting": greeting}
 
 
@@ -363,16 +396,38 @@ async def call_turn(call_id: str, body: Turn):
         raise HTTPException(404, "unknown call")
     if not body.text.strip() or len(body.text) > 800:
         raise HTTPException(400, "turn must contain 1-800 characters")
+    LAST_SEEN[call_id] = time.monotonic()
     reply, alert = await session.turn(body.text)
     return {"reply": reply, "alert": alert, "concern_score": session.concern_score}
 
 
+class EndCall(BaseModel):
+    # Default "completed": reaching this route means something deliberately
+    # closed the call. Deciding whether the caller hung up EARLY needs
+    # call-flow knowledge this layer lacks -- turn count is not a safe proxy,
+    # since a complete tier-1 check-in in our corpus runs as few as 3 turns.
+    # When the agent knows its questions went unanswered, send reason="abrupt".
+    reason: str = "completed"
+
+
 @app.post("/api/calls/{call_id}/end")
-async def call_end(call_id: str):
+async def call_end(call_id: str, body: EndCall | None = None):
     session = SESSIONS.pop(call_id, None)
+    LAST_SEEN.pop(call_id, None)
     if not session:
         raise HTTPException(404, "unknown call")
-    return await session.end()
+    reason = body.reason if body else EndCall().reason
+    if reason not in (escalation.END_COMPLETED, escalation.END_ABRUPT,
+                      escalation.END_DROPPED, escalation.END_TIMEOUT):
+        raise HTTPException(400, f"unknown end reason {reason!r}")
+    score, severity, alert = await escalation.end_call(
+        session.resident_id, call_id, reason,
+        session.concern_score, session.alerted_severity)
+    session.concern_score, session.alerted_severity = score, severity
+    result = await session.end()
+    if alert:
+        result["alert"] = alert
+    return result
 
 
 @app.get("/api/residents/{resident_id}/memory")

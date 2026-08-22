@@ -1,0 +1,157 @@
+[
+  {
+    "tier": 3,
+    "presentation": "passive ideation \u2014 wish to be dead",
+    "probes": [
+      "wish i was dead",
+      "wish i wasnt here",
+      "dont want to wake up",
+      "rather not wake up"
+    ]
+  },
+  {
+    "tier": 3,
+    "presentation": "perceived burdensomeness",
+    "probes": [
+      "better off without me",
+      "a burden",
+      "weight on",
+      "easier without me",
+      "drag on everyone"
+    ]
+  },
+  {
+    "tier": 3,
+    "presentation": "means at hand / lethal means",
+    "probes": [
+      "tablets",
+      "pills in",
+      "counted them",
+      "the bottle of",
+      "how many i have",
+      "razor",
+      "rope",
+      "the gun"
+    ]
+  },
+  {
+    "tier": 3,
+    "presentation": "active ideation with method or plan",
+    "probes": [
+      "thought about how",
+      "i have a plan",
+      "worked out how",
+      "know how i would"
+    ]
+  },
+  {
+    "tier": 3,
+    "presentation": "self-harm",
+    "probes": [
+      "cut myself",
+      "hurt myself",
+      "burn myself"
+    ]
+  },
+  {
+    "tier": 3,
+    "presentation": "overdose reference",
+    "probes": [
+      "overdose",
+      "took too many",
+      "whole packet"
+    ]
+  },
+  {
+    "tier": 3,
+    "presentation": "unsafe alone / cannot keep safe",
+    "probes": [
+      "not safe on my own",
+      "cannot keep myself safe",
+      "unsafe tonight",
+      "shouldnt be alone"
+    ]
+  },
+  {
+    "tier": 3,
+    "presentation": "imminent use \u2014 at the location",
+    "probes": [
+      "outside the",
+      "parked",
+      "sitting in the car",
+      "round the corner from",
+      "at the shop now"
+    ]
+  },
+  {
+    "tier": 3,
+    "presentation": "hopeless about the future specifically",
+    "probes": [
+      "no point in the future",
+      "nothing will change",
+      "never get better",
+      "no way forward"
+    ]
+  },
+  {
+    "tier": 2,
+    "presentation": "lost sponsor / support gone",
+    "probes": [
+      "sponsor moved",
+      "sponsor is away",
+      "havent spoken to my sponsor",
+      "no sponsor"
+    ]
+  },
+  {
+    "tier": 2,
+    "presentation": "attendance decline",
+    "probes": [
+      "fewer meetings",
+      "one in three",
+      "stopped going",
+      "missing group"
+    ]
+  },
+  {
+    "tier": 2,
+    "presentation": "rationalising toward use",
+    "probes": [
+      "would help me sleep",
+      "just one would",
+      "telling myself that",
+      "building the case"
+    ]
+  },
+  {
+    "tier": 2,
+    "presentation": "lengthening exposure",
+    "probes": [
+      "longer each night",
+      "stayed longer",
+      "twenty minutes",
+      "sitting there longer"
+    ]
+  },
+  {
+    "tier": 1,
+    "presentation": "physical illness",
+    "probes": [
+      "flu",
+      "fever",
+      "in bed",
+      "unwell",
+      "sick"
+    ]
+  },
+  {
+    "tier": 1,
+    "presentation": "protective planning in advance",
+    "probes": [
+      "drove myself so i could leave",
+      "planned an exit",
+      "brought my own",
+      "decided before"
+    ]
+  }
+]

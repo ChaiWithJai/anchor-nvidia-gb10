@@ -9,6 +9,52 @@ audit trail. The patient consents, answers, speaks by microphone or text, hears
 the clone, and hangs up. MongoDB carries the plan and call memory into the next
 check-in.
 
+## Phase two: evaluation-driven development
+
+Anchor is moving into phase two. The existing Nemotron workload is the
+baseline for a paired comparison with **Ternary Bonsai 2 27B** and selected
+Bonsai family models. The goal is to reduce the total memory footprint while
+preserving measured application quality, then test how much additional local
+clinical-operations work the GB10 can support alongside the ambient agent.
+
+Equal quality, lower total cost, and useful spare capacity are hypotheses to
+measure. A smaller checkpoint or a general benchmark score does not establish
+the same result for Anchor. The first comparison keeps the application,
+clinical rules, patient context, speech components, and workload fixed.
+
+The program follows MLflow's
+[evaluation-driven development workflow](https://mlflow.org/docs/latest/genai/datasets/end-to-end-workflow/).
+Raw events and traces become reviewed annotations and versioned evaluation
+datasets. Paired evaluations guide improvements, followed by release checks
+and monitoring for differences between development and deployed behavior.
+Supervised fine-tuning, distillation, pruning, and reinforcement learning are
+separate possible experiments after measured failures justify them.
+
+The [phase-two documentation](docs/README.md) contains the program:
+
+- [Lineage](docs/phase-two-lineage.md) records the CareLine, Anchor, and model
+  history, with exact identities and the limits of current evidence.
+- [Evaluation plan](docs/phase-two-evaluation.md) defines data review,
+  comparisons, improvement experiments, and release criteria.
+- [Cost and capacity analysis](docs/phase-two-cost-analysis.md) defines local
+  measurements and illustrative hosted bills, including the conditions for
+  handling protected health information.
+
+Implementation is tracked in [evaluation issue #21](https://github.com/ChaiWithJai/anchor-nvidia-gb10/issues/21)
+and [cost and capacity issue #22](https://github.com/ChaiWithJai/anchor-nvidia-gb10/issues/22).
+
+The MLflow setup includes an `Anchor Phase Two Evaluation` experiment and
+empty candidate, development, holdout, and production-replay datasets.
+Run `scripts/bootstrap-phase-two.py` in an MLflow environment to reproduce the
+setup. The empty datasets are a starting structure, not completed annotations
+or model-comparison results.
+
+EHR integration is proposed work. An initial adapter would map approved events
+into Anchor's existing records and return drafts for human review. Additional
+local work could include summarizing logged activities or preparing follow-up
+queues. Each workload must be evaluated alongside the live check-in workflow
+before claiming that reduced model memory creates usable clinical capacity.
+
 ## NVIDIA stack
 
 - Dell Pro Max with GB10 (ARM64, CUDA compute capability 12.1)
@@ -83,6 +129,10 @@ Repeat verification without rebuilding:
 ```bash
 CARELINE_BASE_URL=http://127.0.0.1:8100 python3 scripts/verify-nvidia.py
 ```
+
+For text messaging through the existing app, see
+[WebSocket messaging](docs/websocket-messaging.md). The same document explains
+how to record deployment and verification commands in MLflow.
 
 ### Inspect local MongoDB
 

@@ -6,11 +6,11 @@ import hmac
 import json
 import os
 import time
-from urllib.parse import parse_qs
+from urllib.parse import parse_qs, urlsplit
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse, Response, StreamingResponse
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError
 
 from . import agent_wake, context, escalation, llm, memory, store, stt, telemetry, tts
 from .agent import CallSession
@@ -497,6 +497,61 @@ async def call_turn(call_id: str, body: Turn):
         ):
             reply, alert = await session.turn(body.text)
     return {"reply": reply, "alert": alert, "concern_score": session.concern_score}
+
+
+@app.websocket("/api/calls/{call_id}/ws")
+async def call_socket(websocket: WebSocket, call_id: str):
+    """A message transport for the existing call, safety, and memory workflow."""
+    origin = websocket.headers.get("origin")
+    if origin and urlsplit(origin).netloc != websocket.headers.get("host"):
+        await websocket.close(code=1008)
+        return
+    if ACCESS_KEY and not hmac.compare_digest(
+        websocket.cookies.get(ACCESS_COOKIE, ""), _access_cookie_value()
+    ):
+        await websocket.close(code=1008)
+        return
+    if call_id not in SESSIONS:
+        await websocket.close(code=1008)
+        return
+    await websocket.accept()
+    await websocket.send_json({"type": "ready", "call_id": call_id})
+    try:
+        while True:
+            frame = await websocket.receive()
+            if frame["type"] == "websocket.disconnect":
+                return
+            raw = frame.get("text")
+            if raw is None:
+                await websocket.close(code=1003)
+                return
+            if len(raw.encode("utf-8")) > 8192:
+                await websocket.close(code=1009)
+                return
+            try:
+                message = json.loads(raw)
+                if not isinstance(message, dict):
+                    raise HTTPException(400, "expected a JSON object")
+                kind = message.get("type")
+                if kind == "ping":
+                    await websocket.send_json({"type": "pong"})
+                elif kind == "turn":
+                    result = await call_turn(call_id, Turn.model_validate(message))
+                    await websocket.send_json({"type": "reply", **result})
+                elif kind == "end":
+                    result = await call_end(call_id)
+                    await websocket.send_json({"type": "ended", **result})
+                    await websocket.close(code=1000)
+                    return
+                else:
+                    raise HTTPException(400, "unknown message type")
+            except (json.JSONDecodeError, ValidationError):
+                await websocket.send_json({"type": "error", "status": 400, "detail": "Send a JSON object with type turn and text, ping, or end."})
+            except HTTPException as exc:
+                await websocket.send_json({"type": "error", "status": exc.status_code, "detail": exc.detail})
+    except WebSocketDisconnect:
+        # Preserve the call so an interrupted client can reconnect or end via HTTP.
+        pass
 
 
 @app.post("/api/calls/{call_id}/audio-turn")

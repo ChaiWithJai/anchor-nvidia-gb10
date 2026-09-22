@@ -104,7 +104,7 @@ services:
       additional_contexts:
         csm_wheels: ${CARELINE_CSM_WHEELHOUSE:?Set CARELINE_CSM_WHEELHOUSE}
     ports:
-      - "${CARELINE_PORT:-8100}:8100"
+      - "${CARELINE_BIND_ADDRESS:-0.0.0.0}:${CARELINE_PORT:-8100}:8100"
     environment:
       CARELINE_LLM_BASE_URL: http://nemotron:8000/v1
       CARELINE_LLM_MODEL: nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4

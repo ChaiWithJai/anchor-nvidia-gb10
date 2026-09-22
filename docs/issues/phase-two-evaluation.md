@@ -28,12 +28,12 @@ Use synthetic, non-identifying data for the proof of concept. EHR integration is
 - [x] Created empty candidate, development, holdout, and production-replay datasets with synthetic/approved-data policy and awaiting-review tags.
 - [x] Added idempotent setup in `scripts/bootstrap-phase-two.py`.
 
-The datasets contain no fabricated examples, annotations, or scores. Training and judge-calibration splits still need explicit setup when required. The baseline deployment is still in progress, and the remaining checklists describe implementation and validation work.
+The candidate dataset now contains one observed synthetic call, marked unreviewed, from the live WebSocket verification. The other datasets remain empty, and no reviewed labels or scores have been fabricated. Training and judge-calibration splits still need explicit setup when required. Functional baseline verification passed; the first observed summary-grounding failure is tracked in [issue #24](https://github.com/ChaiWithJai/anchor-nvidia-gb10/issues/24).
 
 ## Workstream 0: preserve and prove the baseline
 
 - [ ] Record the application commit, image digest, model revision/checksums, launch configuration, host/driver/runtime versions, and MongoDB schema version.
-- [ ] Link real readiness, complete synthetic WebSocket conversation, transcript readback, safety/handoff verification, and command recorder runs.
+- [x] Link real readiness, synthetic WebSocket conversation, transcript readback, and safety/handoff-status verification. MLflow experiment 13 runs: readiness `309610c1f9c74510a2f268818b9cef11`, full workload `52ac3bab3d374ec4937267cdf6e11906`, WebSocket `fce23d52566a4d34be525de34adbc0cf`. Optional OpenClaw delivery remains unconfigured.
 - [ ] Record current memory pressure and all resident services, including voice and speech recognition.
 - [ ] Save a rollback manifest and verify that it restores the baseline without deleting MongoDB data.
 - [ ] Confirm the exact Bonsai artifact, license, format, tokenizer/template, runtime, context limits, and GB10 support.
@@ -141,7 +141,7 @@ Acceptance: the opportunity estimate is reproducible and labels measured values,
 
 ## Definition of done
 
-- [ ] Phase one is proven with linked MLflow evidence.
+- [x] Phase-one functional startup is proven with linked MLflow evidence. Clinical quality remains an evaluation requirement, including issue #24.
 - [ ] A reviewed, versioned dataset and calibrated evaluation process exist.
 - [ ] Nemotron and at least one compatible Bonsai candidate have reproducible comparisons.
 - [ ] The proposed candidate passes all critical deterministic cases and predeclared quality/performance gates, or the documented result explicitly rejects/inconclusively evaluates it.

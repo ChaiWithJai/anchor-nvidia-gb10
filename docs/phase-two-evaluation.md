@@ -34,7 +34,16 @@ The official guide requires a SQL-backed tracking server and specifies `mlflow>=
 
 The existing GB10 server runs MLflow 3.16.0 with a SQLite backend and serves on loopback port 5210. The deployment experiment is `Anchor NVIDIA GB10` (13), with parent deployment run `0a1bfc3ae9ca4bc989f2e49b98b62a3f`. Phase-two setup created `Anchor Phase Two Evaluation` (14) and four empty datasets: `anchor-phase-two-candidates`, `anchor-phase-two-development`, `anchor-phase-two-holdout`, and `anchor-phase-two-production-replay`. Dataset creation was verified against the installed API.
 
-These datasets have no reviewed annotations or evaluation results. The candidate pool is an intake dataset, not a model-training split. Add explicit training and judge-calibration datasets when those workstreams require them. The baseline deployment is still in progress as of this documentation update.
+These datasets have no reviewed annotations or evaluation results. The candidate pool is an intake dataset, not a model-training split. It now contains one observed synthetic call, marked unreviewed, from the live WebSocket verification. The other three datasets remain empty. Add explicit training and judge-calibration datasets when those workstreams require them.
+
+Baseline startup and functional verification passed on September 22. The full
+workload run is `52ac3bab3d374ec4937267cdf6e11906`, and the WebSocket reply,
+reconnection, and transcript readback run is `fce23d52566a4d34be525de34adbc0cf`.
+The saved summary exposed unsupported patient-action claims, tracked in
+[issue #24](https://github.com/ChaiWithJai/anchor-nvidia-gb10/issues/24) and
+discovery run `dd60da77baec4364934b6438d9fd3da8` in experiment 14. Functional
+smoke tests establish a running workload; they do not establish clinical
+quality or complete the phase-two release gates.
 
 Rerun the idempotent setup on the GB10 using its existing MLflow environment:
 

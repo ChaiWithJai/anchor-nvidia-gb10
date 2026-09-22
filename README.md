@@ -44,10 +44,12 @@ Implementation is tracked in [evaluation issue #21](https://github.com/ChaiWithJ
 and [cost and capacity issue #22](https://github.com/ChaiWithJai/anchor-nvidia-gb10/issues/22).
 
 The MLflow setup includes an `Anchor Phase Two Evaluation` experiment and
-empty candidate, development, holdout, and production-replay datasets.
+candidate, development, holdout, and production-replay datasets.
 Run `scripts/bootstrap-phase-two.py` in an MLflow environment to reproduce the
-setup. The empty datasets are a starting structure, not completed annotations
-or model-comparison results.
+setup. The candidate dataset contains one unreviewed synthetic call from live
+verification; the other datasets are empty. No reviewed labels or paired
+model-comparison results are claimed. The first observed summary-grounding
+failure is tracked in [issue #24](https://github.com/ChaiWithJai/anchor-nvidia-gb10/issues/24).
 
 EHR integration is proposed work. An initial adapter would map approved events
 into Anchor's existing records and return drafts for human review. Additional
